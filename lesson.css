@@ -195,6 +195,15 @@ li { margin-bottom: 8px; }
     color: #a0aec0;
     font-family: 'Consolas', monospace;
 }
+.terminal-block pre {
+    padding: 20px 24px;
+    font-family: 'Courier New','Consolas',monospace;
+    font-size: .88em;
+    line-height: 1.7;
+    color: #a0aec0;
+    white-space: pre;
+    overflow-x: auto;
+}
 
 /* ── CORPO DO TERMINAL (compartilhado) ── */
 .terminal-body {
