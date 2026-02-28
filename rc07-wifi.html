@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aula 7 &mdash; Redes sem Fio (IEEE 802.11)</title>
+    <link rel="stylesheet" href="slide-mode.css">
+    <link rel="stylesheet" href="exercise.css">
+    <link rel="stylesheet" href="lesson.css">
+    <style>
+        :root {
+            --primary:   #1a73e8;
+            --secondary: #0d47a1;
+            --bg-light:  #f4f7fe;
+            --text-dark: #2d3748;
+        }
+    </style>
+</head>
+<body>
+
+<div class="top-bar">
+    <a href="index.html" class="back-btn">&#x2B05; Voltar ao Dashboard</a>
+    <span class="page-badge">1&ordm; Bimestre &mdash; Fundamentos e Modelos</span>
+    <button class="slide-toggle" id="slideToggleBtn">&#x1F4FA; Modo Slide</button>
+</div>
+
+<div class="content-wrapper">
+
+    <div class="lesson-hero">
+        <h1>&#x1F4F6; Redes sem Fio &mdash; IEEE 802.11</h1>
+        <p class="subtitle">Aula 7 &mdash; Frequ&ecirc;ncias, padr&otilde;es Wi-Fi (a/b/g/n/ac/ax), modos de opera&ccedil;&atilde;o, seguran&ccedil;a wireless e planejamento de cobertura</p>
+    </div>
+
+    <!-- CARD 1 — O que é Wi-Fi e CSMA/CA -->
+    <div class="content-card">
+        <h2>&#x1F4E1; O que &eacute; Wi-Fi e como Funciona o Acesso ao Meio</h2>
+        <p>Wi-Fi &eacute; o nome comercial da <strong>Wi-Fi Alliance</strong> para tecnologias de rede local sem fio baseadas no padr&atilde;o <strong>IEEE 802.11</strong>. O primeiro padr&atilde;o foi publicado em 1997; desde ent&atilde;o, v&aacute;rias revis&otilde;es ampliaram velocidade, alcance e efici&ecirc;ncia.</p>
+
+        <p>Como o ar &eacute; um meio compartilhado &mdash; todos os dispositivos pr&oacute;ximos usam o mesmo espa&ccedil;o de r&aacute;dio &mdash; o Wi-Fi utiliza <strong>CSMA/CA (Carrier Sense Multiple Access with Collision Avoidance)</strong>, diferente do CSMA/CD do Ethernet cabeado. Em vez de <em>detectar</em> colis&otilde;es (imposs&iacute;vel no r&aacute;dio), o Wi-Fi tenta <em>evit&aacute;-las</em>.</p>
+
+        <div class="terminal-block">
+            <div class="terminal-header">CSMA/CA — como o Wi-Fi evita colisões</div>
+<pre>
+  1. CARRIER SENSE — "Escutar antes de transmitir"
+     O dispositivo verifica se o canal está livre.
+     Se ocupado → espera até ficar livre.
+
+  2. DIFS (Distributed Inter-Frame Space)
+     Aguarda um tempo padrão de silêncio (DIFS) após o canal ficar livre.
+     Isso garante que transmissões anteriores terminaram completamente.
+
+  3. BACKOFF ALEATÓRIO
+     Escolhe um tempo aleatório adicional antes de transmitir.
+     Se o canal continuar livre durante esse tempo → transmite.
+     Se outro dispositivo ocupar o canal durante o backoff → reinicia.
+
+  4. ACK — Confirmação de recebimento
+     O receptor envia um ACK após receber o quadro com sucesso.
+     Se nenhum ACK chegar → retransmissão (possível colisão ou ruído).
+
+  Opcional: RTS/CTS (Request to Send / Clear to Send)
+     O emissor pede permissão (RTS), o AP responde (CTS) reservando o canal.
+     Resolve o problema do "nó oculto" (dois dispositivos que não se enxergam).
+</pre>
+        </div>
+
+        <div class="cmd-grid">
+            <div class="cmd-card">
+                <span class="cmd">CSMA/CD</span>
+                <strong>Ethernet cabeado</strong>
+                <span><em>Detecta</em> colis&otilde;es ap&oacute;s acontecerem. Poss&iacute;vel apenas em meio guiado onde o sinal vai e volta</span>
+            </div>
+            <div class="cmd-card">
+                <span class="cmd">CSMA/CA</span>
+                <strong>Wi-Fi (802.11)</strong>
+                <span><em>Evita</em> colis&otilde;es com backoff aleat&oacute;rio e ACKs. Necess&aacute;rio porque no r&aacute;dio n&atilde;o &eacute; poss&iacute;vel detectar colis&atilde;o enquanto transmite</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- CARD 2 — Frequências e canais -->
+    <div class="content-card">
+        <h2>&#x1F4F6; Frequ&ecirc;ncias e Canais</h2>
+        <p>O Wi-Fi opera em faixas de frequ&ecirc;ncia de r&aacute;dio regulamentadas. Cada faixa tem caracter&iacute;sticas distintas de alcance, velocidade e susceptibilidade a interfer&ecirc;ncias.</p>
+
+        <h3>Banda de 2,4 GHz</h3>
+        <p>A banda de 2,4 GHz divide-se em <strong>13 canais</strong> no Brasil (11 nos EUA), cada um com 22 MHz de largura, mas espa&ccedil;ados apenas 5 MHz entre si. Isso cria <strong>sobrepostos severos</strong>: apenas os canais <strong>1, 6 e 11</strong> s&atilde;o n&atilde;o sobrepostos e podem coexistir sem interfer&ecirc;ncia m&uacute;tua.</p>
+
+        <div class="terminal-block">
+            <div class="terminal-header">Canais 2,4 GHz — sobreposição</div>
+<pre>
+  Canal:  1    2    3    4    5    6    7    8    9   10   11
+  Freq:  2412 2417 2422 2427 2432 2437 2442 2447 2452 2457 2462 MHz
+
+  Canal 1:  ████████████████████████
+  Canal 6:              ████████████████████████
+  Canal 11:                          ████████████████████████
+                        ↑                  ↑
+              Apenas 1, 6 e 11 não se sobrepõem
+
+  Interferentes: micro-ondas, Bluetooth, babás eletrônicas, telefones
+  sem fio — todos operam em 2,4 GHz.
+</pre>
+        </div>
+
+        <h3>Banda de 5 GHz</h3>
+        <p>A banda de 5 GHz oferece <strong>muito mais canais n&atilde;o sobrepostos</strong> (at&eacute; 24 canais de 20 MHz no Brasil), largura de banda maior e muito menos interfer&ecirc;ncia. A contrapartida: o sinal <strong>atenua mais rapidamente</strong> com a dist&acirc;ncia e penetra menos paredes e obst&aacute;culos.</p>
+
+        <h3>Banda de 6 GHz (Wi-Fi 6E e Wi-Fi 7)</h3>
+        <p>Introduzida pelo Wi-Fi 6E (802.11ax extendido), a banda de 6 GHz oferece <strong>1200 MHz de espectro</strong> completamente novo, com at&eacute; 59 canais de 20 MHz. Praticamente sem interfer&ecirc;ncia, pois o espectro ainda &eacute; pouco utilizado. Alcance ainda menor que 5 GHz; ideal para ambientes densos de curta dist&acirc;ncia.</p>
+
+        <div class="cmd-grid">
+            <div class="cmd-card">
+                <span class="cmd">2,4 GHz</span>
+                <strong>Maior alcance</strong>
+                <span>Penetra melhor paredes. Apenas 3 canais &uacute;teis. Alta interfer&ecirc;ncia em ambientes urbanos</span>
+            </div>
+            <div class="cmd-card">
+                <span class="cmd">5 GHz</span>
+                <strong>Mais canais, mais velocidade</strong>
+                <span>Menos congestionado, mais r&aacute;pido. Menor alcance e penetra&ccedil;&atilde;o em obst&aacute;culos</span>
+            </div>
+            <div class="cmd-card">
+                <span class="cmd">6 GHz</span>
+                <strong>Alta capacidade</strong>
+                <span>Espectro limpo, canais largos de 80/160 MHz. Alcance curto, equipamentos mais novos e caros</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- CARD 3 — Padrões 802.11 -->
+    <div class="content-card">
+        <h2>&#x1F4CA; Evolu&ccedil;&atilde;o dos Padr&otilde;es IEEE 802.11</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Padr&atilde;o</th>
+                    <th>Nome Wi-Fi</th>
+                    <th>Ano</th>
+                    <th>Frequ&ecirc;ncia</th>
+                    <th>Veloc. m&aacute;x. te&oacute;rica</th>
+                    <th>Tecnologia chave</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>802.11b</strong></td>
+                    <td>&mdash;</td>
+                    <td>1999</td>
+                    <td>2,4 GHz</td>
+                    <td>11 Mbps</td>
+                    <td>DSSS; primeiro padr&atilde;o popular</td>
+                </tr>
+                <tr>
+                    <td><strong>802.11a</strong></td>
+                    <td>&mdash;</td>
+                    <td>1999</td>
+                    <td>5 GHz</td>
+                    <td>54 Mbps</td>
+                    <td>OFDM; incompat&iacute;vel com 802.11b</td>
+                </tr>
+                <tr>
+                    <td><strong>802.11g</strong></td>
+                    <td>&mdash;</td>
+                    <td>2003</td>
+                    <td>2,4 GHz</td>
+                    <td>54 Mbps</td>
+                    <td>OFDM em 2,4 GHz; compat&iacute;vel com 11b</td>
+                </tr>
+                <tr>
+                    <td><strong>802.11n</strong></td>
+                    <td>Wi-Fi 4</td>
+                    <td>2009</td>
+                    <td>2,4 e 5 GHz</td>
+                    <td>600 Mbps</td>
+                    <td>MIMO (m&uacute;ltiplas antenas), canal de 40 MHz</td>
+                </tr>
+                <tr>
+                    <td><strong>802.11ac</strong></td>
+                    <td>Wi-Fi 5</td>
+                    <td>2013</td>
+                    <td>5 GHz</td>
+                    <td>3,5 Gbps</td>
+                    <td>MU-MIMO, canal at&eacute; 160 MHz, 256-QAM</td>
+                </tr>
+                <tr>
+                    <td><strong>802.11ax</strong></td>
+                    <td>Wi-Fi 6/6E</td>
+                    <td>2019/2021</td>
+                    <td>2,4 / 5 / 6 GHz</td>
+                    <td>9,6 Gbps</td>
+                    <td>OFDMA, BSS Color, TWT &mdash; foco em ambientes densos</td>
+                </tr>
+                <tr>
+                    <td><strong>802.11be</strong></td>
+                    <td>Wi-Fi 7</td>
+                    <td>2024</td>
+                    <td>2,4 / 5 / 6 GHz</td>
+                    <td>46 Gbps</td>
+                    <td>Multi-Link Operation (MLO), canal de 320 MHz</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="alert-box">
+            <p>&#x26A0;&#xFE0F; <strong>Velocidades te&oacute;ricas vs. reais:</strong> as velocidades acima s&atilde;o valores de pico em condi&ccedil;&otilde;es ideais. Na pr&aacute;tica, espere 40&ndash;60% do valor m&aacute;ximo, considerando dist&acirc;ncia, obst&aacute;culos, interfer&ecirc;ncia, n&uacute;mero de clientes e sobrecarga dos protocolos.</p>
+        </div>
+
+        <div class="tip-box">
+            <p>&#x2705; <strong>Wi-Fi 6 e ambientes densos:</strong> o grande avan&ccedil;o do 802.11ax n&atilde;o &eacute; a velocidade m&aacute;xima, mas a <strong>efici&ecirc;ncia em ambientes com muitos clientes simultâneos</strong>. O OFDMA divide o canal em subportadoras atribu&iacute;das a diferentes dispositivos ao mesmo tempo &mdash; como lanes numa pista de corrida.</p>
+        </div>
+    </div>
+
+    <!-- CARD 4 — Modos de operação -->
+    <div class="content-card">
+        <h2>&#x1F5FA;&#xFE0F; Modos de Opera&ccedil;&atilde;o</h2>
+
+        <h3>Modo Infraestrutura (BSS e ESS)</h3>
+        <p>&Eacute; o modo mais comum: os dispositivos se conectam a um <strong>Access Point (AP)</strong>, que faz a ponte entre a rede sem fio e a rede cabeada.</p>
+
+        <div class="terminal-block">
+            <div class="terminal-header">Topologia em modo infraestrutura</div>
+<pre>
+  BSS — Basic Service Set (uma c&eacute;lula, um AP)
+  ┌──────────────────────────────────────┐
+  │         AP (Access Point)            │
+  │    SSID: "MinhaRede" / BSSID: MAC AP │
+  │        ↗    ↑    ↖                  │
+  │    PC   Tablet  Celular              │
+  └──────────────────────────────────────┘
+
+  ESS — Extended Service Set (v&aacute;rios APs, mesmo SSID)
+  ┌─────────────┐      ┌─────────────┐
+  │   AP-1      │      │   AP-2      │
+  │SSID: Escola │─LAN─ │SSID: Escola │
+  │Canal: 1     │      │Canal: 6     │
+  └─────────────┘      └─────────────┘
+       ↑                    ↑
+  Roaming: cliente muda de AP automaticamente
+  ao se afastar, sem perder a conexão.
+</pre>
+        </div>
+
+        <div class="cmd-grid">
+            <div class="cmd-card">
+                <span class="cmd">SSID</span>
+                <strong>Nome da rede</strong>
+                <span>Service Set Identifier &mdash; o nome que aparece na lista de redes Wi-Fi (at&eacute; 32 caracteres)</span>
+            </div>
+            <div class="cmd-card">
+                <span class="cmd">BSSID</span>
+                <strong>MAC do AP</strong>
+                <span>Basic Service Set Identifier &mdash; o endere&ccedil;o MAC do access point. Identifica univocamente cada AP</span>
+            </div>
+            <div class="cmd-card">
+                <span class="cmd">Roaming</span>
+                <strong>Troca de AP</strong>
+                <span>Cliente se move e associa ao AP com sinal mais forte, mantendo a sess&atilde;o de rede ativa</span>
+            </div>
+            <div class="cmd-card">
+                <span class="cmd">Canal</span>
+                <strong>APs vizinhos: canais diferentes</strong>
+                <span>APs pr&oacute;ximos devem usar canais n&atilde;o sobrepostos (1, 6, 11 em 2,4 GHz) para n&atilde;o interferir</span>
+            </div>
+        </div>
+
+        <h3>Modo Ad-hoc (IBSS)</h3>
+        <p>Dispositivos se comunicam diretamente entre si, sem AP. Cada par &eacute; um <strong>IBSS (Independent Basic Service Set)</strong>. &Eacute; usado em transfer&ecirc;ncias ponto a ponto, mas raro em redes modernas (substitu&iacute;do por Wi-Fi Direct e Bluetooth).</p>
+
+        <h3>Monitor e Mesh</h3>
+        <p>O <strong>modo monitor</strong> captura todos os quadros 802.11 do ar, sem associar-se a nenhuma rede &mdash; usado por ferramentas de an&aacute;lise (Wireshark, Aircrack-ng). O <strong>modo mesh</strong> (802.11s) conecta APs entre si pelo r&aacute;dio, criando redes de malha sem cabos de backbone.</p>
+    </div>
+
+    <!-- CARD 5 — Segurança Wi-Fi -->
+    <div class="content-card">
+        <h2>&#x1F512; Seguran&ccedil;a Wi-Fi</h2>
+        <p>Como o sinal de r&aacute;dio se propaga pelo ar em todas as dire&ccedil;&otilde;es, qualquer pessoa nas proximidades pode capturar os quadros Wi-Fi. A criptografia &eacute; essencial.</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Protocolo</th>
+                    <th>Ano</th>
+                    <th>Criptografia</th>
+                    <th>Status</th>
+                    <th>Problema principal</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>WEP</strong></td>
+                    <td>1997</td>
+                    <td>RC4 (40/104 bits)</td>
+                    <td style="color:#c53030;font-weight:bold;">Quebrado</td>
+                    <td>IV de 24 bits reutilizado; quebrado em minutos com Aircrack-ng</td>
+                </tr>
+                <tr>
+                    <td><strong>WPA</strong></td>
+                    <td>2003</td>
+                    <td>TKIP (RC4 melhorado)</td>
+                    <td style="color:#c05621;font-weight:bold;">Obsoleto</td>
+                    <td>TKIP vulner&aacute;vel; criado como patch de emerg&ecirc;ncia para hardware WEP</td>
+                </tr>
+                <tr>
+                    <td><strong>WPA2</strong></td>
+                    <td>2004</td>
+                    <td>AES-CCMP (128 bits)</td>
+                    <td style="color:#276749;font-weight:bold;">Padr&atilde;o atual</td>
+                    <td>KRACK (2017) em implementa&ccedil;&otilde;es espec&iacute;ficas; sens&iacute;vel a senhas fracas</td>
+                </tr>
+                <tr>
+                    <td><strong>WPA3</strong></td>
+                    <td>2018</td>
+                    <td>AES-GCMP (192 bits) + SAE</td>
+                    <td style="color:#276749;font-weight:bold;">Recomendado</td>
+                    <td>Equipamentos ainda em ado&ccedil;&atilde;o; retrocompat&iacute;vel com WPA2 no modo de transi&ccedil;&atilde;o</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>WPA2/WPA3 &mdash; Personal vs. Enterprise</h3>
+        <div class="cmd-grid">
+            <div class="cmd-card">
+                <span class="cmd">Personal (PSK)</span>
+                <strong>Uma senha para todos</strong>
+                <span>Pre-Shared Key: todos usam a mesma senha. F&aacute;cil de configurar; se a senha vaza, toda a rede fica exposta. Ideal para dom&eacute;stico e pequenas empresas</span>
+            </div>
+            <div class="cmd-card">
+                <span class="cmd">Enterprise (802.1X)</span>
+                <strong>Cada usu&aacute;rio tem credenciais &uacute;nicas</strong>
+                <span>Autentica&ccedil;&atilde;o via servidor RADIUS (EAP). Cada usu&aacute;rio tem login e senha pr&oacute;prios. Se um vaza, s&oacute; aquele acesso &eacute; afetado. Obrigat&oacute;rio em ambientes corporativos</span>
+            </div>
+        </div>
+
+        <div class="terminal-block">
+            <div class="terminal-header">Boas práticas de segurança Wi-Fi</div>
+<pre>
+  ✓ Use WPA3 (ou WPA2-AES no mínimo). NUNCA WEP ou WPA-TKIP.
+  ✓ Senha forte: mínimo 12 caracteres, letras, números e símbolos.
+  ✓ Mude o SSID padrão do roteador (não use "TP-Link_XXXX").
+  ✓ Desabilite o WPS (Wi-Fi Protected Setup) — vulnerável a ataques.
+  ✓ Separe redes: IoT e visitantes em VLANs/SSIDs isolados.
+  ✓ Atualize o firmware do AP regularmente.
+  ✓ Em ambientes corporativos: use WPA3-Enterprise com RADIUS.
+  ✓ Monitore dispositivos conectados periodicamente.
+</pre>
+        </div>
+    </div>
+
+    <!-- CARD 6 — Planejamento de rede Wi-Fi -->
+    <div class="content-card">
+        <h2>&#x1F4CD; Planejamento de Cobertura Wi-Fi</h2>
+        <p>Projetar uma rede Wi-Fi vai al&eacute;m de instalar um AP e ligar. &Eacute; preciso garantir <strong>cobertura</strong>, <strong>capacidade</strong> e <strong>qualidade de sinal</strong> em todos os pontos de uso.</p>
+
+        <h3>Fatores que Atenuam o Sinal</h3>
+        <div class="terminal-block">
+            <div class="terminal-header">Atenuação por tipo de obstáculo (valores aproximados)</div>
+<pre>
+  Obstáculo              Atenuação (2,4 GHz)   Atenuação (5 GHz)
+  ─────────────────────────────────────────────────────────────
+  Espaço aberto (ar)     ~ 0 dB                ~ 0 dB
+  Parede de drywall      3 – 5 dB              5 – 8 dB
+  Parede de tijolo        8 – 15 dB            15 – 30 dB
+  Parede de concreto      15 – 20 dB           20 – 40 dB
+  Piso/laje de concreto   20 – 30 dB           30 – 50 dB
+  Vidro comum             2 – 3 dB             3 – 5 dB
+  Vidro metalizado        10 – 15 dB           15 – 25 dB
+  Porta de aço            15 – 25 dB           20 – 40 dB
+</pre>
+        </div>
+
+        <h3>Sobreposição de C&eacute;lulas e Roaming</h3>
+        <p>Em ambientes com m&uacute;ltiplos APs (ESS), &eacute; preciso planejar a <strong>sobreposic&atilde;o de c&eacute;lulas</strong>: APs adjacentes devem cobrir entre <strong>15% a 20%</strong> das &aacute;reas uns dos outros para permitir roaming suave. Sobreposic&atilde;o excessiva gera interfer&ecirc;ncia co-canal se estiverem no mesmo canal.</p>
+
+        <div class="cmd-grid">
+            <div class="cmd-card">
+                <span class="cmd">Site Survey</span>
+                <strong>Medi&ccedil;&atilde;o de campo</strong>
+                <span>Antes de instalar, medir o sinal no ambiente com ferramentas como Ekahau, NetSpot ou aplicativos de celular</span>
+            </div>
+            <div class="cmd-card">
+                <span class="cmd">RSSI</span>
+                <strong>For&ccedil;a do sinal</strong>
+                <span>Received Signal Strength Indicator em dBm. Ideal: acima de &minus;65 dBm. Abaixo de &minus;80 dBm: inutiliz&aacute;vel</span>
+            </div>
+            <div class="cmd-card">
+                <span class="cmd">Interferência co-canal</span>
+                <strong>Mesmo canal, APs pr&oacute;ximos</strong>
+                <span>APs pr&oacute;ximos no mesmo canal competem pelo mesmo meio, degradando a performance de todos</span>
+            </div>
+            <div class="cmd-card">
+                <span class="cmd">Controladora Wi-Fi</span>
+                <strong>Ger&ecirc;ncia centralizada</strong>
+                <span>Em redes com muitos APs, uma controladora (f&iacute;sica ou em nuvem) gerencia canais, pot&ecirc;ncia e roaming automaticamente</span>
+            </div>
+        </div>
+
+        <div class="tip-box">
+            <p>&#x2705; <strong>Regra pr&aacute;tica:</strong> use <strong>2,4 GHz</strong> para dispositivos IoT e de longa dist&acirc;ncia; <strong>5 GHz</strong> para laptops, smartphones e streaming de v&iacute;deo; <strong>6 GHz</strong> (Wi-Fi 6E+) para ambientes de alta densidade como audit&oacute;rios e escolas com muitos dispositivos simultâneos.</p>
+        </div>
+    </div>
+
+    <!-- ATIVIDADE PRÁTICA -->
+    <div class="content-card exercise-card" id="prat-rc07">
+        <h2>&#x1F4DD; Atividade Pr&aacute;tica</h2>
+        <p class="prat-intro">Analisar redes Wi-Fi, avaliar seguran&ccedil;a e planejar cobertura para ambientes reais.</p>
+
+        <div class="prat-steps">
+            <div class="prat-step">
+                <div class="step-num">1</div>
+                <div class="step-body">
+                    <div class="step-label">Auditar redes Wi-Fi do entorno</div>
+                    <div class="step-desc">Usando o celular ou notebook, liste todas as redes Wi-Fi vis&iacute;veis na sala de aula. Para cada uma registre: SSID, intensidade do sinal (dBm se poss&iacute;vel), frequ&ecirc;ncia (2,4 ou 5 GHz), canal e protocolo de seguran&ccedil;a. (a) Quantas redes usam WPA2 vs. WPA3 vs. sem senha? (b) Quais canais est&atilde;o mais congestionados? (c) H&aacute; redes com SSID padr&atilde;o de f&aacute;brica (ex: TP-Link, DIRECT-)? O que isso indica?</div>
+                </div>
+            </div>
+            <div class="prat-step">
+                <div class="step-num">2</div>
+                <div class="step-body">
+                    <div class="step-label">Avaliar a seguran&ccedil;a de uma configura&ccedil;&atilde;o Wi-Fi</div>
+                    <div class="step-desc">Um pequeno com&eacute;rcio usa a seguinte configura&ccedil;&atilde;o: roteador dom&eacute;stico, SSID &ldquo;TP-Link_A4B2&rdquo;, senha &ldquo;12345678&rdquo;, WPA2-Personal, WPS ativado, mesma rede para clientes e computadores do caixa. (a) Liste ao menos 5 problemas de seguran&ccedil;a nessa configura&ccedil;&atilde;o; (b) proponha uma configura&ccedil;&atilde;o melhorada para o mesmo or&ccedil;amento; (c) justifique cada mudan&ccedil;a proposta.</div>
+                </div>
+            </div>
+            <div class="prat-step">
+                <div class="step-num">3</div>
+                <div class="step-body">
+                    <div class="step-label">Escolher padr&atilde;o Wi-Fi para cada cen&aacute;rio</div>
+                    <div class="step-desc">Para cada situa&ccedil;&atilde;o, indique o padr&atilde;o 802.11 mais adequado e justifique: (a) atualizar roteador dom&eacute;stico antigo com or&ccedil;amento limitado; (b) instalar Wi-Fi num audit&oacute;rio com 300 pessoas simult&acirc;neas; (c) interligar dois pr&eacute;dios a 50 metros sem cabo; (d) rede de monitoramento IoT industrial com sensores de baixo consumo; (e) home office com v&iacute;deoconfer&ecirc;ncia 4K e gaming online.</div>
+                </div>
+            </div>
+            <div class="prat-step">
+                <div class="step-num">4</div>
+                <div class="step-body">
+                    <div class="step-label">Calcular cobertura e posicionamento de APs</div>
+                    <div class="step-desc">Uma escola tem um corredor de 80 m de comprimento com salas dos dois lados e paredes de tijolo. (a) Quantos APs ser&atilde;o necess&aacute;rios para cobrir o corredor em 2,4 GHz? E em 5 GHz? (b) Quais canais atribuir a cada AP para evitar interfer&ecirc;ncia? (c) Onde posicionar f&iacute;sicamente os APs (teto, parede, altura)? Esboce um diagrama simplificado.</div>
+                </div>
+            </div>
+            <div class="prat-step">
+                <div class="step-num">5</div>
+                <div class="step-body">
+                    <div class="step-label">&#x1F465; Trabalho em grupo &mdash; Projeto de rede Wi-Fi para a escola</div>
+                    <div class="step-desc"><strong>(Aprendizagem Baseada em Projetos &mdash; grupos de 3&ndash;4 alunos)</strong> Cada grupo projeta a rede Wi-Fi para um setor da pr&oacute;pria escola (laborat&oacute;rio de inform&aacute;tica, biblioteca, quadra coberta, secretaria). O grupo deve: (a) realizar um &ldquo;site survey&rdquo; informal medindo sinal em v&aacute;rios pontos do setor com o celular; (b) definir n&uacute;mero e posicionamento de APs; (c) escolher padr&atilde;o, frequ&ecirc;ncia e canais; (d) definir configura&ccedil;&atilde;o de seguran&ccedil;a. Apresenta&ccedil;&atilde;o com diagrama desenhado &agrave; m&atilde;o ou digital. <em>Debatam: qual setor tem pior cobertura atualmente? O que causa isso?</em></div>
+                </div>
+            </div>
+            <div class="prat-step">
+                <div class="step-num">6</div>
+                <div class="step-body">
+                    <div class="step-label">&#x1F9E9; Computa&ccedil;&atilde;o desplugada &mdash; Simula&ccedil;&atilde;o de canal Wi-Fi e interfer&ecirc;ncia</div>
+                    <div class="step-desc"><strong>(Metodologia ativa &mdash; sem computador)</strong> Divida a turma em grupos representando APs. Cada grupo recebe um cart&atilde;o com um canal (1, 6 ou 11 em 2,4 GHz). Quando dois grupos &ldquo;pr&oacute;ximos&rdquo; (sentados lado a lado) tentam transmitir ao mesmo tempo no mesmo canal, ambos devem parar e aguardar (simula&ccedil;&atilde;o de interfer&ecirc;ncia). Refazer o exerc&iacute;cio atribuindo canais corretamente. Em seguida, trocar para 5 GHz: agora cada grupo tem um canal diferente e pode transmitir sem conflito. <em>Reflit am: por que ambientes com muitos vizinhos Wi-Fi s&atilde;o mais lentos? O que a banda de 6 GHz resolve? Alunos com defici&ecirc;ncia auditiva podem usar cart&otilde;es coloridos no lugar de sons.</em></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="prat-observe">
+            <strong>&#x1F4CC; Para refletir:</strong> Wi-Fi parece &ldquo;m&aacute;gica&rdquo; para o usu&aacute;rio final, mas &eacute; uma das tecnologias mais complexas de projetar corretamente. Um AP mal posicionado, no canal errado ou com seguran&ccedil;a fraca pode comprometer centenas de dispositivos. Profissionais de redes sem fio s&atilde;o altamente valorizados justamente porque essa &ldquo;invisibilidade&rdquo; do sinal exige conhecimento aprofundado para ser gerenciada.
+        </div>
+
+        <div class="ex-actions">
+            <button class="btn-print" onclick="printPractical('prat-rc07', 'Aula 7 \u2014 Redes sem Fio (IEEE 802.11)')">&#x1F5A8;&#xFE0F; Imprimir roteiro</button>
+        </div>
+    </div>
+
+    <!-- MÚLTIPLA ESCOLHA -->
+    <div class="content-card exercise-card">
+        <h2>&#x2753; Verifique seu Conhecimento</h2>
+
+        <div class="mc-question" data-correct="b">
+            <p class="mc-q-text">Na banda de 2,4 GHz, quais s&atilde;o os &uacute;nicos tr&ecirc;s canais que n&atilde;o se sobrepõem e podem coexistir sem causar interfer&ecirc;ncia entre si?</p>
+            <div class="mc-options">
+                <div class="mc-option" data-option="a"><span class="mc-letter">A</span><span>Canais 1, 5 e 9</span></div>
+                <div class="mc-option" data-option="b"><span class="mc-letter">B</span><span>Canais 1, 6 e 11</span></div>
+                <div class="mc-option" data-option="c"><span class="mc-letter">C</span><span>Canais 2, 7 e 12</span></div>
+                <div class="mc-option" data-option="d"><span class="mc-letter">D</span><span>Canais 3, 6 e 9</span></div>
+            </div>
+            <div class="mc-explanation">&#x2713; Os canais 1, 6 e 11 est&atilde;o espa&ccedil;ados 25 MHz entre si &mdash; suficiente para que as bandas de 22 MHz de cada canal n&atilde;o se sobreponham. Qualquer outra combina&ccedil;&atilde;o gera sobreposic&atilde;o espectral e interfer&ecirc;ncia co-canal, degradando a performance de todos os APs pr&oacute;ximos.</div>
+        </div>
+        <hr class="mc-sep">
+        <div class="mc-question" data-correct="c">
+            <p class="mc-q-text">Qual &eacute; o principal motivo pelo qual o WEP n&atilde;o deve ser usado em nenhuma circunst&acirc;ncia hoje?</p>
+            <div class="mc-options">
+                <div class="mc-option" data-option="a"><span class="mc-letter">A</span><span>O WEP n&atilde;o cifra os dados, apenas comprime o tr&aacute;fego</span></div>
+                <div class="mc-option" data-option="b"><span class="mc-letter">B</span><span>O WEP &eacute; compat&iacute;vel apenas com dispositivos fabricados antes de 2000</span></div>
+                <div class="mc-option" data-option="c"><span class="mc-letter">C</span><span>O vetor de inicializa&ccedil;&atilde;o (IV) de 24 bits &eacute; muito curto e se repete, permitindo quebrar a chave em minutos com ferramentas acess&iacute;veis</span></div>
+                <div class="mc-option" data-option="d"><span class="mc-letter">D</span><span>O WEP usa criptografia ass&iacute;m&eacute;trica que &eacute; lenta demais para redes modernas</span></div>
+            </div>
+            <div class="mc-explanation">&#x2713; O WEP usa o algoritmo RC4 com um IV de apenas 24 bits. Em redes movimentadas, o IV se repete rapidamente (colis&atilde;o de IV), e ferramentas como Aircrack-ng exploram essa fraqueza para recuperar a chave RC4 em menos de um minuto capturando alguns milhares de pacotes.</div>
+        </div>
+        <hr class="mc-sep">
+        <div class="mc-question" data-correct="d">
+            <p class="mc-q-text">Uma empresa quer que cada funcion&aacute;rio acesse o Wi-Fi com seu pr&oacute;prio usu&aacute;rio e senha corporativos, sem compartilhar uma senha &uacute;nica. Qual configura&ccedil;&atilde;o Wi-Fi atende esse requisito?</p>
+            <div class="mc-options">
+                <div class="mc-option" data-option="a"><span class="mc-letter">A</span><span>WPA2-Personal com senha complexa de 20 caracteres</span></div>
+                <div class="mc-option" data-option="b"><span class="mc-letter">B</span><span>WEP com filtro de endere&ccedil;os MAC</span></div>
+                <div class="mc-option" data-option="c"><span class="mc-letter">C</span><span>WPA3-Personal com SAE (Simultaneous Authentication of Equals)</span></div>
+                <div class="mc-option" data-option="d"><span class="mc-letter">D</span><span>WPA2/WPA3-Enterprise com autentica&ccedil;&atilde;o 802.1X via servidor RADIUS</span></div>
+            </div>
+            <div class="mc-explanation">&#x2713; O modo <strong>Enterprise (802.1X)</strong> com servidor RADIUS &eacute; o &uacute;nico que permite credenciais individuais por usu&aacute;rio, integra&ccedil;&atilde;o com Active Directory e revoga&ccedil;&atilde;o de acesso sem mudar a senha de toda a rede. WPA2/WPA3-Personal usa uma &uacute;nica Pre-Shared Key para todos.</div>
+        </div>
+        <hr class="mc-sep">
+        <div class="mc-question" data-correct="a">
+            <p class="mc-q-text">O padr&atilde;o IEEE 802.11ax (Wi-Fi 6) introduziu o OFDMA. Qual &eacute; o principal benef&iacute;cio dessa tecnologia?</p>
+            <div class="mc-options">
+                <div class="mc-option" data-option="a"><span class="mc-letter">A</span><span>Permite que o AP transmita para v&aacute;rios clientes simultaneamente dividindo o canal em subportadoras, aumentando a efici&ecirc;ncia em ambientes com muitos dispositivos</span></div>
+                <div class="mc-option" data-option="b"><span class="mc-letter">B</span><span>Dobra automaticamente a velocidade de conex&atilde;o em qualquer ambiente</span></div>
+                <div class="mc-option" data-option="c"><span class="mc-letter">C</span><span>Elimina completamente a necessidade de CSMA/CA</span></div>
+                <div class="mc-option" data-option="d"><span class="mc-letter">D</span><span>Aumenta o alcance do sinal Wi-Fi em ambientes externos</span></div>
+            </div>
+            <div class="mc-explanation">&#x2713; OFDMA (Orthogonal Frequency Division Multiple Access) divide o canal em subportadoras (Resource Units) que podem ser atribu&iacute;das a diferentes clientes ao mesmo tempo, tanto no downlink quanto no uplink. &Eacute; especialmente eficiente em ambientes densos (escolas, shoppings, est&aacute;dios) onde muitos dispositivos concorrem pelo mesmo AP.</div>
+        </div>
+    </div>
+
+    <div class="nav-footer">
+        <a href="rc06-ethernet.html" class="nav-link">&#x2B05; Anterior: Ethernet (IEEE 802.3)</a>
+        <a href="rc08-mac-arp.html" class="nav-link">Pr&oacute;xima: MAC, ARP e Tabela de Roteamento &#x27A1;</a>
+    </div>
+
+</div>
+
+<script src="slide-mode.js"></script>
+<script src="exercise-drag.js"></script>
+<script src="exercise-print.js"></script>
+<script src="exercise-mc.js"></script>
+</body>
+</html>
