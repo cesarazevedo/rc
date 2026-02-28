@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aula 3 &mdash; Modelo OSI</title>
+    <link rel="stylesheet" href="slide-mode.css">
+    <link rel="stylesheet" href="exercise.css">
+    <link rel="stylesheet" href="lesson.css">
+    <style>
+        :root {
+            --primary:   #1a73e8;
+            --secondary: #0d47a1;
+            --bg-light:  #f4f7fe;
+            --text-dark: #2d3748;
+        }
+    </style>
+</head>
+<body>
+
+<div class="top-bar">
+    <a href="index.html" class="back-btn">&#x2B05; Voltar ao Dashboard</a>
+    <span class="page-badge">1&ordm; Bimestre &mdash; Fundamentos e Modelos</span>
+    <button class="slide-toggle" id="slideToggleBtn">&#x1F4FA; Modo Slide</button>
+</div>
+
+<div class="content-wrapper">
+
+    <div class="lesson-hero">
+        <h1>&#x1F4CB; Modelo OSI</h1>
+        <p class="subtitle">Aula 3 &mdash; As 7 camadas do modelo de refer&ecirc;ncia OSI: fun&ccedil;&otilde;es, PDUs, protocolos, dispositivos e o processo de encapsulamento que move dados pela rede</p>
+    </div>
+
+    <!-- CARD 1 — O que é e por que existe -->
+    <div class="content-card">
+        <h2>&#x1F914; O que &eacute; o Modelo OSI e Por que Existe</h2>
+        <p>Na d&eacute;cada de 1970, fabricantes diferentes criavam redes que s&oacute; funcionavam com seus pr&oacute;prios equipamentos: um computador IBM n&atilde;o conseguia se comunicar com um computador DEC. Para resolver esse caos, a <strong>ISO (International Organization for Standardization)</strong> desenvolveu o modelo <strong>OSI &mdash; Open Systems Interconnection</strong>, publicado em 1984.</p>
+
+        <p>O OSI divide o processo de comunica&ccedil;&atilde;o em <strong>7 camadas independentes</strong>, cada uma com uma responsabilidade espec&iacute;fica. Essa divis&atilde;o traz v&aacute;rias vantagens:</p>
+
+        <div class="cmd-grid">
+            <div class="cmd-card">
+                <span class="cmd">Padroniza&ccedil;&atilde;o</span>
+                <strong>Interoperabilidade</strong>
+                <span>Dispositivos de fabricantes diferentes conseguem se comunicar seguindo o mesmo modelo</span>
+            </div>
+            <div class="cmd-card">
+                <span class="cmd">Modularidade</span>
+                <strong>Independ&ecirc;ncia</strong>
+                <span>Mudan&ccedil;as em uma camada n&atilde;o afetam as demais, facilitando atualiza&ccedil;&otilde;es</span>
+            </div>
+            <div class="cmd-card">
+                <span class="cmd">Diagn&oacute;stico</span>
+                <strong>Localiza&ccedil;&atilde;o de falhas</strong>
+                <span>Problemas s&atilde;o isolados em camadas espec&iacute;ficas, agilizando o troubleshooting</span>
+            </div>
+            <div class="cmd-card">
+                <span class="cmd">Aprendizado</span>
+                <strong>Base universal</strong>
+                <span>Profissionais de TI do mundo inteiro usam o OSI como linguagem comum para redes</span>
+            </div>
+        </div>
+
+        <div class="alert-box">
+            <p>&#x26A0;&#xFE0F; <strong>Importante:</strong> O modelo OSI &eacute; um <strong>modelo de refer&ecirc;ncia</strong>, n&atilde;o uma implementa&ccedil;&atilde;o. Na pr&aacute;tica, a internet usa o TCP/IP (4 camadas). O OSI &eacute; estudado porque fornece o vocabul&aacute;rio e a estrutura conceitual que todos os profissionais de rede utilizam.</p>
+        </div>
+    </div>
+
+    <!-- CARD 2 — Visão Geral das 7 Camadas -->
+    <div class="content-card">
+        <h2>&#x1F4CA; Vis&atilde;o Geral das 7 Camadas</h2>
+        <p>Cada camada do OSI tem uma fun&ccedil;&atilde;o espec&iacute;fica e se comunica apenas com a camada imediatamente acima e abaixo dela. As camadas s&atilde;o numeradas de baixo para cima (1 a 7).</p>
+
+        <div class="terminal-block">
+            <div class="terminal-header">Modelo OSI &mdash; Pilha de Camadas</div>
+<pre>
+ ┌─────────────────────────────────────────────────┐
+ │  7 &mdash; Aplica&ccedil;&atilde;o     Application     Dados           │
+ │  6 &mdash; Apresenta&ccedil;&atilde;o  Presentation    Dados           │
+ │  5 &mdash; Sess&atilde;o         Session         Dados           │
+ │  4 &mdash; Transporte     Transport       Segmento / Datagrama │
+ │  3 &mdash; Rede           Network         Pacote          │
+ │  2 &mdash; Enlace         Data Link       Quadro (Frame)  │
+ │  1 &mdash; F&iacute;sica         Physical        Bits            │
+ └─────────────────────────────────────────────────┘
+</pre>
+        </div>
+
+        <div class="highlight-box">
+            <p>&#x1F4A1; <strong>Mnem&ocirc;nico para memorizar (de cima para baixo):</strong> <strong>A</strong>ll <strong>P</strong>eople <strong>S</strong>eem <strong>T</strong>o <strong>N</strong>eed <strong>D</strong>ata <strong>P</strong>rocessing &mdash; ou em portugu&ecirc;s: <strong>A</strong>lguns <strong>P</strong>rofissionais <strong>S</strong>abem <strong>T</strong>rabalhar <strong>N</strong>as <strong>D</strong>uas <strong>P</strong>ontas.</p>
+        </div>
+    </div>
+
+    <!-- CARD 3 — Camadas 1 a 3 (Orientadas à Rede) -->
+    <div class="content-card">
+        <h2>&#x1F527; Camadas Orientadas &agrave; Rede (1&ndash;3)</h2>
+        <p>As tr&ecirc;s camadas inferiores lidam com a <strong>transmiss&atilde;o f&iacute;sica dos dados</strong> &mdash; como os bits chegam de um ponto ao outro da rede.</p>
+
+        <h3>Camada 1 &mdash; F&iacute;sica (Physical)</h3>
+        <p>Respons&aacute;vel pela transmiss&atilde;o dos <strong>bits brutos</strong> pelo meio f&iacute;sico. Define tens&otilde;es, frequ&ecirc;ncias, tipos de conector, codifica&ccedil;&atilde;o do sinal e velocidade de transmiss&atilde;o. N&atilde;o interpreta o significado dos bits &mdash; apenas os move.</p>
+
+        <table class="info-table">
+            <thead><tr><th>PDU</th><th>Dispositivos</th><th>Exemplos de tecnologia</th></tr></thead>
+            <tbody>
+                <tr>
+                    <td>Bit</td>
+                    <td>Hub, cabo, repetidor, conector RJ-45, fibra &oacute;ptica</td>
+                    <td>Ethernet (el&eacute;trico), Wi-Fi (r&aacute;dio), fibra (luz)</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>Camada 2 &mdash; Enlace de Dados (Data Link)</h3>
+        <p>Garante a transfer&ecirc;ncia <strong>confi&aacute;vel de quadros (frames)</strong> entre dois dispositivos diretamente conectados. &Eacute; respons&aacute;vel pelo endere&ccedil;amento MAC, detec&ccedil;&atilde;o de erros (CRC) e controle de acesso ao meio (MAC &mdash; Media Access Control).</p>
+        <p>A Camada 2 &eacute; dividida em duas subcamadas:</p>
+        <ul>
+            <li><strong>LLC (Logical Link Control):</strong> interface com a camada de rede</li>
+            <li><strong>MAC (Media Access Control):</strong> controla como os dispositivos acessam o meio compartilhado</li>
+        </ul>
+
+        <table class="info-table">
+            <thead><tr><th>PDU</th><th>Dispositivos</th><th>Protocolos</th></tr></thead>
+            <tbody>
+                <tr>
+                    <td>Quadro (Frame)</td>
+                    <td>Switch, bridge, placa de rede (NIC)</td>
+                    <td>Ethernet, Wi-Fi (802.11), PPP, HDLC</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>Camada 3 &mdash; Rede (Network)</h3>
+        <p>Respons&aacute;vel pelo <strong>endere&ccedil;amento l&oacute;gico</strong> (IP) e pelo <strong>roteamento de pacotes</strong> entre redes diferentes. Determina o melhor caminho para os dados chegarem ao destino, mesmo que passem por dezenas de roteadores.</p>
+
+        <table class="info-table">
+            <thead><tr><th>PDU</th><th>Dispositivos</th><th>Protocolos</th></tr></thead>
+            <tbody>
+                <tr>
+                    <td>Pacote (Packet)</td>
+                    <td>Roteador, switch L3</td>
+                    <td>IP (IPv4/IPv6), ICMP, ARP, OSPF, BGP</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- CARD 4 — Camadas 4 a 7 (Orientadas à Aplicação) -->
+    <div class="content-card">
+        <h2>&#x1F4F2; Camadas Orientadas &agrave; Aplica&ccedil;&atilde;o (4&ndash;7)</h2>
+        <p>As quatro camadas superiores lidam com <strong>como os dados s&atilde;o apresentados e utilizados pelas aplica&ccedil;&otilde;es</strong> nos sistemas finais (computadores, servidores, celulares).</p>
+
+        <h3>Camada 4 &mdash; Transporte (Transport)</h3>
+        <p>Respons&aacute;vel pela <strong>comunica&ccedil;&atilde;o fim a fim</strong> (end-to-end) entre processos em diferentes hosts. Segmenta os dados em unidades menores, controla o fluxo e garante (ou n&atilde;o) a entrega confi&aacute;vel. Os dois protocolos principais s&atilde;o o <strong>TCP</strong> (confi&aacute;vel) e o <strong>UDP</strong> (n&atilde;o confi&aacute;vel, r&aacute;pido).</p>
+
+        <div class="compare-grid">
+            <div class="compare-box blue">
+                <h4>TCP &mdash; Confi&aacute;vel</h4>
+                <ul>
+                    <li>Orientado a conex&atilde;o (3-way handshake)</li>
+                    <li>Confirma&ccedil;&atilde;o de recebimento (ACK)</li>
+                    <li>Retransmiss&atilde;o em caso de perda</li>
+                    <li>Controle de fluxo e congestionamento</li>
+                    <li>Uso: HTTP, e-mail, FTP, SSH</li>
+                </ul>
+            </div>
+            <div class="compare-box green">
+                <h4>UDP &mdash; R&aacute;pido</h4>
+                <ul>
+                    <li>Sem conex&atilde;o pr&eacute;via</li>
+                    <li>Sem confirma&ccedil;&atilde;o de recebimento</li>
+                    <li>Sem retransmiss&atilde;o</li>
+                    <li>Menor lat&ecirc;ncia, maior velocidade</li>
+                    <li>Uso: DNS, streaming, jogos online, VoIP</li>
+                </ul>
+            </div>
+        </div>
+
+        <table class="info-table">
+            <thead><tr><th>PDU</th><th>Identifica&ccedil;&atilde;o</th><th>Protocolos</th></tr></thead>
+            <tbody>
+                <tr>
+                    <td>Segmento (TCP) / Datagrama (UDP)</td>
+                    <td>N&uacute;mero de porta (0&ndash;65535)</td>
+                    <td>TCP, UDP, SCTP</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>Camada 5 &mdash; Sess&atilde;o (Session)</h3>
+        <p>Gerencia o <strong>estabelecimento, manuten&ccedil;&atilde;o e encerramento de sess&otilde;es</strong> entre aplica&ccedil;&otilde;es. Controla a sincronia e o di&aacute;logo entre processos. Exemplos: sess&atilde;o de login em um servidor, sess&atilde;o de videoconfer&ecirc;ncia.</p>
+        <p>Protocolos: NetBIOS, RPC (Remote Procedure Call), PPTP.</p>
+
+        <h3>Camada 6 &mdash; Apresenta&ccedil;&atilde;o (Presentation)</h3>
+        <p>Respons&aacute;vel pela <strong>tradu&ccedil;&atilde;o, compacta&ccedil;&atilde;o e criptografia</strong> dos dados. Garante que informa&ccedil;&otilde;es enviadas por um sistema sejam leg&iacute;veis para o receptor, mesmo que usem formatos diferentes.</p>
+        <p>Exemplos: convers&atilde;o de caracteres (ASCII &harr; EBCDIC), compress&atilde;o (ZIP, JPEG), criptografia (SSL/TLS na camada de apresenta&ccedil;&atilde;o do OSI).</p>
+
+        <h3>Camada 7 &mdash; Aplica&ccedil;&atilde;o (Application)</h3>
+        <p>&Eacute; a camada mais pr&oacute;xima do usu&aacute;rio. Fornece a <strong>interface entre as aplica&ccedil;&otilde;es e a rede</strong>. N&atilde;o &eacute; a aplica&ccedil;&atilde;o em si (o navegador, o cliente de e-mail), mas os protocolos que as aplica&ccedil;&otilde;es usam para se comunicar.</p>
+
+        <table class="info-table">
+            <thead><tr><th>Servi&ccedil;o</th><th>Protocolo</th><th>Porta padr&atilde;o</th></tr></thead>
+            <tbody>
+                <tr><td>Web</td><td>HTTP / HTTPS</td><td>80 / 443</td></tr>
+                <tr><td>E-mail (envio)</td><td>SMTP</td><td>25 / 587</td></tr>
+                <tr><td>E-mail (recebimento)</td><td>POP3 / IMAP</td><td>110 / 143</td></tr>
+                <tr><td>Transfer&ecirc;ncia de arquivos</td><td>FTP</td><td>20 / 21</td></tr>
+                <tr><td>Acesso remoto seguro</td><td>SSH</td><td>22</td></tr>
+                <tr><td>Resolu&ccedil;&atilde;o de nomes</td><td>DNS</td><td>53</td></tr>
+                <tr><td>Configura&ccedil;&atilde;o autom&aacute;tica de IP</td><td>DHCP</td><td>67 / 68</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- CARD 5 — Encapsulamento -->
+    <div class="content-card">
+        <h2>&#x1F4E6; Encapsulamento e Desencapsulamento</h2>
+        <p>Quando um dado percorre as camadas OSI do remetente at&eacute; o destinat&aacute;rio, ele passa por um processo chamado <strong>encapsulamento</strong>: cada camada adiciona seu pr&oacute;prio cabe&ccedil;alho (header) &mdash; e &agrave;s vezes um rodap&eacute; (trailer) &mdash; ao dado recebido da camada superior. No destino, o processo &eacute; invertido: <strong>desencapsulamento</strong>.</p>
+
+        <div class="terminal-block">
+            <div class="terminal-header">Processo de Encapsulamento (remetente &rarr; destinat&aacute;rio)</div>
+<pre>
+REMETENTE                           DESTINAT&Aacute;RIO
+
+[7] Dados                           Dados          [7]
+[6] Dados                           Dados          [6]
+[5] Dados                           Dados          [5]
+[4] [H4] Dados          &rarr;&rarr;&rarr;       [H4] Dados     [4]
+[3] [H3][H4] Dados                 [H3][H4] Dados [3]
+[2] [H2][H3][H4] Dados [T2]       [H2]...[T2]     [2]
+[1] 0101010101010101...            ...01010101     [1]
+
+H = Header (Cabe&ccedil;alho)   T = Trailer (Rodap&eacute;)
+</pre>
+        </div>
+
+        <div class="compare-grid">
+            <div class="compare-box blue">
+                <h4>&#x2B07;&#xFE0F; Encapsulamento (envio)</h4>
+                <ul>
+                    <li>Camada 7: gera os dados da aplica&ccedil;&atilde;o</li>
+                    <li>Camada 4: adiciona porta de origem e destino</li>
+                    <li>Camada 3: adiciona IP de origem e destino</li>
+                    <li>Camada 2: adiciona MAC de origem e destino + CRC</li>
+                    <li>Camada 1: converte tudo em bits e transmite</li>
+                </ul>
+            </div>
+            <div class="compare-box green">
+                <h4>&#x2B06;&#xFE0F; Desencapsulamento (recebimento)</h4>
+                <ul>
+                    <li>Camada 1: recebe os bits do meio f&iacute;sico</li>
+                    <li>Camada 2: verifica CRC, remove header MAC</li>
+                    <li>Camada 3: verifica IP destino, remove header IP</li>
+                    <li>Camada 4: verifica porta, remove header TCP/UDP</li>
+                    <li>Camada 7: entrega dados &agrave; aplica&ccedil;&atilde;o</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="highlight-box">
+            <p>&#x1F4A1; <strong>Analogia:</strong> Encapsulamento &eacute; como enviar uma carta: voc&ecirc; escreve o conte&uacute;do (camada de aplica&ccedil;&atilde;o), coloca em um envelope com o endere&ccedil;o (camadas de rede), o carteiro coloca em uma sacola com outros envelopes para o mesmo bairro (enlace) e por fim embarca em um caminh&atilde;o que trafega pelas estradas (f&iacute;sica).</p>
+        </div>
+    </div>
+
+    <!-- CARD 6 — Tabela Resumo das 7 Camadas -->
+    <div class="content-card">
+        <h2>&#x1F4CB; Tabela Resumo &mdash; As 7 Camadas</h2>
+
+        <table class="info-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Camada</th>
+                    <th>PDU</th>
+                    <th>Fun&ccedil;&atilde;o principal</th>
+                    <th>Dispositivos / Protocolos</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>7</strong></td>
+                    <td><strong>Aplica&ccedil;&atilde;o</strong></td>
+                    <td>Dados</td>
+                    <td>Interface com o usu&aacute;rio e aplica&ccedil;&otilde;es</td>
+                    <td>HTTP, DNS, SMTP, FTP, SSH</td>
+                </tr>
+                <tr>
+                    <td><strong>6</strong></td>
+                    <td><strong>Apresenta&ccedil;&atilde;o</strong></td>
+                    <td>Dados</td>
+                    <td>Tradu&ccedil;&atilde;o, compress&atilde;o, criptografia</td>
+                    <td>SSL/TLS, JPEG, ASCII, MPEG</td>
+                </tr>
+                <tr>
+                    <td><strong>5</strong></td>
+                    <td><strong>Sess&atilde;o</strong></td>
+                    <td>Dados</td>
+                    <td>Controle de di&aacute;logo e sess&otilde;es</td>
+                    <td>NetBIOS, RPC, PPTP</td>
+                </tr>
+                <tr>
+                    <td><strong>4</strong></td>
+                    <td><strong>Transporte</strong></td>
+                    <td>Segmento / Datagrama</td>
+                    <td>Entrega fim a fim, portas, confiabilidade</td>
+                    <td>TCP, UDP</td>
+                </tr>
+                <tr>
+                    <td><strong>3</strong></td>
+                    <td><strong>Rede</strong></td>
+                    <td>Pacote</td>
+                    <td>Endere&ccedil;amento IP e roteamento</td>
+                    <td>Roteador, IP, ICMP, OSPF, BGP</td>
+                </tr>
+                <tr>
+                    <td><strong>2</strong></td>
+                    <td><strong>Enlace</strong></td>
+                    <td>Quadro (Frame)</td>
+                    <td>Endere&ccedil;o MAC, detec&ccedil;&atilde;o de erros</td>
+                    <td>Switch, Ethernet, Wi-Fi, PPP</td>
+                </tr>
+                <tr>
+                    <td><strong>1</strong></td>
+                    <td><strong>F&iacute;sica</strong></td>
+                    <td>Bit</td>
+                    <td>Transmiss&atilde;o el&eacute;trica/&oacute;ptica/r&aacute;dio</td>
+                    <td>Hub, cabo, fibra, conector RJ-45</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="tip-box">
+            <p>&#x2705; <strong>Troubleshooting por camada:</strong> ao diagnosticar um problema de rede, come&ccedil;e sempre pela Camada 1 (o cabo est&aacute; conectado?) e suba progressivamente. Um problema de IP &eacute; Camada 3; n&atilde;o adianta verificar o DNS (Camada 7) se o cabo est&aacute; desconectado.</p>
+        </div>
+    </div>
+
+    <!-- ATIVIDADE PRÁTICA -->
+    <div class="content-card exercise-card" id="prat-rc03">
+        <h2>&#x1F4DD; Atividade Pr&aacute;tica</h2>
+        <p class="prat-intro">Mapeamento de problemas e protocolos &agrave;s camadas OSI.</p>
+
+        <div class="prat-steps">
+            <div class="prat-step">
+                <div class="step-num">1</div>
+                <div class="step-body">
+                    <div class="step-label">Identificar a camada do problema</div>
+                    <div class="step-desc">Para cada situa&ccedil;&atilde;o abaixo, identifique em qual camada OSI o problema ocorre e justifique: (a) O cabo de rede est&aacute; danificado e nenhum bit chega ao destino; (b) O endere&ccedil;o IP est&aacute; incorreto e os pacotes n&atilde;o chegam ao roteador certo; (c) O navegador exibe erro 404 (p&aacute;gina n&atilde;o encontrada); (d) O certificado SSL do site est&aacute; expirado.</div>
+                </div>
+            </div>
+            <div class="prat-step">
+                <div class="step-num">2</div>
+                <div class="step-body">
+                    <div class="step-label">Mapear protocolos &agrave;s camadas</div>
+                    <div class="step-desc">Organize os protocolos a seguir nas camadas OSI corretas: HTTP, Ethernet, TCP, IP, DNS, Wi-Fi (802.11), UDP, SMTP, TLS, ARP, FTP, ICMP. Use uma tabela com as 7 camadas e coloque cada protocolo na linha correspondente.</div>
+                </div>
+            </div>
+            <div class="prat-step">
+                <div class="step-num">3</div>
+                <div class="step-body">
+                    <div class="step-label">Simular encapsulamento</div>
+                    <div class="step-desc">Imagine que voc&ecirc; est&aacute; enviando um e-mail. Descreva (em texto) o que acontece em cada camada do OSI ao longo do caminho: desde que voc&ecirc; clica em "Enviar" no seu cliente de e-mail at&eacute; o e-mail chegar ao servidor de destino. Foque nas camadas 7, 4, 3 e 2.</div>
+                </div>
+            </div>
+            <div class="prat-step">
+                <div class="step-num">4</div>
+                <div class="step-body">
+                    <div class="step-label">Portas e camada de transporte</div>
+                    <div class="step-desc">Pesquise e complete a tabela: HTTP (__), HTTPS (__), SSH (__), FTP controle (__), DNS (__), DHCP servidor (__). Para cada um indique se usa TCP ou UDP e o motivo da escolha do protocolo de transporte.</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="prat-observe">
+            <strong>&#x1F4CC; Para refletir:</strong> o modelo OSI parece abstrato no in&iacute;cio, mas ele est&aacute; presente em tudo que envolve redes. Toda vez que um sysadmin usa <code>ping</code> est&aacute; testando a Camada 3; quando usa <code>traceroute</code> vê os roteadores (Camada 3) no caminho; quando verifica se a placa de rede foi detectada est&aacute; na Camada 1. O OSI &eacute; o mapa mental de qualquer profissional de redes.
+        </div>
+
+        <div class="ex-actions">
+            <button class="btn-print" onclick="printPractical('prat-rc03', 'Aula 3 \u2014 Modelo OSI')">&#x1F5A8;&#xFE0F; Imprimir roteiro</button>
+        </div>
+    </div>
+
+    <!-- MÚLTIPLA ESCOLHA -->
+    <div class="content-card exercise-card">
+        <h2>&#x2753; Verifique seu Conhecimento</h2>
+
+        <div class="mc-question" data-correct="b">
+            <p class="mc-q-text">Um switch opera em qual camada do modelo OSI para encaminhar quadros dentro de uma rede local?</p>
+            <div class="mc-options">
+                <div class="mc-option" data-option="a"><span class="mc-letter">A</span><span>Camada 1 &mdash; F&iacute;sica</span></div>
+                <div class="mc-option" data-option="b"><span class="mc-letter">B</span><span>Camada 2 &mdash; Enlace de Dados</span></div>
+                <div class="mc-option" data-option="c"><span class="mc-letter">C</span><span>Camada 3 &mdash; Rede</span></div>
+                <div class="mc-option" data-option="d"><span class="mc-letter">D</span><span>Camada 4 &mdash; Transporte</span></div>
+            </div>
+            <div class="mc-explanation">✓ O switch opera na Camada 2 (Enlace de Dados) e usa endereços MAC para encaminhar quadros. Um roteador opera na Camada 3 usando endereços IP. Um hub opera na Camada 1, replicando bits sem qualquer inteligência.</div>
+        </div>
+        <hr class="mc-sep">
+        <div class="mc-question" data-correct="d">
+            <p class="mc-q-text">Qual &eacute; a PDU (Protocol Data Unit) da Camada 4 &mdash; Transporte, quando o protocolo usado &eacute; o TCP?</p>
+            <div class="mc-options">
+                <div class="mc-option" data-option="a"><span class="mc-letter">A</span><span>Bit</span></div>
+                <div class="mc-option" data-option="b"><span class="mc-letter">B</span><span>Quadro (Frame)</span></div>
+                <div class="mc-option" data-option="c"><span class="mc-letter">C</span><span>Pacote (Packet)</span></div>
+                <div class="mc-option" data-option="d"><span class="mc-letter">D</span><span>Segmento (Segment)</span></div>
+            </div>
+            <div class="mc-explanation">✓ Cada camada tem seu nome para a unidade de dados: bits (C1), frames/quadros (C2), pacotes (C3), segmentos/datagramas (C4). O TCP gera segmentos; o UDP gera datagramas. Acima da C4, a unidade genérica é "dados".</div>
+        </div>
+        <hr class="mc-sep">
+        <div class="mc-question" data-correct="c">
+            <p class="mc-q-text">Qual camada do modelo OSI &eacute; respons&aacute;vel pela criptografia e compress&atilde;o dos dados antes de serem enviados pela rede?</p>
+            <div class="mc-options">
+                <div class="mc-option" data-option="a"><span class="mc-letter">A</span><span>Camada 7 &mdash; Aplica&ccedil;&atilde;o</span></div>
+                <div class="mc-option" data-option="b"><span class="mc-letter">B</span><span>Camada 5 &mdash; Sess&atilde;o</span></div>
+                <div class="mc-option" data-option="c"><span class="mc-letter">C</span><span>Camada 6 &mdash; Apresenta&ccedil;&atilde;o</span></div>
+                <div class="mc-option" data-option="d"><span class="mc-letter">D</span><span>Camada 4 &mdash; Transporte</span></div>
+            </div>
+            <div class="mc-explanation">✓ A Camada 6 (Apresentação) é responsável por traduzir, comprimir e criptografar os dados. É onde o SSL/TLS atua no modelo OSI, garantindo que os dados sejam legíveis apenas pelo destinatário correto.</div>
+        </div>
+        <hr class="mc-sep">
+        <div class="mc-question" data-correct="a">
+            <p class="mc-q-text">O processo pelo qual cada camada OSI adiciona seu cabe&ccedil;alho aos dados recebidos da camada superior chama-se:</p>
+            <div class="mc-options">
+                <div class="mc-option" data-option="a"><span class="mc-letter">A</span><span>Encapsulamento</span></div>
+                <div class="mc-option" data-option="b"><span class="mc-letter">B</span><span>Fragmentation</span></div>
+                <div class="mc-option" data-option="c"><span class="mc-letter">C</span><span>Multiplexa&ccedil;&atilde;o</span></div>
+                <div class="mc-option" data-option="d"><span class="mc-letter">D</span><span>Roteamento</span></div>
+            </div>
+            <div class="mc-explanation">✓ Encapsulamento é o processo em que cada camada adiciona seu cabeçalho (e eventualmente trailer) aos dados. No receptor, o processo inverso — desencapsulamento — remove esses cabeçalhos camada por camada até entregar os dados originais à aplicação.</div>
+        </div>
+    </div>
+
+    <div class="nav-footer">
+        <a href="rc02-topologias.html" class="nav-link">&#x2B05; Anterior: Topologias e Componentes</a>
+        <a href="rc04-tcp-ip.html" class="nav-link">Pr&oacute;xima: Arquitetura TCP/IP &#x27A1;</a>
+    </div>
+
+</div>
+
+<script src="slide-mode.js"></script>
+<script src="exercise-drag.js"></script>
+<script src="exercise-print.js"></script>
+<script src="exercise-mc.js"></script>
+</body>
+</html>
