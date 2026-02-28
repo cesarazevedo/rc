@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aula 5 &mdash; Meios de Transmiss&atilde;o e Cabeamento</title>
+    <link rel="stylesheet" href="slide-mode.css">
+    <link rel="stylesheet" href="exercise.css">
+    <link rel="stylesheet" href="lesson.css">
+    <style>
+        :root {
+            --primary:   #1a73e8;
+            --secondary: #0d47a1;
+            --bg-light:  #f4f7fe;
+            --text-dark: #2d3748;
+        }
+    </style>
+</head>
+<body>
+
+<div class="top-bar">
+    <a href="index.html" class="back-btn">&#x2B05; Voltar ao Dashboard</a>
+    <span class="page-badge">1&ordm; Bimestre &mdash; Fundamentos e Modelos</span>
+    <button class="slide-toggle" id="slideToggleBtn">&#x1F4FA; Modo Slide</button>
+</div>
+
+<div class="content-wrapper">
+
+    <div class="lesson-hero">
+        <h1>&#x1F9F5; Meios de Transmiss&atilde;o e Cabeamento</h1>
+        <p class="subtitle">Aula 5 &mdash; Par tran&ccedil;ado, cabo coaxial e fibra &oacute;ptica: estrutura, categorias, dist&acirc;ncias e padr&otilde;es de cabeamento estruturado que sustentam redes modernas</p>
+    </div>
+
+    <!-- CARD 1 — Por que os meios importam -->
+    <div class="content-card">
+        <h2>&#x1F50C; Por que o Meio de Transmiss&atilde;o Importa</h2>
+        <p>Todo dado que trafega em uma rede precisa de um <strong>meio f&iacute;sico</strong> para se propagar &mdash; seja um fio de cobre, uma fibra de vidro ou o pr&oacute;prio ar. A escolha do meio impacta diretamente a <strong>velocidade, dist&acirc;ncia, custo e resist&ecirc;ncia a interfer&ecirc;ncias</strong> da rede.</p>
+
+        <p>Os meios de transmiss&atilde;o se dividem em duas grandes categorias:</p>
+
+        <div class="cmd-grid">
+            <div class="cmd-card">
+                <span class="cmd">Guiados (com fio)</span>
+                <strong>O sinal &eacute; confinado</strong>
+                <span>Par tran&ccedil;ado, cabo coaxial e fibra &oacute;ptica conduzem o sinal em um caminho f&iacute;sico definido</span>
+            </div>
+            <div class="cmd-card">
+                <span class="cmd">N&atilde;o guiados (sem fio)</span>
+                <strong>O sinal se propaga livre</strong>
+                <span>Wi-Fi, Bluetooth, infravermelho, micro-ondas e sat&eacute;lite se propagam pelo ar ou espa&ccedil;o</span>
+            </div>
+        </div>
+
+        <p>Nesta aula focaremos nos <strong>meios guiados</strong>, que ainda dominam as infraestruturas corporativas, data centers e cabeamentos de campus. A fibra &oacute;ptica, em especial, &eacute; a espinha dorsal da internet mundial.</p>
+
+        <div class="alert-box">
+            <p>&#x26A0;&#xFE0F; <strong>Contexto profissional:</strong> a maioria das certifica&ccedil;&otilde;es de redes (CompTIA Network+, CCNA) exige conhecer os tipos de cabos, suas categorias, conec&shy;tores e limita&ccedil;&otilde;es. Esses conceitos tamb&eacute;m s&atilde;o cobrados em concursos p&uacute;blicos da &aacute;rea de TI.</p>
+        </div>
+    </div>
+
+    <!-- CARD 2 — Par trançado -->
+    <div class="content-card">
+        <h2>&#x1F7E1; Par Tran&ccedil;ado (UTP e STP)</h2>
+        <p>O cabo de par tran&ccedil;ado &eacute; o mais comum em redes locais. &Eacute; composto por <strong>pares de fios de cobre entrelaçados</strong> &mdash; o tran&ccedil;ado cancela interfer&ecirc;ncias eletromagn&eacute;ticas entre os fios (ru&iacute;do crosstalk).</p>
+
+        <div class="terminal-block">
+            <div class="terminal-header">Estrutura do cabo UTP (corte transversal)</div>
+<pre>
+        Casca externa (PVC)
+              │
+    ┌─────────┴──────────┐
+    │  Par 1  ════  Par 2 │   Cada par é formado por
+    │  Par 3  ════  Par 4 │   2 fios trançados entre si
+    └────────────────────┘
+         (8 fios / 4 pares)
+
+  UTP — Unshielded Twisted Pair  →  sem blindagem extra
+  STP — Shielded Twisted Pair    →  blindagem metálica ao redor dos pares
+  FTP — Foiled Twisted Pair      →  folha de alumínio envolvendo todos os pares
+</pre>
+        </div>
+
+        <h3>Categorias de Par Tran&ccedil;ado</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Categoria</th>
+                    <th>Velocidade m&aacute;x.</th>
+                    <th>Frequ&ecirc;ncia</th>
+                    <th>Dist&acirc;ncia m&aacute;x.</th>
+                    <th>Uso t&iacute;pico</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Cat 5e</strong></td>
+                    <td>1 Gbps</td>
+                    <td>100 MHz</td>
+                    <td>100 m</td>
+                    <td>Redes dom&eacute;sticas e pequenas empresas</td>
+                </tr>
+                <tr>
+                    <td><strong>Cat 6</strong></td>
+                    <td>1 Gbps (10 Gbps at&eacute; 55 m)</td>
+                    <td>250 MHz</td>
+                    <td>100 m</td>
+                    <td>Redes corporativas, padr&atilde;o atual</td>
+                </tr>
+                <tr>
+                    <td><strong>Cat 6A</strong></td>
+                    <td>10 Gbps</td>
+                    <td>500 MHz</td>
+                    <td>100 m</td>
+                    <td>Data centers e ambientes de alta performance</td>
+                </tr>
+                <tr>
+                    <td><strong>Cat 7</strong></td>
+                    <td>10 Gbps</td>
+                    <td>600 MHz</td>
+                    <td>100 m</td>
+                    <td>Ambientes industriais, blindagem total (S/FTP)</td>
+                </tr>
+                <tr>
+                    <td><strong>Cat 8</strong></td>
+                    <td>25&ndash;40 Gbps</td>
+                    <td>2000 MHz</td>
+                    <td>30 m</td>
+                    <td>Conex&otilde;es curtas em data centers</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>Conector RJ-45 e Padr&otilde;es de Crimpagem</h3>
+        <p>O par tran&ccedil;ado usa o conector <strong>RJ-45</strong> (8 pinos). A ordem dos fios segue dois padr&otilde;es definidos pela norma <strong>TIA/EIA-568</strong>:</p>
+
+        <div class="terminal-block">
+            <div class="terminal-header">Ordem dos fios no RJ-45 (visão frontal, trava para baixo)</div>
+<pre>
+  Pino:  1       2       3       4       5       6       7       8
+
+  T568A: Br/Ve   Verde   Br/Lj   Azul    Br/Az   Laranja Br/Ma   Marrom
+  T568B: Br/Lj   Laranja Br/Ve   Azul    Br/Az   Verde   Br/Ma   Marrom
+
+  Cabo DIRETO (straight):  mesmo padrão nas duas pontas (T568B + T568B)
+                           → PC para switch/hub
+  Cabo CROSSOVER (cross):  padrões diferentes (T568A + T568B)
+                           → PC para PC (legacy; switches modernos usam Auto-MDI-X)
+</pre>
+        </div>
+
+        <div class="tip-box">
+            <p>&#x2705; <strong>Na pr&aacute;tica:</strong> switches modernos detectam automaticamente o tipo de cabo (Auto-MDI-X), tornando o cabo crossover obsoleto na maioria dos cen&aacute;rios. Mesmo assim, o conhecimento da crimpagem &eacute; obrigat&oacute;rio em qualquer certifica&ccedil;&atilde;o de redes.</p>
+        </div>
+    </div>
+
+    <!-- CARD 3 — Cabo coaxial -->
+    <div class="content-card">
+        <h2>&#x1F7E0; Cabo Coaxial</h2>
+        <p>O cabo coaxial tem um <strong>condutor central</strong> de cobre rodeado por um isolante diel&eacute;trico, uma malha met&aacute;lica de blindagem e uma casca externa. A blindagem o torna mais resistente a interfer&ecirc;ncias que o UTP, mas ele &eacute; mais r&iacute;gido e caro.</p>
+
+        <div class="terminal-block">
+            <div class="terminal-header">Estrutura do cabo coaxial</div>
+<pre>
+    ┌─────── Casca externa (PVC) ───────────────────┐
+    │   ┌──── Malha metálica (blindagem/terra) ──┐  │
+    │   │  ┌── Dielétrico (isolante) ──────────┐ │  │
+    │   │  │   ● Condutor central (cobre)      │ │  │
+    │   │  └───────────────────────────────────┘ │  │
+    │   └────────────────────────────────────────┘  │
+    └───────────────────────────────────────────────┘
+</pre>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Tipo</th>
+                    <th>Imped&acirc;ncia</th>
+                    <th>Uso</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>RG-58 (Thin Ethernet)</strong></td>
+                    <td>50 &Omega;</td>
+                    <td>Antigas redes 10BASE-2 (obsoleto)</td>
+                </tr>
+                <tr>
+                    <td><strong>RG-8 (Thick Ethernet)</strong></td>
+                    <td>50 &Omega;</td>
+                    <td>Antigas redes 10BASE-5 (obsoleto)</td>
+                </tr>
+                <tr>
+                    <td><strong>RG-6 / RG-59</strong></td>
+                    <td>75 &Omega;</td>
+                    <td>TV a cabo, sinal de antena, CATV</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <p>Em redes de dados, o coaxial foi praticamente <strong>substitu&iacute;do pelo par tran&ccedil;ado e pela fibra</strong>. Seu uso atual em TI limita-se a conex&otilde;es de antena, TV a cabo e alguns enlaces de r&aacute;dio. O conector mais comum &eacute; o <strong>BNC</strong> (antigas redes) e o <strong>F-type</strong> (TV/cabo).</p>
+    </div>
+
+    <!-- CARD 4 — Fibra óptica -->
+    <div class="content-card">
+        <h2>&#x1F7E3; Fibra &Oacute;ptica</h2>
+        <p>A fibra &oacute;ptica transmite dados na forma de <strong>pulsos de luz</strong> atrav&eacute;s de um fio de vidro ou pl&aacute;stico ultra-puro. &Eacute; o meio mais r&aacute;pido, com maior alcance e totalmente imune a interfer&ecirc;ncias eletromagn&eacute;ticas. &Eacute; a tecnologia que sustenta a espinha dorsal da internet global.</p>
+
+        <div class="terminal-block">
+            <div class="terminal-header">Estrutura da fibra óptica</div>
+<pre>
+    ┌──── Jacket (casca protetora externa) ────────────────┐
+    │  ┌── Buffer (camada de proteção) ─────────────────┐  │
+    │  │  ┌── Cladding (revestimento óptico) ────────┐  │  │
+    │  │  │   ●●● Core (núcleo de vidro/plástico) ●●● │  │  │
+    │  │  │       ↑ a luz viaja refletindo aqui        │  │  │
+    │  │  └──────────────────────────────────────────┘  │  │
+    │  └─────────────────────────────────────────────────┘  │
+    └────────────────────────────────────────────────────────┘
+
+  A diferença de índice de refração entre core e cladding
+  faz a luz se refletir internamente (reflexão total interna).
+</pre>
+        </div>
+
+        <h3>Monomodo vs. Multimodo</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Caracter&iacute;stica</th>
+                    <th>Monomodo (SMF)</th>
+                    <th>Multimodo (MMF)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Di&acirc;metro do n&uacute;cleo</strong></td>
+                    <td>8&ndash;10 &micro;m</td>
+                    <td>50 ou 62,5 &micro;m</td>
+                </tr>
+                <tr>
+                    <td><strong>Fonte de luz</strong></td>
+                    <td>Laser</td>
+                    <td>LED ou VCSEL</td>
+                </tr>
+                <tr>
+                    <td><strong>Dist&acirc;ncia m&aacute;x.</strong></td>
+                    <td>At&eacute; 100 km (sem repetidor)</td>
+                    <td>At&eacute; 550 m (OM3/OM4)</td>
+                </tr>
+                <tr>
+                    <td><strong>Velocidade</strong></td>
+                    <td>100 Gbps+ poss&iacute;vel</td>
+                    <td>At&eacute; 100 Gbps (curtas dist.)</td>
+                </tr>
+                <tr>
+                    <td><strong>Custo</strong></td>
+                    <td>Mais caro (laser + instala&ccedil;&atilde;o)</td>
+                    <td>Mais barato para curtas dist.</td>
+                </tr>
+                <tr>
+                    <td><strong>Cor do cabo</strong></td>
+                    <td>Amarelo</td>
+                    <td>Laranja (OM2) ou Aqu&aacute; (OM3/OM4)</td>
+                </tr>
+                <tr>
+                    <td><strong>Uso t&iacute;pico</strong></td>
+                    <td>Backbone WAN, provedores, interliga&ccedil;&atilde;o de pr&eacute;dios</td>
+                    <td>Dentro de data centers e pr&eacute;dios</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>Principais Conectores de Fibra</h3>
+        <div class="cmd-grid">
+            <div class="cmd-card">
+                <span class="cmd">SC</span>
+                <strong>Subscriber Connector</strong>
+                <span>Conector quadrado com mecanismo push-pull; muito usado em backbone</span>
+            </div>
+            <div class="cmd-card">
+                <span class="cmd">LC</span>
+                <strong>Lucent Connector</strong>
+                <span>Menor que o SC; padr&atilde;o atual em data centers e SFP/SFP+</span>
+            </div>
+            <div class="cmd-card">
+                <span class="cmd">ST</span>
+                <strong>Straight Tip</strong>
+                <span>Conector cil&iacute;ndrico com trava bayoneta; comum em instala&ccedil;&otilde;es mais antigas</span>
+            </div>
+            <div class="cmd-card">
+                <span class="cmd">MPO/MTP</span>
+                <strong>Multi-fiber Push On</strong>
+                <span>Conecta 12 ou 24 fibras de uma vez; usado em data centers de alta densidade</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- CARD 5 — Comparativo -->
+    <div class="content-card">
+        <h2>&#x1F4CA; Comparativo: UTP vs. Coaxial vs. Fibra</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Aspecto</th>
+                    <th>Par Tran&ccedil;ado (UTP)</th>
+                    <th>Coaxial</th>
+                    <th>Fibra &Oacute;ptica</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Sinal</strong></td>
+                    <td>El&eacute;trico</td>
+                    <td>El&eacute;trico</td>
+                    <td>Luminoso</td>
+                </tr>
+                <tr>
+                    <td><strong>Velocidade m&aacute;x.</strong></td>
+                    <td>At&eacute; 40 Gbps (Cat 8)</td>
+                    <td>At&eacute; 10 Gbps (DOCSIS 3.1)</td>
+                    <td>Tbps (teoricamente ilimitado)</td>
+                </tr>
+                <tr>
+                    <td><strong>Dist&acirc;ncia sem repetidor</strong></td>
+                    <td>100 m</td>
+                    <td>500 m (RG-8)</td>
+                    <td>At&eacute; 100 km (SMF)</td>
+                </tr>
+                <tr>
+                    <td><strong>Interfer&ecirc;ncia EMI</strong></td>
+                    <td>Suscept&iacute;vel (UTP); blindado (STP)</td>
+                    <td>Boa blindagem</td>
+                    <td>Imune (luz n&atilde;o sofre EMI)</td>
+                </tr>
+                <tr>
+                    <td><strong>Seguran&ccedil;a f&iacute;sica</strong></td>
+                    <td>F&aacute;cil de interceptar</td>
+                    <td>F&aacute;cil de interceptar</td>
+                    <td>Dif&iacute;cil (requer equipamento especial)</td>
+                </tr>
+                <tr>
+                    <td><strong>Custo</strong></td>
+                    <td>Baixo</td>
+                    <td>M&eacute;dio</td>
+                    <td>Alto (cabo + equipamentos)</td>
+                </tr>
+                <tr>
+                    <td><strong>Instala&ccedil;&atilde;o</strong></td>
+                    <td>F&aacute;cil, flex&iacute;vel</td>
+                    <td>M&eacute;dia</td>
+                    <td>Requer t&eacute;cnico especializado</td>
+                </tr>
+                <tr>
+                    <td><strong>Uso principal</strong></td>
+                    <td>LANs, ambientes corporativos</td>
+                    <td>TV a cabo, antenas</td>
+                    <td>Backbone, WAN, data centers</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="tip-box">
+            <p>&#x2705; <strong>Regra pr&aacute;tica:</strong> use <strong>UTP Cat 6A</strong> para os pontos de rede horizontal (at&eacute; 100 m); use <strong>fibra monomodo</strong> para interligar pr&eacute;dios ou conectar ao provedor; use <strong>fibra multimodo</strong> dentro do data center entre switches e servidores.</p>
+        </div>
+    </div>
+
+    <!-- CARD 6 — Cabeamento estruturado -->
+    <div class="content-card">
+        <h2>&#x1F3D7;&#xFE0F; Cabeamento Estruturado</h2>
+        <p>Cabeamento estruturado &eacute; um <strong>sistema padronizado de cabos e componentes</strong> que organiza a infraestrutura de telecomunica&ccedil;&otilde;es de um edif&iacute;cio de forma hier&aacute;rquica, flex&iacute;vel e escal&aacute;vel. Em vez de cabos espalhados aleatoriamente, tudo segue normas.</p>
+
+        <h3>Normas Principais</h3>
+        <div class="cmd-grid">
+            <div class="cmd-card">
+                <span class="cmd">ABNT NBR 14565</span>
+                <strong>Norma brasileira</strong>
+                <span>Procedimentos para instala&ccedil;&atilde;o de cabeamento estruturado em edif&iacute;cios comerciais</span>
+            </div>
+            <div class="cmd-card">
+                <span class="cmd">TIA/EIA-568</span>
+                <strong>Norma americana</strong>
+                <span>Define padr&otilde;es de cabo, conectores, crimpagem (T568A/B) e desempenho</span>
+            </div>
+            <div class="cmd-card">
+                <span class="cmd">ISO/IEC 11801</span>
+                <strong>Norma internacional</strong>
+                <span>Padr&atilde;o global para cabeamento de edif&iacute;cios gen&eacute;ricos</span>
+            </div>
+            <div class="cmd-card">
+                <span class="cmd">TIA-942</span>
+                <strong>Data centers</strong>
+                <span>Norma espec&iacute;fica para infraestrutura de cabeamento em data centers</span>
+            </div>
+        </div>
+
+        <h3>Hierarquia do Cabeamento Estruturado</h3>
+        <div class="terminal-block">
+            <div class="terminal-header">Subsistemas do cabeamento estruturado</div>
+<pre>
+  ┌──────────────────────────────────────────────────────────┐
+  │  ENTRADA DO EDIFÍCIO (EF — Entrance Facility)            │
+  │  Ponto de demarcação entre a rede pública e a interna    │
+  └────────────────────┬─────────────────────────────────────┘
+                       │  Backbone de campus (fibra)
+  ┌────────────────────▼─────────────────────────────────────┐
+  │  SALA DE EQUIPAMENTOS (ER — Equipment Room)               │
+  │  Servidores, roteadores, firewalls, switches core        │
+  └────────────────────┬─────────────────────────────────────┘
+                       │  Backbone vertical (fibra ou UTP)
+  ┌────────────────────▼─────────────────────────────────────┐
+  │  ARMÁRIO DE TELECOMUNICAÇÕES (TC — Telecom Closet)        │
+  │  Patch panel, switch de distribuição, patch cords        │
+  └────────────────────┬─────────────────────────────────────┘
+                       │  Cabeamento horizontal (UTP Cat 6A — máx. 90 m)
+  ┌────────────────────▼─────────────────────────────────────┐
+  │  ÁREA DE TRABALHO (WA — Work Area)                        │
+  │  Tomada RJ-45, patch cord (até 5 m), computador          │
+  └──────────────────────────────────────────────────────────┘
+</pre>
+        </div>
+
+        <p>O cabeamento horizontal usa sempre <strong>no m&aacute;ximo 90 m</strong> de cabo fixo na parede + at&eacute; 10 m de patch cords (5 m no armário + 5 m na &aacute;rea de trabalho) = <strong>100 m totais</strong>.</p>
+
+        <div class="alert-box">
+            <p>&#x26A0;&#xFE0F; <strong>Componentes do armário:</strong> o <strong>patch panel</strong> organiza os terminais dos cabos horizontais; os <strong>patch cords</strong> fazem a conex&atilde;o flex&iacute;vel entre o painel e o switch; o <strong>rack</strong> (19 polegadas) organiza todos os equipamentos verticalmente em unidades <strong>U</strong> (1U = 44,45 mm).</p>
+        </div>
+    </div>
+
+    <!-- ATIVIDADE PRÁTICA -->
+    <div class="content-card exercise-card" id="prat-rc05">
+        <h2>&#x1F4DD; Atividade Pr&aacute;tica</h2>
+        <p class="prat-intro">Identificar meios, categorias e projetar cabeamento para cen&aacute;rios reais.</p>
+
+        <div class="prat-steps">
+            <div class="prat-step">
+                <div class="step-num">1</div>
+                <div class="step-body">
+                    <div class="step-label">Identificar e classificar meios</div>
+                    <div class="step-desc">Para cada cen&aacute;rio abaixo, indique qual meio de transmiss&atilde;o seria mais adequado e justifique: (a) conectar 20 computadores numa sala de aula a um switch central, dist&acirc;ncia m&aacute;xima de 30 m; (b) interligar dois pr&eacute;dios de uma escola separados por 800 m; (c) levar internet de fibra do provedor at&eacute; o roteador da empresa; (d) conectar uma c&acirc;mera de seguran&ccedil;a a uma central de monitoramento distante 200 m, em ambiente com muita interfer&ecirc;ncia el&eacute;trica.</div>
+                </div>
+            </div>
+            <div class="prat-step">
+                <div class="step-num">2</div>
+                <div class="step-body">
+                    <div class="step-label">Escolher a categoria de cabo correta</div>
+                    <div class="step-desc">Uma empresa deseja instalar uma rede com as seguintes especifica&ccedil;&otilde;es: velocidade m&iacute;nima de 10 Gbps em todos os pontos, dist&acirc;ncia horizontal de at&eacute; 90 m, ambiente com baixa interfer&ecirc;ncia. (a) Qual categoria de UTP voc&ecirc; recomendaria? (b) UTP ou STP? Por qu&ecirc;? (c) Qual seria o padr&atilde;o de crimpagem (T568A ou T568B) a adotar e por que &eacute; importante ser consistente?</div>
+                </div>
+            </div>
+            <div class="prat-step">
+                <div class="step-num">3</div>
+                <div class="step-body">
+                    <div class="step-label">Interpretar um diagrama de cabeamento</div>
+                    <div class="step-desc">Desenhe (no papel ou digitalmente) o diagrama de cabeamento estruturado de uma escola de dois andares com: (a) sala de servidores no t&eacute;rreo; (b) armário de telecomunica&ccedil;&otilde;es em cada andar; (c) 15 tomadas RJ-45 por andar; (d) fibra entre os armários e o servidor. Identifique cada subsistema (horizontal, vertical, &aacute;rea de trabalho, entrada) no diagrama.</div>
+                </div>
+            </div>
+            <div class="prat-step">
+                <div class="step-num">4</div>
+                <div class="step-body">
+                    <div class="step-label">Calcular metragem e custo estimado</div>
+                    <div class="step-desc">Uma sala ret&acirc;ngular de 10 m &times; 15 m tem 12 pontos de rede distribu&iacute;dos uniformemente. O armário de telecomunica&ccedil;&otilde;es fica numa das extremidades. (a) Estime a metragem total de cabo UTP Cat 6A necess&aacute;ria (considere percurso pelo forro); (b) Quantas caixas de 305 m de cabo seriam necess&aacute;rias? (c) Pesquise o pre&ccedil;o atual de uma caixa de Cat 6A e estime o custo total de material s&oacute; do cabo.</div>
+                </div>
+            </div>
+            <div class="prat-step">
+                <div class="step-num">5</div>
+                <div class="step-body">
+                    <div class="step-label">&#x1F465; Trabalho em grupo &mdash; Proposta de infraestrutura de rede</div>
+                    <div class="step-desc"><strong>(Aprendizagem Baseada em Projetos &mdash; grupos de 3&ndash;4 alunos)</strong> Cada grupo recebe um cen&aacute;rio de cliente: (A) escola p&uacute;blica com 5 salas e laborat&oacute;rio, or&ccedil;amento limitado; (B) empresa de 3 andares com data center pr&oacute;prio; (C) hospital que exige alta disponibilidade e sem interfer&ecirc;ncia. O grupo deve elaborar uma proposta com: tipo de cabo, categoria, justificativa t&eacute;cnica, diagrama simplificado e estimativa de custo. Cada grupo apresenta em 3 minutos e a turma debate os trade-offs de cada solu&ccedil;&atilde;o. <em>Discutam: um cliente com or&ccedil;amento apertado deve abrir m&atilde;o de Cat 6A para Cat 5e? Quais as consequ&ecirc;ncias a longo prazo?</em></div>
+                </div>
+            </div>
+            <div class="prat-step">
+                <div class="step-num">6</div>
+                <div class="step-body">
+                    <div class="step-label">&#x1F9E9; Computa&ccedil;&atilde;o desplugada &mdash; Simula&ccedil;&atilde;o de cabeamento estruturado</div>
+                    <div class="step-desc"><strong>(Metodologia ativa &mdash; sem computador)</strong> Com barbante ou fita colorida representando diferentes tipos de cabo, montem na sala de aula um modelo f&iacute;sico simplificado de cabeamento estruturado: uma cadeira = sala de servidores, uma mesa = armário de telecomunica&ccedil;&otilde;es, carteiras = &aacute;reas de trabalho. Usem cores diferentes para backbone (fibra) e horizontal (UTP). Cada aluno segura um &ldquo;cabo&rdquo; e deve saber dizer o tipo, a categoria e a fun&ccedil;&atilde;o do trecho que representa. <em>Reflit am: o que acontece se o cabo do armário ao servidor falhar? Quais dispositivos ficariam sem rede? A atividade &eacute; adapt&aacute;vel: alunos com mobilidade reduzida podem ser o &ldquo;patch panel&rdquo; central, recebendo e direcionando as conex&otilde;es.</em></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="prat-observe">
+            <strong>&#x1F4CC; Para refletir:</strong> o cabeamento estruturado &eacute; frequentemente negligenciado em projetos de rede, mas &eacute; um dos investimentos mais duradouros de uma infraestrutura. Um cabeamento mal feito gera problemas por anos: conex&otilde;es inst&aacute;veis, perda de velocidade, dificuldade de manuten&ccedil;&atilde;o. Um cabeamento bem feito, dentro das normas, dura mais de 15 anos e suporta as tecnologias futuras sem necessidade de repassar cabos.
+        </div>
+
+        <div class="ex-actions">
+            <button class="btn-print" onclick="printPractical('prat-rc05', 'Aula 5 \u2014 Meios de Transmiss\u00e3o e Cabeamento')">&#x1F5A8;&#xFE0F; Imprimir roteiro</button>
+        </div>
+    </div>
+
+    <!-- MÚLTIPLA ESCOLHA -->
+    <div class="content-card exercise-card">
+        <h2>&#x2753; Verifique seu Conhecimento</h2>
+
+        <div class="mc-question" data-correct="c">
+            <p class="mc-q-text">Qual categoria de cabo UTP suporta 10 Gbps em at&eacute; 100 metros e &eacute; considerada o padr&atilde;o atual para instala&ccedil;&otilde;es corporativas de alta performance?</p>
+            <div class="mc-options">
+                <div class="mc-option" data-option="a"><span class="mc-letter">A</span><span>Cat 5e</span></div>
+                <div class="mc-option" data-option="b"><span class="mc-letter">B</span><span>Cat 6</span></div>
+                <div class="mc-option" data-option="c"><span class="mc-letter">C</span><span>Cat 6A</span></div>
+                <div class="mc-option" data-option="d"><span class="mc-letter">D</span><span>Cat 8</span></div>
+            </div>
+            <div class="mc-explanation">&#x2713; O Cat 6A (Augmented) suporta 10 Gbps at&eacute; 100 m com frequ&ecirc;ncia de 500 MHz. O Cat 5e suporta apenas 1 Gbps; o Cat 6 suporta 10 Gbps somente at&eacute; 55 m; o Cat 8 suporta 25&ndash;40 Gbps mas apenas at&eacute; 30 m (uso restrito a data centers).</div>
+        </div>
+        <hr class="mc-sep">
+        <div class="mc-question" data-correct="a">
+            <p class="mc-q-text">Qual &eacute; a principal vantagem da fibra &oacute;ptica monomodo (SMF) em rela&ccedil;&atilde;o &agrave; multimodo (MMF)?</p>
+            <div class="mc-options">
+                <div class="mc-option" data-option="a"><span class="mc-letter">A</span><span>Alcance muito maior, chegando a dezenas de quil&ocirc;metros sem repetidor</span></div>
+                <div class="mc-option" data-option="b"><span class="mc-letter">B</span><span>Custo de instala&ccedil;&atilde;o significativamente menor</span></div>
+                <div class="mc-option" data-option="c"><span class="mc-letter">C</span><span>N&uacute;cleo maior que facilita o alinhamento dos conectores</span></div>
+                <div class="mc-option" data-option="d"><span class="mc-letter">D</span><span>Compatibilidade com fontes de luz LED comuns</span></div>
+            </div>
+            <div class="mc-explanation">&#x2713; A fibra monomodo (n&uacute;cleo de 8&ndash;10 &micro;m, cor amarela) transmite apenas um modo de luz e pode alcan&ccedil;ar at&eacute; 100 km sem repetidor. A multimodo (n&uacute;cleo de 50&ndash;62,5 &micro;m) &eacute; limitada a ~550 m mas &eacute; mais barata para curtas dist&acirc;ncias. A SMF usa laser, n&atilde;o LED.</div>
+        </div>
+        <hr class="mc-sep">
+        <div class="mc-question" data-correct="d">
+            <p class="mc-q-text">No cabeamento estruturado, qual &eacute; o comprimento m&aacute;ximo permitido para o cabo horizontal fixo (dentro da parede/forro), excluindo os patch cords?</p>
+            <div class="mc-options">
+                <div class="mc-option" data-option="a"><span class="mc-letter">A</span><span>50 metros</span></div>
+                <div class="mc-option" data-option="b"><span class="mc-letter">B</span><span>100 metros</span></div>
+                <div class="mc-option" data-option="c"><span class="mc-letter">C</span><span>120 metros</span></div>
+                <div class="mc-option" data-option="d"><span class="mc-letter">D</span><span>90 metros</span></div>
+            </div>
+            <div class="mc-explanation">&#x2713; A norma TIA/EIA-568 define 90 m para o cabo horizontal fixo + at&eacute; 10 m de patch cords (5 m no armário + 5 m na &aacute;rea de trabalho), totalizando 100 m. Ultrapassar 90 m no trecho fixo viola a norma e pode causar quedas de desempenho.</div>
+        </div>
+        <hr class="mc-sep">
+        <div class="mc-question" data-correct="b">
+            <p class="mc-q-text">Um t&eacute;cnico precisa conectar dois computadores diretamente (sem switch) numa bancada de testes usando cabo UTP. Qual tipo de cabo deve usar, considerando que os switches modernos n&atilde;o est&atilde;o envolvidos?</p>
+            <div class="mc-options">
+                <div class="mc-option" data-option="a"><span class="mc-letter">A</span><span>Cabo direto (straight-through) com padr&atilde;o T568B nas duas pontas</span></div>
+                <div class="mc-option" data-option="b"><span class="mc-letter">B</span><span>Cabo crossover com T568A em uma ponta e T568B na outra</span></div>
+                <div class="mc-option" data-option="c"><span class="mc-letter">C</span><span>Cabo rollover (console), usado para acesso serial</span></div>
+                <div class="mc-option" data-option="d"><span class="mc-letter">D</span><span>Qualquer cabo serve, pois as placas de rede detectam automaticamente</span></div>
+            </div>
+            <div class="mc-explanation">&#x2713; Para conectar dois dispositivos do mesmo tipo sem switch, usa-se o <strong>cabo crossover</strong> (T568A + T568B), que cruza os pares de transmiss&atilde;o e recep&ccedil;&atilde;o. Placas modernas com Auto-MDI-X fazem isso automaticamente, mas em bancadas de testes com hardware legado ou para fins did&aacute;ticos o crossover ainda &eacute; necess&aacute;rio.</div>
+        </div>
+    </div>
+
+    <div class="nav-footer">
+        <a href="rc04-tcp-ip.html" class="nav-link">&#x2B05; Anterior: Arquitetura TCP/IP</a>
+        <a href="rc06-dispositivos-rede.html" class="nav-link">Pr&oacute;xima: Dispositivos de Rede &#x27A1;</a>
+    </div>
+
+</div>
+
+<script src="slide-mode.js"></script>
+<script src="exercise-drag.js"></script>
+<script src="exercise-print.js"></script>
+<script src="exercise-mc.js"></script>
+</body>
+</html>
