@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aula 6 &mdash; Ethernet (IEEE 802.3)</title>
+    <link rel="stylesheet" href="slide-mode.css">
+    <link rel="stylesheet" href="exercise.css">
+    <link rel="stylesheet" href="lesson.css">
+    <style>
+        :root {
+            --primary:   #1a73e8;
+            --secondary: #0d47a1;
+            --bg-light:  #f4f7fe;
+            --text-dark: #2d3748;
+        }
+    </style>
+</head>
+<body>
+
+<div class="top-bar">
+    <a href="index.html" class="back-btn">&#x2B05; Voltar ao Dashboard</a>
+    <span class="page-badge">1&ordm; Bimestre &mdash; Fundamentos e Modelos</span>
+    <button class="slide-toggle" id="slideToggleBtn">&#x1F4FA; Modo Slide</button>
+</div>
+
+<div class="content-wrapper">
+
+    <div class="lesson-hero">
+        <h1>&#x1F4FE; Ethernet &mdash; IEEE 802.3</h1>
+        <p class="subtitle">Aula 6 &mdash; A tecnologia que domina as LANs: CSMA/CD, estrutura do quadro, endere&ccedil;o MAC e a evolu&ccedil;&atilde;o do Ethernet de 10 Mbps at&eacute; 100 Gbps</p>
+    </div>
+
+    <!-- CARD 1 — Origem e padrão -->
+    <div class="content-card">
+        <h2>&#x1F4DC; A Origem do Ethernet</h2>
+        <p>Em 1973, Robert Metcalfe e David Boggs, trabalhando na Xerox PARC, desenvolveram a primeira vers&atilde;o do Ethernet para conectar computadores Alto a uma impressora laser. O nome &ldquo;Ethernet&rdquo; vem do conceito f&iacute;sico de &eacute;ter &mdash; o meio imagin&aacute;rio pelo qual a luz se propagaria no espa&ccedil;o.</p>
+
+        <p>Em 1983, o <strong>IEEE (Institute of Electrical and Electronics Engineers)</strong> padronizou o Ethernet como <strong>IEEE 802.3</strong>, tornando-o aberto e adot&aacute;vel por qualquer fabricante. Isso foi fundamental para sua expans&atilde;o: hoje o Ethernet &eacute; a tecnologia de rede local mais usada no mundo, presente em data centers, empresas, escolas e resid&ecirc;ncias.</p>
+
+        <div class="cmd-grid">
+            <div class="cmd-card">
+                <span class="cmd">1973</span>
+                <strong>Xerox PARC</strong>
+                <span>Metcalfe e Boggs criam o Ethernet experimental a 2,94 Mbps em cabo coaxial</span>
+            </div>
+            <div class="cmd-card">
+                <span class="cmd">1983</span>
+                <strong>IEEE 802.3</strong>
+                <span>Padroniza&ccedil;&atilde;o oficial: 10BASE-5 (10 Mbps em cabo coaxial grosso)</span>
+            </div>
+            <div class="cmd-card">
+                <span class="cmd">1995</span>
+                <strong>Fast Ethernet</strong>
+                <span>100 Mbps com par tran&ccedil;ado (100BASE-TX), ampla ado&ccedil;&atilde;o corporativa</span>
+            </div>
+            <div class="cmd-card">
+                <span class="cmd">Hoje</span>
+                <strong>At&eacute; 400 Gbps</strong>
+                <span>400GbE j&aacute; &eacute; realidade em data centers modernos com fibra &oacute;ptica</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- CARD 2 — CSMA/CD -->
+    <div class="content-card">
+        <h2>&#x1F6A6; CSMA/CD &mdash; Acesso ao Meio Compartilhado</h2>
+        <p>Nas primeiras redes Ethernet, todos os dispositivos compartilhavam o mesmo cabo (barramento). Era preciso um m&eacute;todo para evitar que dois dispositivos transmitissem ao mesmo tempo e corrompessem os dados. A solu&ccedil;&atilde;o foi o <strong>CSMA/CD &mdash; Carrier Sense Multiple Access with Collision Detection</strong>.</p>
+
+        <div class="terminal-block">
+            <div class="terminal-header">Como o CSMA/CD funciona — passo a passo</div>
+<pre>
+  1. CARRIER SENSE (CS) — "Ouvir antes de falar"
+     O dispositivo verifica se o cabo está livre (sem sinal).
+     Se livre → começa a transmitir.
+     Se ocupado → espera até o cabo ficar livre.
+
+  2. MULTIPLE ACCESS (MA) — "Todos acessam o mesmo meio"
+     Qualquer dispositivo pode transmitir quando o cabo está livre.
+     Não há reserva de canal ou prioridade.
+
+  3. COLLISION DETECTION (CD) — "Detectar colisão enquanto transmite"
+     Se dois dispositivos transmitirem simultaneamente → COLISÃO.
+     Os sinais se misturam e corrompem ambas as transmissões.
+
+  4. JAM SIGNAL — "Avisar a todos sobre a colisão"
+     O dispositivo que detecta a colisão envia um sinal de jam (32 bits)
+     para garantir que todos saibam que houve colisão.
+
+  5. BACKOFF EXPONENCIAL — "Esperar tempo aleatório e tentar de novo"
+     Cada dispositivo espera um tempo aleatório (algoritmo de backoff)
+     antes de tentar retransmitir.
+     A cada colisão, o tempo máximo de espera dobra (até 16 tentativas).
+</pre>
+        </div>
+
+        <div class="alert-box">
+            <p>&#x26A0;&#xFE0F; <strong>CSMA/CD &eacute; praticamente obsoleto hoje.</strong> Switches modernos operam em <strong>full-duplex</strong>: cada dispositivo tem seu pr&oacute;prio par de fios exclusivo para transmiss&atilde;o e recep&ccedil;&atilde;o simult&acirc;neas, eliminando coliss&otilde;es completamente. O CSMA/CD s&oacute; existia em redes half-duplex com hubs e barramentos compartilhados.</p>
+        </div>
+
+        <div class="cmd-grid">
+            <div class="cmd-card">
+                <span class="cmd">Half-duplex</span>
+                <strong>Uma dire&ccedil;&atilde;o por vez</strong>
+                <span>Como um walkie-talkie: transmite OU recebe, nunca os dois ao mesmo tempo. Exigia CSMA/CD</span>
+            </div>
+            <div class="cmd-card">
+                <span class="cmd">Full-duplex</span>
+                <strong>Duas dire&ccedil;&otilde;es simult&acirc;neas</strong>
+                <span>Como um telefone: transmite E recebe ao mesmo tempo. Padr&atilde;o em switches modernos, sem CSMA/CD</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- CARD 3 — Quadro Ethernet -->
+    <div class="content-card">
+        <h2>&#x1F4E6; Estrutura do Quadro Ethernet</h2>
+        <p>O <strong>quadro (frame)</strong> &eacute; a PDU da camada de enlace &mdash; a unidade de dados que o Ethernet transmite. Cada quadro carrega os endere&ccedil;os MAC de origem e destino, o tipo de protocolo, os dados e um campo de verifica&ccedil;&atilde;o de erros.</p>
+
+        <div class="terminal-block">
+            <div class="terminal-header">Estrutura do quadro Ethernet II (IEEE 802.3)</div>
+<pre>
+  ┌──────────┬─────┬─────────────┬─────────────┬───────────┬──────────────────┬─────┐
+  │Preâmbulo │ SFD │  MAC Destino│  MAC Origem │EtherType/ │      Dados       │ FCS │
+  │ 7 bytes  │1 b  │   6 bytes   │   6 bytes   │  Length   │  46 – 1500 bytes │4 b  │
+  │          │     │             │             │  2 bytes  │                  │     │
+  └──────────┴─────┴─────────────┴─────────────┴───────────┴──────────────────┴─────┘
+  Total mínimo: 64 bytes (sem preâmbulo/SFD)
+  Total máximo: 1518 bytes (sem preâmbulo/SFD)
+</pre>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Campo</th>
+                    <th>Tamanho</th>
+                    <th>Fun&ccedil;&atilde;o</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Pre&acirc;mbulo</strong></td>
+                    <td>7 bytes</td>
+                    <td>Sequ&ecirc;ncia alternada de 1s e 0s (10101010…) para sincronizar o clock do receptor</td>
+                </tr>
+                <tr>
+                    <td><strong>SFD</strong> (Start Frame Delimiter)</td>
+                    <td>1 byte</td>
+                    <td>Indica o in&iacute;cio do quadro (10101011). O &uacute;ltimo bit &ldquo;1&rdquo; sinaliza que os dados come&ccedil;am</td>
+                </tr>
+                <tr>
+                    <td><strong>MAC Destino</strong></td>
+                    <td>6 bytes</td>
+                    <td>Endere&ccedil;o MAC do dispositivo que deve receber o quadro</td>
+                </tr>
+                <tr>
+                    <td><strong>MAC Origem</strong></td>
+                    <td>6 bytes</td>
+                    <td>Endere&ccedil;o MAC do dispositivo que enviou o quadro</td>
+                </tr>
+                <tr>
+                    <td><strong>EtherType / Length</strong></td>
+                    <td>2 bytes</td>
+                    <td>Indica o protocolo da camada superior: 0x0800 = IPv4, 0x0806 = ARP, 0x86DD = IPv6, 0x8100 = VLAN (802.1Q)</td>
+                </tr>
+                <tr>
+                    <td><strong>Dados (Payload)</strong></td>
+                    <td>46&ndash;1500 bytes</td>
+                    <td>O conte&uacute;do &mdash; normalmente um pacote IP. Se menor que 46 bytes, padding zeros s&atilde;o adicionados</td>
+                </tr>
+                <tr>
+                    <td><strong>FCS</strong> (Frame Check Sequence)</td>
+                    <td>4 bytes</td>
+                    <td>CRC-32: valor calculado sobre o quadro inteiro. O receptor refaz o c&aacute;lculo; se diferente, o quadro &eacute; descartado</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="tip-box">
+            <p>&#x2705; <strong>MTU (Maximum Transmission Unit):</strong> o campo de dados do quadro Ethernet tem no m&aacute;ximo <strong>1500 bytes</strong>. Esse valor &eacute; o MTU padr&atilde;o do IP. Quadros maiores (Jumbo Frames, at&eacute; 9000 bytes) s&atilde;o usados em data centers para reduzir overhead, mas precisam ser configurados explicitamente.</p>
+        </div>
+    </div>
+
+    <!-- CARD 4 — Endereço MAC -->
+    <div class="content-card">
+        <h2>&#x1F3F7;&#xFE0F; Endere&ccedil;o MAC</h2>
+        <p>O <strong>endere&ccedil;o MAC (Media Access Control)</strong> &eacute; o identificador &uacute;nico de cada interface de rede no n&iacute;vel da camada de enlace. Diferente do endere&ccedil;o IP (que pode mudar), o MAC &eacute; gravado na mem&oacute;ria ROM da placa de rede pelo fabricante &mdash; por isso &eacute; chamado de <strong>endere&ccedil;o f&iacute;sico</strong> ou <strong>endere&ccedil;o de hardware</strong>.</p>
+
+        <div class="terminal-block">
+            <div class="terminal-header">Estrutura do endereço MAC (48 bits = 6 bytes)</div>
+<pre>
+  Exemplo:  A8 : 5E : 45 : F3 : 2B : 7C
+            ──────────────   ────────────
+            OUI (3 bytes)    NIC (3 bytes)
+            Identificador    Identificador
+            do fabricante    único da placa
+
+  OUI — Organizationally Unique Identifier
+        Atribuído pelo IEEE a cada fabricante.
+        A8:5E:45 → Intel Corporation (exemplo)
+
+  NIC — Network Interface Controller portion
+        Atribuído pelo próprio fabricante para cada placa.
+
+  Representações aceitas:
+    A8:5E:45:F3:2B:7C  (Linux/macOS — dois pontos)
+    A8-5E-45-F3-2B-7C  (Windows — hífen)
+    A85E.45F3.2B7C     (Cisco IOS — ponto a cada 2 bytes)
+</pre>
+        </div>
+
+        <h3>Tipos de Endere&ccedil;o MAC</h3>
+        <div class="cmd-grid">
+            <div class="cmd-card">
+                <span class="cmd">Unicast</span>
+                <strong>Um para um</strong>
+                <span>Bit menos significativo do primeiro byte = 0. Identifica uma &uacute;nica interface. Ex: A8:5E:45:F3:2B:7C</span>
+            </div>
+            <div class="cmd-card">
+                <span class="cmd">Multicast</span>
+                <strong>Um para muitos</strong>
+                <span>Bit menos significativo do primeiro byte = 1. Envia para um grupo de dispositivos registrados</span>
+            </div>
+            <div class="cmd-card">
+                <span class="cmd">Broadcast</span>
+                <strong>Um para todos</strong>
+                <span>Todos os bits = 1: FF:FF:FF:FF:FF:FF. Todo dispositivo na LAN recebe e processa</span>
+            </div>
+        </div>
+
+        <h3>MAC e ARP</h3>
+        <p>O IP trabalha com endere&ccedil;os l&oacute;gicos, mas o Ethernet precisa de endere&ccedil;os MAC para entregar o quadro na LAN. O <strong>ARP (Address Resolution Protocol)</strong> faz essa ponte:</p>
+
+        <div class="terminal-block">
+            <div class="terminal-header">Como o ARP funciona</div>
+<pre>
+  PC-A quer enviar um pacote para IP 192.168.1.10, mas não sabe o MAC.
+
+  1. PC-A envia um ARP Request em broadcast:
+     "Quem tem o IP 192.168.1.10? Me diga seu MAC."
+     Destino MAC: FF:FF:FF:FF:FF:FF (broadcast)
+
+  2. PC-B (192.168.1.10) responde com ARP Reply em unicast:
+     "Eu tenho esse IP. Meu MAC é B4:2E:99:1A:C7:F0."
+
+  3. PC-A armazena a resposta na tabela ARP (cache):
+     192.168.1.10 → B4:2E:99:1A:C7:F0
+
+  4. A partir daí, PC-A usa o MAC diretamente sem novos ARPs.
+     (O cache ARP expira após alguns minutos.)
+
+  Comando para ver a tabela ARP:
+    arp -a          (Windows e Linux)
+    ip neigh show   (Linux moderno)
+</pre>
+        </div>
+    </div>
+
+    <!-- CARD 5 — Evolução do Ethernet -->
+    <div class="content-card">
+        <h2>&#x26A1; Evolu&ccedil;&atilde;o do Ethernet</h2>
+        <p>O Ethernet evoluiu de 10 Mbps em cabo coaxial para centenas de gigabits em fibra &oacute;ptica, mantendo a mesma estrutura de quadro &mdash; o que garante <strong>compatibilidade retroativa</strong> entre equipamentos de diferentes gera&ccedil;&otilde;es.</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Padr&atilde;o</th>
+                    <th>Velocidade</th>
+                    <th>Meio</th>
+                    <th>Dist&acirc;ncia m&aacute;x.</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>10BASE-5</strong></td>
+                    <td>10 Mbps</td>
+                    <td>Coaxial grosso (RG-8)</td>
+                    <td>500 m</td>
+                    <td>Obsoleto</td>
+                </tr>
+                <tr>
+                    <td><strong>10BASE-2</strong></td>
+                    <td>10 Mbps</td>
+                    <td>Coaxial fino (RG-58)</td>
+                    <td>185 m</td>
+                    <td>Obsoleto</td>
+                </tr>
+                <tr>
+                    <td><strong>10BASE-T</strong></td>
+                    <td>10 Mbps</td>
+                    <td>UTP Cat 3 ou superior</td>
+                    <td>100 m</td>
+                    <td>Legado</td>
+                </tr>
+                <tr>
+                    <td><strong>100BASE-TX</strong> (Fast Ethernet)</td>
+                    <td>100 Mbps</td>
+                    <td>UTP Cat 5e ou superior</td>
+                    <td>100 m</td>
+                    <td>Ainda em uso</td>
+                </tr>
+                <tr>
+                    <td><strong>1000BASE-T</strong> (Gigabit)</td>
+                    <td>1 Gbps</td>
+                    <td>UTP Cat 5e ou superior</td>
+                    <td>100 m</td>
+                    <td>Padr&atilde;o atual</td>
+                </tr>
+                <tr>
+                    <td><strong>10GBASE-T</strong></td>
+                    <td>10 Gbps</td>
+                    <td>UTP Cat 6A ou superior</td>
+                    <td>100 m</td>
+                    <td>Data centers / corporativo</td>
+                </tr>
+                <tr>
+                    <td><strong>10GBASE-SR</strong></td>
+                    <td>10 Gbps</td>
+                    <td>Fibra multimodo (OM3/OM4)</td>
+                    <td>300&ndash;400 m</td>
+                    <td>Data centers</td>
+                </tr>
+                <tr>
+                    <td><strong>40GBASE / 100GBASE</strong></td>
+                    <td>40 / 100 Gbps</td>
+                    <td>Fibra &oacute;ptica</td>
+                    <td>Varia</td>
+                    <td>Backbone e data centers</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="tip-box">
+            <p>&#x2705; <strong>Como ler o nome do padr&atilde;o:</strong> <code>1000BASE-T</code> significa: <em>1000</em> = velocidade em Mbps, <em>BASE</em> = banda base (n&atilde;o modulado), <em>T</em> = meio (T = Twisted pair, S = Short fiber, L = Long fiber, X = extens&atilde;o m&eacute;dia).</p>
+        </div>
+    </div>
+
+    <!-- CARD 6 — Ethernet hoje: switches, VLANs, PoE -->
+    <div class="content-card">
+        <h2>&#x1F4BB; Ethernet Hoje: Switches, VLANs e PoE</h2>
+
+        <h3>Switches e Dom&iacute;nios de Colis&atilde;o</h3>
+        <p>O switch substituiu o hub e revolucionou o Ethernet. Enquanto o hub retransmite tudo para todas as portas (um &uacute;nico dom&iacute;nio de colis&atilde;o), o switch aprende os MACs de cada porta e encaminha quadros apenas para o destino correto &mdash; cada porta &eacute; seu pr&oacute;prio dom&iacute;nio de colis&atilde;o isolado, operando em full-duplex.</p>
+
+        <div class="terminal-block">
+            <div class="terminal-header">Tabela MAC do switch (MAC Address Table)</div>
+<pre>
+  O switch mantém uma tabela associando MACs às portas físicas:
+
+  Porta │ MAC Address        │ VLAN │ Tipo
+  ──────┼────────────────────┼──────┼──────────
+  Fa0/1 │ A8:5E:45:F3:2B:7C │   1  │ Dinâmico
+  Fa0/2 │ B4:2E:99:1A:C7:F0 │   1  │ Dinâmico
+  Fa0/3 │ C0:FF:EE:12:34:56 │  10  │ Estático
+  Gi0/1 │ — (uplink)        │ all  │ Trunk
+
+  Quando chega um quadro para A8:5E:45:F3:2B:7C,
+  o switch envia apenas para Fa0/1, sem inundar as demais portas.
+
+  Se o MAC não estiver na tabela → flooding (envia para todas as portas).
+</pre>
+        </div>
+
+        <h3>VLANs &mdash; IEEE 802.1Q</h3>
+        <p>Uma <strong>VLAN (Virtual LAN)</strong> segmenta logicamente uma rede f&iacute;sica em m&uacute;ltiplas redes virtuais isoladas. Dispositivos em VLANs diferentes n&atilde;o se comunicam diretamente &mdash; precisam de um roteador ou switch Layer 3.</p>
+
+        <p>O padr&atilde;o <strong>IEEE 802.1Q</strong> adiciona uma <em>tag</em> de 4 bytes ao quadro Ethernet (entre MAC origem e EtherType), contendo o ID da VLAN (1&ndash;4094). Portas <em>trunk</em> carregam tr&aacute;fego de m&uacute;ltiplas VLANs; portas <em>access</em> pertencem a uma &uacute;nica VLAN.</p>
+
+        <h3>PoE &mdash; Power over Ethernet</h3>
+        <p>O <strong>PoE (IEEE 802.3af/at/bt)</strong> permite transmitir energia el&eacute;trica pelo cabo UTP junto com os dados, eliminando a necessidade de fontes de alimenta&ccedil;&atilde;o separadas.</p>
+
+        <div class="cmd-grid">
+            <div class="cmd-card">
+                <span class="cmd">802.3af (PoE)</span>
+                <strong>At&eacute; 15,4 W</strong>
+                <span>Telefones IP, pontos de acesso Wi-Fi simples, c&acirc;meras IP b&aacute;sicas</span>
+            </div>
+            <div class="cmd-card">
+                <span class="cmd">802.3at (PoE+)</span>
+                <strong>At&eacute; 30 W</strong>
+                <span>Access points Wi-Fi 6, c&acirc;meras PTZ, thin clients</span>
+            </div>
+            <div class="cmd-card">
+                <span class="cmd">802.3bt (PoE++)</span>
+                <strong>At&eacute; 90 W</strong>
+                <span>Laptops, telas digitais, access points Wi-Fi 6E de alta performance</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ATIVIDADE PRÁTICA -->
+    <div class="content-card exercise-card" id="prat-rc06">
+        <h2>&#x1F4DD; Atividade Pr&aacute;tica</h2>
+        <p class="prat-intro">Analisar quadros, endere&ccedil;os MAC e comportamento do switch Ethernet.</p>
+
+        <div class="prat-steps">
+            <div class="prat-step">
+                <div class="step-num">1</div>
+                <div class="step-body">
+                    <div class="step-label">Interpretar endere&ccedil;os MAC</div>
+                    <div class="step-desc">Para cada endere&ccedil;o MAC abaixo, identifique: (a) se &eacute; unicast, multicast ou broadcast; (b) qual o OUI (3 primeiros bytes); (c) a representa&ccedil;&atilde;o equivalente no padr&atilde;o Cisco. Endere&ccedil;os: (1) FF:FF:FF:FF:FF:FF; (2) 01:00:5E:00:00:01; (3) 3C:22:FB:A4:12:09; (4) 00:50:56:C0:00:08. <em>Dica: use o comando <code>arp -a</code> no seu computador para ver MACs da sua rede local.</em></div>
+                </div>
+            </div>
+            <div class="prat-step">
+                <div class="step-num">2</div>
+                <div class="step-body">
+                    <div class="step-label">Dissecar um quadro Ethernet</div>
+                    <div class="step-desc">Dado o seguinte quadro Ethernet em hexadecimal (simplificado), identifique cada campo: <code>FF FF FF FF FF FF | A8 5E 45 F3 2B 7C | 08 06 | [dados ARP...] | A1 B2 C3 D4</code>. (a) Qual o MAC de destino? &Eacute; unicast, multicast ou broadcast? (b) Qual o MAC de origem? (c) O que indica o EtherType 0x0806? (d) Qual campo &eacute; o FCS? (e) Por que &eacute; um pacote ARP e n&atilde;o IP?</div>
+                </div>
+            </div>
+            <div class="prat-step">
+                <div class="step-num">3</div>
+                <div class="step-body">
+                    <div class="step-label">Simular a tabela MAC de um switch</div>
+                    <div class="step-desc">Um switch de 4 portas inicia com a tabela MAC vazia. Trace o que acontece em cada etapa: (a) PC-A (Fa0/1, MAC AA) envia um quadro para PC-B (MAC BB), mas BB ainda n&atilde;o est&aacute; na tabela. Quais portas recebem o quadro? (b) PC-B responde. O que muda na tabela? (c) PC-A envia novamente para PC-B. Agora quais portas recebem? (d) Por que o switch &eacute; mais eficiente que o hub?</div>
+                </div>
+            </div>
+            <div class="prat-step">
+                <div class="step-num">4</div>
+                <div class="step-body">
+                    <div class="step-label">Pesquisar e aplicar PoE</div>
+                    <div class="step-desc">Uma escola quer instalar 8 c&acirc;meras IP (consumo de 12 W cada) e 4 access points Wi-Fi 6 (consumo de 25 W cada). (a) Qual padr&atilde;o PoE atende cada dispositivo? (b) Qual a pot&ecirc;ncia total necess&aacute;ria do switch PoE? (c) Pesquise um switch gerenci&aacute;vel de 24 portas com PoE+ compat&iacute;vel com esse cen&aacute;rio e registre o modelo e pre&ccedil;o aproximado.</div>
+                </div>
+            </div>
+            <div class="prat-step">
+                <div class="step-num">5</div>
+                <div class="step-body">
+                    <div class="step-label">&#x1F465; Trabalho em grupo &mdash; Debate hub vs. switch vs. roteador</div>
+                    <div class="step-desc"><strong>(Aprendizagem Baseada em Equipes &mdash; grupos de 3&ndash;4 alunos)</strong> Cada grupo recebe um dispositivo para &ldquo;defender&rdquo;: hub, switch L2, switch L3 e roteador. O grupo deve explicar: (a) em qual camada OSI opera; (b) como encaminha dados (broadcast, MAC, IP); (c) quando ainda faz sentido usar; (d) qual a limita&ccedil;&atilde;o principal. Ap&oacute;s as apresenta&ccedil;&otilde;es, a turma monta na lousa uma hierarquia de rede completa posicionando cada dispositivo. <em>Debatam: por que ainda se vende hub hoje? Existe justificativa t&eacute;cnica?</em></div>
+                </div>
+            </div>
+            <div class="prat-step">
+                <div class="step-num">6</div>
+                <div class="step-body">
+                    <div class="step-label">&#x1F9E9; Computa&ccedil;&atilde;o desplugada &mdash; CSMA/CD humano</div>
+                    <div class="step-desc"><strong>(Metodologia ativa &mdash; sem computador)</strong> Simule o CSMA/CD com a turma: cada aluno &eacute; um dispositivo de rede. Usem um &ldquo;cabo&rdquo; imagin&aacute;rio representado por uma fita no ch&atilde;o &mdash; s&oacute; pode falar quem estiver com o microfone (um objeto qualquer). Regras: (a) antes de falar, espere sil&ecirc;ncio (&ldquo;carrier sense&rdquo;); (b) se dois falarem juntos, ambos param (&ldquo;colis&atilde;o&rdquo;), contam at&eacute; um n&uacute;mero aleat&oacute;rio (backoff) e tentam de novo. Depois, refazer a simula&ccedil;&atilde;o sem o CSMA/CD &mdash; caos! <em>Reflit am: o que muda quando um switch isola as convers as? Por que eliminar colis&otilde;es aumenta a vaz&atilde;o? A atividade &eacute; adapt&aacute;vel: alunos podem usar escrita em quadro branco ou comunica&ccedil;&atilde;o por sinais.</em></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="prat-observe">
+            <strong>&#x1F4CC; Para refletir:</strong> o Ethernet &eacute; uma das tecnologias mais bem-sucedidas da hist&oacute;ria da computa&ccedil;&atilde;o. Em 50 anos, sua velocidade cresceu mais de 40 milh&otilde;es de vezes &mdash; de 2,94 Mbps para 400 Gbps &mdash; mantendo a mesma estrutura fundamental de quadro. Entender o Ethernet &eacute; entender a base sobre a qual toda rede local moderna &eacute; constru&iacute;da.
+        </div>
+
+        <div class="ex-actions">
+            <button class="btn-print" onclick="printPractical('prat-rc06', 'Aula 6 \u2014 Ethernet (IEEE 802.3)')">&#x1F5A8;&#xFE0F; Imprimir roteiro</button>
+        </div>
+    </div>
+
+    <!-- MÚLTIPLA ESCOLHA -->
+    <div class="content-card exercise-card">
+        <h2>&#x2753; Verifique seu Conhecimento</h2>
+
+        <div class="mc-question" data-correct="b">
+            <p class="mc-q-text">Qual campo do quadro Ethernet &eacute; respons&aacute;vel pela detec&ccedil;&atilde;o de erros de transmiss&atilde;o, permitindo ao receptor descartar quadros corrompidos?</p>
+            <div class="mc-options">
+                <div class="mc-option" data-option="a"><span class="mc-letter">A</span><span>Pre&acirc;mbulo</span></div>
+                <div class="mc-option" data-option="b"><span class="mc-letter">B</span><span>FCS (Frame Check Sequence)</span></div>
+                <div class="mc-option" data-option="c"><span class="mc-letter">C</span><span>EtherType</span></div>
+                <div class="mc-option" data-option="d"><span class="mc-letter">D</span><span>SFD (Start Frame Delimiter)</span></div>
+            </div>
+            <div class="mc-explanation">&#x2713; O FCS (4 bytes, CRC-32) &eacute; calculado sobre o conte&uacute;do do quadro pelo emissor. O receptor refaz o c&aacute;lculo e compara: se diferente, o quadro foi corrompido e &eacute; descartado silenciosamente. O pre&acirc;mbulo sincroniza o clock; o SFD marca o in&iacute;cio; o EtherType indica o protocolo da camada superior.</div>
+        </div>
+        <hr class="mc-sep">
+        <div class="mc-question" data-correct="d">
+            <p class="mc-q-text">O endere&ccedil;o MAC FF:FF:FF:FF:FF:FF &eacute; um endere&ccedil;o:</p>
+            <div class="mc-options">
+                <div class="mc-option" data-option="a"><span class="mc-letter">A</span><span>Unicast &mdash; identifica uma &uacute;nica placa de rede</span></div>
+                <div class="mc-option" data-option="b"><span class="mc-letter">B</span><span>Multicast &mdash; envia para um grupo de dispositivos</span></div>
+                <div class="mc-option" data-option="c"><span class="mc-letter">C</span><span>Loopback &mdash; usado para testes internos da placa</span></div>
+                <div class="mc-option" data-option="d"><span class="mc-letter">D</span><span>Broadcast &mdash; recebido por todos os dispositivos da LAN</span></div>
+            </div>
+            <div class="mc-explanation">&#x2713; FF:FF:FF:FF:FF:FF &eacute; o endere&ccedil;o de broadcast Ethernet: todos os 48 bits em 1. Qualquer dispositivo na mesma LAN recebe e processa o quadro. &Eacute; usado pelo ARP Request, DHCP Discover e outros protocolos que precisam alcan&ccedil;ar todos na rede local.</div>
+        </div>
+        <hr class="mc-sep">
+        <div class="mc-question" data-correct="c">
+            <p class="mc-q-text">Por que o CSMA/CD tornou-se irrelevante nas redes Ethernet modernas?</p>
+            <div class="mc-options">
+                <div class="mc-option" data-option="a"><span class="mc-letter">A</span><span>O IPv6 eliminou a necessidade de controle de colis&atilde;o</span></div>
+                <div class="mc-option" data-option="b"><span class="mc-letter">B</span><span>Os cabos Cat 6A absorvem as colis&otilde;es fisicamente</span></div>
+                <div class="mc-option" data-option="c"><span class="mc-letter">C</span><span>Switches modernos operam em full-duplex, onde cada porta tem seu pr&oacute;prio dom&iacute;nio de colis&atilde;o e n&atilde;o h&aacute; meio compartilhado</span></div>
+                <div class="mc-option" data-option="d"><span class="mc-letter">D</span><span>O IEEE 802.3 removeu o CSMA/CD da especifica&ccedil;&atilde;o em 2010</span></div>
+            </div>
+            <div class="mc-explanation">&#x2713; Switches criam dom&iacute;nios de colis&atilde;o isolados por porta e operam em full-duplex &mdash; cada dispositivo transmite e recebe simultaneamente em pares dedicados, sem compartilhamento de meio. Sem meio compartilhado, n&atilde;o h&aacute; colis&atilde;o, tornando o CSMA/CD desnecess&aacute;rio. Hubs (meio compartilhado) praticamente desapareceram.</div>
+        </div>
+        <hr class="mc-sep">
+        <div class="mc-question" data-correct="a">
+            <p class="mc-q-text">Um switch recebe um quadro cujo MAC de destino n&atilde;o est&aacute; em sua tabela MAC. O que ele faz?</p>
+            <div class="mc-options">
+                <div class="mc-option" data-option="a"><span class="mc-letter">A</span><span>Encaminha o quadro para todas as portas, exceto a de origem (flooding)</span></div>
+                <div class="mc-option" data-option="b"><span class="mc-letter">B</span><span>Descarta o quadro e solicita reenvio ao remetente</span></div>
+                <div class="mc-option" data-option="c"><span class="mc-letter">C</span><span>Encaminha apenas para a porta de uplink (gateway)</span></div>
+                <div class="mc-option" data-option="d"><span class="mc-letter">D</span><span>Envia um ARP Request para descobrir a porta correta</span></div>
+            </div>
+            <div class="mc-explanation">&#x2713; Quando o MAC de destino n&atilde;o est&aacute; na tabela, o switch faz <em>flooding</em>: encaminha o quadro para todas as portas, exceto a de origem. Quando o destinat&aacute;rio responde, o switch aprende seu MAC e porta, e as pr&oacute;ximas transmiss&otilde;es j&aacute; s&atilde;o encaminhadas diretamente. O ARP &eacute; fun&ccedil;&atilde;o do IP (camada 3), n&atilde;o do switch (camada 2).</div>
+        </div>
+    </div>
+
+    <div class="nav-footer">
+        <a href="rc05-meios-transmissao.html" class="nav-link">&#x2B05; Anterior: Meios de Transmiss&atilde;o</a>
+        <a href="rc07-wifi.html" class="nav-link">Pr&oacute;xima: Wi-Fi (IEEE 802.11) &#x27A1;</a>
+    </div>
+
+</div>
+
+<script src="slide-mode.js"></script>
+<script src="exercise-drag.js"></script>
+<script src="exercise-print.js"></script>
+<script src="exercise-mc.js"></script>
+</body>
+</html>
