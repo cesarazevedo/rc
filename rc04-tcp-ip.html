@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aula 4 &mdash; Arquitetura TCP/IP</title>
+    <link rel="stylesheet" href="slide-mode.css">
+    <link rel="stylesheet" href="exercise.css">
+    <link rel="stylesheet" href="lesson.css">
+    <style>
+        :root {
+            --primary:   #1a73e8;
+            --secondary: #0d47a1;
+            --bg-light:  #f4f7fe;
+            --text-dark: #2d3748;
+        }
+    </style>
+</head>
+<body>
+
+<div class="top-bar">
+    <a href="index.html" class="back-btn">&#x2B05; Voltar ao Dashboard</a>
+    <span class="page-badge">1&ordm; Bimestre &mdash; Fundamentos e Modelos</span>
+    <button class="slide-toggle" id="slideToggleBtn">&#x1F4FA; Modo Slide</button>
+</div>
+
+<div class="content-wrapper">
+
+    <div class="lesson-hero">
+        <h1>&#x1F5A7;&#xFE0F; Arquitetura TCP/IP</h1>
+        <p class="subtitle">Aula 4 &mdash; As 4 camadas do modelo TCP/IP, compara&ccedil;&atilde;o com o OSI, principais protocolos e como dados realmente trafegam pela internet</p>
+    </div>
+
+    <!-- CARD 1 — Origem e contexto -->
+    <div class="content-card">
+        <h2>&#x1F30D; De Onde Veio o TCP/IP</h2>
+        <p>Na d&eacute;cada de 1960, o Departamento de Defesa dos EUA (DoD) tinha um problema cr&iacute;tico: suas redes militares n&atilde;o resistiriam a um ataque nuclear — bastava destruir o n&oacute; central para derrubar tudo. A solu&ccedil;&atilde;o foi criar uma rede <strong>sem ponto &uacute;nico de falha</strong>, capaz de redirecionar dados por qualquer caminho dispon&iacute;vel.</p>
+
+        <p>Assim nasceu a <strong>ARPANET</strong> (1969), a precursora da internet. O conjunto de protocolos que viabilizou essa rede foi o <strong>TCP/IP</strong>, desenvolvido por Vint Cerf e Bob Kahn e adotado oficialmente pela ARPANET em 1983. Ao contr&aacute;rio do OSI &mdash; que &eacute; um modelo te&oacute;rico &mdash; o <strong>TCP/IP &eacute; uma implementa&ccedil;&atilde;o real</strong>: &eacute; a arquitetura que sustenta toda a internet at&eacute; hoje.</p>
+
+        <div class="cmd-grid">
+            <div class="cmd-card">
+                <span class="cmd">TCP</span>
+                <strong>Transmission Control Protocol</strong>
+                <span>Garante entrega ordenada e confi&aacute;vel de dados; controla erros e fluxo</span>
+            </div>
+            <div class="cmd-card">
+                <span class="cmd">IP</span>
+                <strong>Internet Protocol</strong>
+                <span>Endere&ccedil;a e roteia pacotes entre redes distintas ao redor do mundo</span>
+            </div>
+            <div class="cmd-card">
+                <span class="cmd">4 Camadas</span>
+                <strong>Mais simples que o OSI</strong>
+                <span>Agrupa as 7 camadas OSI em apenas 4, refletindo como os sistemas reais funcionam</span>
+            </div>
+            <div class="cmd-card">
+                <span class="cmd">Padr&atilde;o aberto</span>
+                <strong>N&atilde;o pertence a ningu&eacute;m</strong>
+                <span>Qualquer dispositivo pode implement&aacute;-lo; isso possibilitou a expans&atilde;o global da internet</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- CARD 2 — As 4 camadas -->
+    <div class="content-card">
+        <h2>&#x1F4CA; As 4 Camadas do Modelo TCP/IP</h2>
+        <p>O TCP/IP organiza a comunica&ccedil;&atilde;o em <strong>4 camadas</strong>, da mais alta (mais pr&oacute;xima do usu&aacute;rio) para a mais baixa (mais pr&oacute;xima do hardware).</p>
+
+        <div class="terminal-block">
+            <div class="terminal-header">Modelo TCP/IP &mdash; Pilha de Camadas</div>
+<pre>
+ ┌──────────────────────────────────────────────────────┐
+ │  4 — Aplicação       Application Layer               │
+ │      HTTP, HTTPS, FTP, SSH, DNS, SMTP, POP3, DHCP    │
+ ├──────────────────────────────────────────────────────┤
+ │  3 — Transporte      Transport Layer                 │
+ │      TCP, UDP                                        │
+ ├──────────────────────────────────────────────────────┤
+ │  2 — Internet        Internet Layer                  │
+ │      IP (v4/v6), ICMP, ARP, OSPF, BGP               │
+ ├──────────────────────────────────────────────────────┤
+ │  1 — Acesso à Rede   Network Access Layer            │
+ │      Ethernet, Wi-Fi (802.11), PPP, cabo, fibra      │
+ └──────────────────────────────────────────────────────┘
+</pre>
+        </div>
+
+        <h3>Camada 4 &mdash; Aplica&ccedil;&atilde;o</h3>
+        <p>A camada mais pr&oacute;xima do usu&aacute;rio. Ela <strong>n&atilde;o &eacute; o aplicativo em si</strong> (o navegador, o cliente de e-mail), mas sim os protocolos que esses aplicativos usam para se comunicar. Aqui vivem o HTTP (web), o SMTP (e-mail), o DNS (resolu&ccedil;&atilde;o de nomes) e o SSH (acesso remoto seguro), entre outros. A PDU desta camada &eacute; genericamente chamada de <strong>mensagem (message)</strong>.</p>
+
+        <h3>Camada 3 &mdash; Transporte</h3>
+        <p>Respons&aacute;vel pela comunica&ccedil;&atilde;o <strong>fim a fim</strong> (host a host). Dois protocolos dominam esta camada:</p>
+        <ul>
+            <li><strong>TCP (Transmission Control Protocol):</strong> confi&aacute;vel, orientado a conex&atilde;o, garante que todos os dados chegam na ordem certa. Usa o <em>handshake</em> de 3 vias (SYN &rarr; SYN-ACK &rarr; ACK). PDU: <strong>segmento</strong>.</li>
+            <li><strong>UDP (User Datagram Protocol):</strong> n&atilde;o confi&aacute;vel, sem conex&atilde;o, mais r&aacute;pido. Usado em aplica&ccedil;&otilde;es que toleram perda (streaming, jogos, DNS). PDU: <strong>datagrama</strong>.</li>
+        </ul>
+        <p>Esta camada usa <strong>portas</strong> para identificar qual aplica&ccedil;&atilde;o recebe os dados (HTTP = 80, HTTPS = 443, SSH = 22, DNS = 53).</p>
+
+        <h3>Camada 2 &mdash; Internet</h3>
+        <p>Cuida do <strong>endere&ccedil;amento l&oacute;gico e roteamento</strong> entre redes. O protocolo central &eacute; o <strong>IP</strong>, que atribui endere&ccedil;os &uacute;nicos a cada dispositivo e decide o melhor caminho para o pacote chegar ao destino &mdash; mesmo que precise atravessar dezenas de roteadores em pa&iacute;ses diferentes. PDU: <strong>pacote</strong>. O ICMP (&ldquo;ping&rdquo;) e o ARP (resolu&ccedil;&atilde;o de endere&ccedil;os) tamb&eacute;m atuam aqui.</p>
+
+        <h3>Camada 1 &mdash; Acesso &agrave; Rede</h3>
+        <p>Engloba tudo que tem a ver com o <strong>meio f&iacute;sico e o enlace local</strong>: placas de rede, drivers, cabos, r&aacute;dio Wi-Fi, fibra &oacute;ptica e os protocolos de acesso ao meio (Ethernet, 802.11). Corresponde &agrave;s camadas F&iacute;sica e Enlace do OSI. PDU: <strong>quadro (frame)</strong> no n&iacute;vel de enlace e <strong>bits</strong> no n&iacute;vel f&iacute;sico.</p>
+
+        <div class="alert-box">
+            <p>&#x26A0;&#xFE0F; <strong>Aten&ccedil;&atilde;o:</strong> alguns livros e cursos chamam a camada de Acesso &agrave; Rede de &ldquo;Enlace&rdquo; ou &ldquo;Interface de Rede&rdquo;. Outros dividem o modelo TCP/IP em 5 camadas, separando Enlace e F&iacute;sica. As varia&ccedil;&otilde;es existem &mdash; o importante &eacute; entender a fun&ccedil;&atilde;o de cada n&iacute;vel.</p>
+        </div>
+    </div>
+
+    <!-- CARD 3 — TCP/IP vs OSI -->
+    <div class="content-card">
+        <h2>&#x1F500; TCP/IP vs. OSI: Compara&ccedil;&atilde;o</h2>
+        <p>Os dois modelos descrevem o mesmo processo de comunica&ccedil;&atilde;o, mas com granularidades diferentes. Conhecer o mapeamento &eacute; essencial para falar a mesma l&iacute;ngua em qualquer equipe de redes.</p>
+
+        <div class="terminal-block">
+            <div class="terminal-header">Mapeamento OSI ↔ TCP/IP</div>
+<pre>
+ OSI (7 camadas)                TCP/IP (4 camadas)
+ ───────────────────────────────────────────────────
+ 7 — Aplicação      ┐
+ 6 — Apresentação   ├──────►  4 — Aplicação
+ 5 — Sessão         ┘
+ ───────────────────────────────────────────────────
+ 4 — Transporte     ──────►   3 — Transporte
+ ───────────────────────────────────────────────────
+ 3 — Rede           ──────►   2 — Internet
+ ───────────────────────────────────────────────────
+ 2 — Enlace         ┐
+ 1 — Física         ├──────►  1 — Acesso à Rede
+                    ┘
+</pre>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Aspecto</th>
+                    <th>OSI</th>
+                    <th>TCP/IP</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Tipo</strong></td>
+                    <td>Modelo de refer&ecirc;ncia te&oacute;rico</td>
+                    <td>Implementa&ccedil;&atilde;o pr&aacute;tica real</td>
+                </tr>
+                <tr>
+                    <td><strong>N&uacute;mero de camadas</strong></td>
+                    <td>7</td>
+                    <td>4 (ou 5 em algumas vers&otilde;es)</td>
+                </tr>
+                <tr>
+                    <td><strong>Origem</strong></td>
+                    <td>ISO, 1984 (te&oacute;rico)</td>
+                    <td>DoD / ARPANET, 1983 (pr&aacute;tico)</td>
+                </tr>
+                <tr>
+                    <td><strong>Uso atual</strong></td>
+                    <td>Refer&ecirc;ncia conceitual e ensino</td>
+                    <td>Toda a internet e redes modernas</td>
+                </tr>
+                <tr>
+                    <td><strong>Dependente do protocolo?</strong></td>
+                    <td>N&atilde;o &mdash; gen&eacute;rico</td>
+                    <td>Sim &mdash; define TCP, IP, UDP etc.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="tip-box">
+            <p>&#x2705; <strong>Dica profissional:</strong> na pr&aacute;tica, profissionais de rede usam o OSI para <em>descrever e diagnosticar</em> problemas (&ldquo;o problema &eacute; na camada 3&rdquo;) mas operam com o TCP/IP para <em>configurar e implementar</em> servi&ccedil;os. Dominar os dois &eacute; obrigat&oacute;rio.</p>
+        </div>
+    </div>
+
+    <!-- CARD 4 — Protocolos por camada -->
+    <div class="content-card">
+        <h2>&#x1F4CB; Protocolos Essenciais por Camada</h2>
+        <p>Cada camada TCP/IP possui um ecossistema de protocolos. Os mais cobrados em provas e mais usados no dia a dia:</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Camada</th>
+                    <th>Protocolo</th>
+                    <th>Fun&ccedil;&atilde;o principal</th>
+                    <th>Porta / Detalhe</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td rowspan="7"><strong>Aplica&ccedil;&atilde;o</strong></td>
+                    <td>HTTP</td>
+                    <td>Transfer&ecirc;ncia de p&aacute;ginas web</td>
+                    <td>TCP 80</td>
+                </tr>
+                <tr>
+                    <td>HTTPS</td>
+                    <td>HTTP com criptografia TLS</td>
+                    <td>TCP 443</td>
+                </tr>
+                <tr>
+                    <td>DNS</td>
+                    <td>Resolve nomes em endere&ccedil;os IP</td>
+                    <td>UDP/TCP 53</td>
+                </tr>
+                <tr>
+                    <td>DHCP</td>
+                    <td>Atribui IPs automaticamente</td>
+                    <td>UDP 67/68</td>
+                </tr>
+                <tr>
+                    <td>SSH</td>
+                    <td>Acesso remoto seguro</td>
+                    <td>TCP 22</td>
+                </tr>
+                <tr>
+                    <td>SMTP</td>
+                    <td>Envio de e-mail</td>
+                    <td>TCP 25 / 587</td>
+                </tr>
+                <tr>
+                    <td>FTP</td>
+                    <td>Transfer&ecirc;ncia de arquivos</td>
+                    <td>TCP 20/21</td>
+                </tr>
+                <tr>
+                    <td rowspan="2"><strong>Transporte</strong></td>
+                    <td>TCP</td>
+                    <td>Entrega confi&aacute;vel, orientado a conex&atilde;o</td>
+                    <td>Segmentos, ACK</td>
+                </tr>
+                <tr>
+                    <td>UDP</td>
+                    <td>Entrega r&aacute;pida, sem confirma&ccedil;&atilde;o</td>
+                    <td>Datagramas</td>
+                </tr>
+                <tr>
+                    <td rowspan="3"><strong>Internet</strong></td>
+                    <td>IPv4 / IPv6</td>
+                    <td>Endere&ccedil;amento e roteamento</td>
+                    <td>Pacotes</td>
+                </tr>
+                <tr>
+                    <td>ICMP</td>
+                    <td>Mensagens de controle e diagn&oacute;stico</td>
+                    <td>ping, traceroute</td>
+                </tr>
+                <tr>
+                    <td>ARP</td>
+                    <td>Resolve IP em endere&ccedil;o MAC</td>
+                    <td>LAN local</td>
+                </tr>
+                <tr>
+                    <td rowspan="2"><strong>Acesso &agrave; Rede</strong></td>
+                    <td>Ethernet</td>
+                    <td>Enlace de dados por cabo</td>
+                    <td>Quadros, MAC</td>
+                </tr>
+                <tr>
+                    <td>Wi-Fi (802.11)</td>
+                    <td>Enlace de dados sem fio</td>
+                    <td>Quadros, SSID</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- CARD 5 — Encapsulamento -->
+    <div class="content-card">
+        <h2>&#x1F4E6; Encapsulamento no TCP/IP</h2>
+        <p>Assim como no OSI, cada camada TCP/IP <strong>encapsula</strong> os dados recebidos adicionando seu pr&oacute;prio cabe&ccedil;alho. No receptor, o processo inverso (desencapsulamento) ocorre camada por camada.</p>
+
+        <div class="terminal-block">
+            <div class="terminal-header">Encapsulamento — exemplo: acessar www.exemplo.com</div>
+<pre>
+ EMISSOR                                            RECEPTOR
+ ─────────────────────────────────────────────────────────────
+ [Aplicação]   Mensagem HTTP GET /index.html
+     ↓ adiciona cabeçalho TCP (porta origem, destino)
+ [Transporte]  Segmento TCP  [ HDR-TCP | Mensagem HTTP ]
+     ↓ adiciona cabeçalho IP (IP origem, IP destino)
+ [Internet]    Pacote IP     [ HDR-IP | HDR-TCP | HTTP ]
+     ↓ adiciona cabeçalho Ethernet (MAC origem, destino)
+ [Acesso Rede] Quadro Eth    [ HDR-ETH | HDR-IP | HDR-TCP | HTTP | FCS ]
+     ↓ converte em bits e transmite pelo cabo/Wi-Fi
+
+                              ← bits viajam pela rede →
+
+                                             [Acesso Rede] remove HDR-ETH
+                                             [Internet]    remove HDR-IP
+                                             [Transporte]  remove HDR-TCP
+                                             [Aplicação]   recebe HTTP GET
+</pre>
+        </div>
+
+        <p>Cada cabe&ccedil;alho cont&eacute;m informa&ccedil;&otilde;es necess&aacute;rias para que a camada correspondente no receptor fa&ccedil;a seu trabalho. O cabe&ccedil;alho IP, por exemplo, carrega os endere&ccedil;os IP de origem e destino; o TCP carrega as portas e n&uacute;meros de sequ&ecirc;ncia.</p>
+
+        <div class="tip-box">
+            <p>&#x2705; <strong>FCS (Frame Check Sequence):</strong> al&eacute;m do cabe&ccedil;alho, a camada Ethernet adiciona um <em>trailer</em> no final do quadro &mdash; o FCS &mdash; que &eacute; um checksum para detec&ccedil;&atilde;o de erros na transmiss&atilde;o f&iacute;sica.</p>
+        </div>
+    </div>
+
+    <!-- CARD 6 — Como a internet funciona -->
+    <div class="content-card">
+        <h2>&#x1F310; Como a Internet Realmente Funciona</h2>
+        <p>Vamos seguir o caminho de uma requisi&ccedil;&atilde;o quando voc&ecirc; digita <code>https://google.com</code> no navegador:</p>
+
+        <div class="terminal-block">
+            <div class="terminal-header">Passo a passo — HTTPS para google.com</div>
+<pre>
+ 1. [DNS]       Navegador pergunta ao servidor DNS: "qual é o IP de google.com?"
+                DNS responde: "142.250.x.x" (via UDP, porta 53)
+
+ 2. [TCP Handshake]
+                Seu computador inicia conexão TCP com o IP do Google:
+                → SYN   (seu computador → Google)
+                ← SYN-ACK (Google → você)
+                → ACK   (você confirma)
+
+ 3. [TLS Handshake]
+                Como é HTTPS, negociam criptografia (TLS 1.3).
+                Trocam certificados e chaves simétricas.
+
+ 4. [HTTP GET]  Navegador envia: GET / HTTP/1.1 Host: google.com
+                Encapsulado em: Segmento TCP → Pacote IP → Quadro Ethernet
+
+ 5. [Roteamento]
+                O pacote IP percorre roteadores (camada Internet):
+                Sua casa → modem → provedor → backbone → data center Google
+
+ 6. [Resposta]  Google envia o HTML da página.
+                TCP garante que todos os segmentos chegaram na ordem certa.
+
+ 7. [Renderização]
+                Navegador (camada Aplicação) interpreta HTML/CSS/JS e exibe a página.
+</pre>
+        </div>
+
+        <p>Todo esse processo &mdash; DNS, TCP, TLS, HTTP, roteamento IP &mdash; acontece em <strong>milissegundos</strong>. &Eacute; o TCP/IP orquestrando cada etapa, camada por camada, de forma transparente para o usu&aacute;rio.</p>
+
+        <div class="cmd-grid">
+            <div class="cmd-card">
+                <span class="cmd">ping google.com</span>
+                <strong>Testa a Camada Internet (IP/ICMP)</strong>
+                <span>Verifica conex&atilde;o IP at&eacute; o destino e mede lat&ecirc;ncia</span>
+            </div>
+            <div class="cmd-card">
+                <span class="cmd">traceroute / tracert</span>
+                <strong>Mapeia os roteadores</strong>
+                <span>Mostra cada salto (hop) IP at&eacute; o destino</span>
+            </div>
+            <div class="cmd-card">
+                <span class="cmd">nslookup / dig</span>
+                <strong>Consulta DNS</strong>
+                <span>Resolve nomes de dom&iacute;nio em IPs diretamente</span>
+            </div>
+            <div class="cmd-card">
+                <span class="cmd">netstat / ss</span>
+                <strong>Conex&otilde;es TCP ativas</strong>
+                <span>Lista portas abertas e conex&otilde;es estabelecidas na m&aacute;quina</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ATIVIDADE PRÁTICA -->
+    <div class="content-card exercise-card" id="prat-rc04">
+        <h2>&#x1F4DD; Atividade Pr&aacute;tica</h2>
+        <p class="prat-intro">Explorando o TCP/IP na pr&aacute;tica: protocolos, portas e o caminho dos dados.</p>
+
+        <div class="prat-steps">
+            <div class="prat-step">
+                <div class="step-num">1</div>
+                <div class="step-body">
+                    <div class="step-label">Classificar protocolos</div>
+                    <div class="step-desc">Para cada protocolo abaixo, indique: (a) em qual camada TCP/IP atua; (b) se usa TCP, UDP ou nenhum dos dois; (c) n&uacute;mero de porta (se houver). Protocolos: HTTP, DNS, ICMP, DHCP, SSH, ARP, FTP, HTTPS, UDP, SMTP, IPv6, Ethernet.</div>
+                </div>
+            </div>
+            <div class="prat-step">
+                <div class="step-num">2</div>
+                <div class="step-body">
+                    <div class="step-label">TCP vs. UDP &mdash; quando usar cada um</div>
+                    <div class="step-desc">Para cada servi&ccedil;o abaixo, indique se usaria TCP ou UDP e justifique a escolha: (a) download de arquivo; (b) v&iacute;deo ao vivo (live streaming); (c) acesso SSH a um servidor; (d) jogo online em tempo real; (e) consulta DNS; (f) transfer&ecirc;ncia de e-mail. <em>Dica: pense em qual &eacute; mais prejudicial para cada servi&ccedil;o: um leve atraso ou um dado perdido?</em></div>
+                </div>
+            </div>
+            <div class="prat-step">
+                <div class="step-num">3</div>
+                <div class="step-body">
+                    <div class="step-label">Rastrear o caminho de uma requisi&ccedil;&atilde;o</div>
+                    <div class="step-desc">Descreva passo a passo (em texto) o que acontece nas 4 camadas TCP/IP quando voc&ecirc; envia uma mensagem pelo WhatsApp Web. Identifique: qual protocolo de aplica&ccedil;&atilde;o &eacute; usado? Qual protocolo de transporte e por qu&ecirc;? Como o IP roteia a mensagem at&eacute; os servidores do WhatsApp? O que acontece na camada de acesso &agrave; rede se voc&ecirc; estiver no Wi-Fi?</div>
+                </div>
+            </div>
+            <div class="prat-step">
+                <div class="step-num">4</div>
+                <div class="step-body">
+                    <div class="step-label">Comparar OSI e TCP/IP</div>
+                    <div class="step-desc">Monte uma tabela com as 7 camadas OSI e ao lado indique a camada TCP/IP correspondente e os principais protocolos de cada n&iacute;vel. Em seguida, responda: por que a internet adotou o TCP/IP em vez do OSI? Quais vantagens pr&aacute;ticas o TCP/IP trouxe?</div>
+                </div>
+            </div>
+            <div class="prat-step">
+                <div class="step-num">5</div>
+                <div class="step-body">
+                    <div class="step-label">&#x1F465; Trabalho em grupo &mdash; Simula&ccedil;&atilde;o de Provedor de Internet</div>
+                    <div class="step-desc"><strong>(Aprendizagem Baseada em Problemas &mdash; grupos de 3&ndash;4 alunos)</strong> Cada grupo representa um n&oacute; da internet: Usu&aacute;rio, Roteador do ISP, Servidor DNS e Servidor Web. O grupo deve simular, em voz alta e com cartazes, o que cada n&oacute; faz quando o usu&aacute;rio acessa <code>https://escola.edu.br</code>: (a) o usu&aacute;rio envia pedido DNS; (b) o DNS responde com o IP; (c) o usu&aacute;rio estabelece TCP com o servidor; (d) o roteador encaminha os pacotes IP; (e) o servidor responde com o HTML. <em>Debatam: o que aconteceria se o servidor DNS estivesse fora do ar? E se o roteador do ISP cair?</em></div>
+                </div>
+            </div>
+            <div class="prat-step">
+                <div class="step-num">6</div>
+                <div class="step-body">
+                    <div class="step-label">&#x1F9E9; Computa&ccedil;&atilde;o desplugada &mdash; Handshake humano</div>
+                    <div class="step-desc"><strong>(Metodologia ativa &mdash; sem computador)</strong> Simule o <em>TCP three-way handshake</em> com a turma: tr&ecirc;s alunos representam os pacotes SYN, SYN-ACK e ACK. Cada um escreve em um papel o nome do pacote, IP de origem, IP de destino e n&uacute;mero de sequ&ecirc;ncia (inventado). O &ldquo;cliente&rdquo; entrega o SYN ao &ldquo;servidor&rdquo;, que devolve o SYN-ACK, e o cliente finaliza com o ACK. Depois, simule uma perda: o SYN-ACK se perde &mdash; o que o cliente deve fazer? <em>Reflit am: por que o UDP n&atilde;o faz esse processo? Em quais situa&ccedil;&otilde;es isso &eacute; uma vantagem? A atividade &eacute; adapt&aacute;vel: alunos podem ditar os valores em vez de escrever.</em></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="prat-observe">
+            <strong>&#x1F4CC; Para refletir:</strong> toda vez que voc&ecirc; usa a internet, o TCP/IP est&aacute; operando em milissegundos, camada por camada, em cada dispositivo no caminho. Entender esse processo n&atilde;o &eacute; apenas acad&ecirc;mico &mdash; &eacute; a base para configurar firewalls, diagnosticar falhas de rede, entender seguran&ccedil;a e projetar sistemas distribu&iacute;dos. Profissionais de redes pensam em termos de camadas o tempo todo.
+        </div>
+
+        <div class="ex-actions">
+            <button class="btn-print" onclick="printPractical('prat-rc04', 'Aula 4 \u2014 Arquitetura TCP/IP')">&#x1F5A8;&#xFE0F; Imprimir roteiro</button>
+        </div>
+    </div>
+
+    <!-- MÚLTIPLA ESCOLHA -->
+    <div class="content-card exercise-card">
+        <h2>&#x2753; Verifique seu Conhecimento</h2>
+
+        <div class="mc-question" data-correct="c">
+            <p class="mc-q-text">Qual protocolo &eacute; respons&aacute;vel por traduzir nomes de dom&iacute;nio (como www.google.com) em endere&ccedil;os IP?</p>
+            <div class="mc-options">
+                <div class="mc-option" data-option="a"><span class="mc-letter">A</span><span>DHCP</span></div>
+                <div class="mc-option" data-option="b"><span class="mc-letter">B</span><span>ARP</span></div>
+                <div class="mc-option" data-option="c"><span class="mc-letter">C</span><span>DNS</span></div>
+                <div class="mc-option" data-option="d"><span class="mc-letter">D</span><span>ICMP</span></div>
+            </div>
+            <div class="mc-explanation">&#x2713; O DNS (Domain Name System) resolve nomes de dom&iacute;nio em endere&ccedil;os IP. O DHCP atribui IPs automaticamente; o ARP resolve IP em endere&ccedil;o MAC dentro da LAN; o ICMP &eacute; usado para diagn&oacute;stico (ping). Todos atuam em camadas diferentes, mas o DNS &eacute; o &ldquo;catálogo telef&ocirc;nico&rdquo; da internet.</div>
+        </div>
+        <hr class="mc-sep">
+        <div class="mc-question" data-correct="b">
+            <p class="mc-q-text">O TCP utiliza um processo de tr&ecirc;s etapas para estabelecer uma conex&atilde;o. A sequ&ecirc;ncia correta desse processo &eacute;:</p>
+            <div class="mc-options">
+                <div class="mc-option" data-option="a"><span class="mc-letter">A</span><span>SYN &rarr; ACK &rarr; SYN-ACK</span></div>
+                <div class="mc-option" data-option="b"><span class="mc-letter">B</span><span>SYN &rarr; SYN-ACK &rarr; ACK</span></div>
+                <div class="mc-option" data-option="c"><span class="mc-letter">C</span><span>ACK &rarr; SYN &rarr; SYN-ACK</span></div>
+                <div class="mc-option" data-option="d"><span class="mc-letter">D</span><span>SYN-ACK &rarr; SYN &rarr; ACK</span></div>
+            </div>
+            <div class="mc-explanation">&#x2713; O TCP three-way handshake segue sempre: (1) cliente envia SYN; (2) servidor responde com SYN-ACK; (3) cliente confirma com ACK. Ap&oacute;s os tr&ecirc;s pacotes, a conex&atilde;o est&aacute; estabelecida e a transfer&ecirc;ncia de dados pode come&ccedil;ar. O UDP n&atilde;o realiza esse processo.</div>
+        </div>
+        <hr class="mc-sep">
+        <div class="mc-question" data-correct="d">
+            <p class="mc-q-text">No modelo TCP/IP, qual camada corresponde &agrave; combina&ccedil;&atilde;o das camadas F&iacute;sica e Enlace de Dados do modelo OSI?</p>
+            <div class="mc-options">
+                <div class="mc-option" data-option="a"><span class="mc-letter">A</span><span>Camada de Aplica&ccedil;&atilde;o</span></div>
+                <div class="mc-option" data-option="b"><span class="mc-letter">B</span><span>Camada de Transporte</span></div>
+                <div class="mc-option" data-option="c"><span class="mc-letter">C</span><span>Camada Internet</span></div>
+                <div class="mc-option" data-option="d"><span class="mc-letter">D</span><span>Camada de Acesso &agrave; Rede</span></div>
+            </div>
+            <div class="mc-explanation">&#x2713; A camada de Acesso &agrave; Rede do TCP/IP agrupa as camadas F&iacute;sica (bits, cabos, sinais) e Enlace de Dados (quadros, endere&ccedil;os MAC, Ethernet, Wi-Fi) do OSI. J&aacute; a Camada Internet corresponde &agrave; Camada de Rede do OSI (endere&ccedil;amento IP e roteamento).</div>
+        </div>
+        <hr class="mc-sep">
+        <div class="mc-question" data-correct="a">
+            <p class="mc-q-text">Uma aplica&ccedil;&atilde;o de streaming de v&iacute;deo ao vivo prefere usar UDP em vez de TCP. Qual &eacute; o principal motivo dessa escolha?</p>
+            <div class="mc-options">
+                <div class="mc-option" data-option="a"><span class="mc-letter">A</span><span>UDP &eacute; mais r&aacute;pido e um pequeno atraso para reenviar pacotes perdidos seria mais prejudicial do que perder alguns frames de v&iacute;deo</span></div>
+                <div class="mc-option" data-option="b"><span class="mc-letter">B</span><span>UDP tem criptografia nativa, tornando o streaming mais seguro</span></div>
+                <div class="mc-option" data-option="c"><span class="mc-letter">C</span><span>UDP garante que todos os pacotes chegam na ordem correta, sem reordenamento</span></div>
+                <div class="mc-option" data-option="d"><span class="mc-letter">D</span><span>TCP n&atilde;o suporta multicast, necess&aacute;rio para streaming ao vivo</span></div>
+            </div>
+            <div class="mc-explanation">&#x2713; O UDP n&atilde;o retransmite pacotes perdidos, o que o torna mais r&aacute;pido. Para streaming ao vivo, um leve artefato visual &eacute; aceit&aacute;vel, mas uma pausa de vários segundos para reenvio TCP seria intoler&aacute;vel. O UDP tamb&eacute;m n&atilde;o tem criptografia nativa &mdash; protocolos como DTLS ou QUIC adicionam seguran&ccedil;a sobre ele.</div>
+        </div>
+    </div>
+
+    <div class="nav-footer">
+        <a href="rc03-modelo-osi.html" class="nav-link">&#x2B05; Anterior: Modelo OSI</a>
+        <a href="rc05-enderecamento-ip.html" class="nav-link">Pr&oacute;xima: Endere&ccedil;amento IP &#x27A1;</a>
+    </div>
+
+</div>
+
+<script src="slide-mode.js"></script>
+<script src="exercise-drag.js"></script>
+<script src="exercise-print.js"></script>
+<script src="exercise-mc.js"></script>
+</body>
+</html>
