@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aula 2 &mdash; Topologias e Componentes de Rede</title>
+    <link rel="stylesheet" href="slide-mode.css">
+    <link rel="stylesheet" href="exercise.css">
+    <link rel="stylesheet" href="lesson.css">
+    <style>
+        :root {
+            --primary:   #1a73e8;
+            --secondary: #0d47a1;
+            --bg-light:  #f4f7fe;
+            --text-dark: #2d3748;
+        }
+    </style>
+</head>
+<body>
+
+<div class="top-bar">
+    <a href="index.html" class="back-btn">&#x2B05; Voltar ao Dashboard</a>
+    <span class="page-badge">1&ordm; Bimestre &mdash; Fundamentos e Modelos</span>
+    <button class="slide-toggle" id="slideToggleBtn">&#x1F4FA; Modo Slide</button>
+</div>
+
+<div class="content-wrapper">
+
+    <div class="lesson-hero">
+        <h1>&#x1F4CD; Topologias e Componentes de Rede</h1>
+        <p class="subtitle">Aula 2 &mdash; Topologias f&iacute;sicas e l&oacute;gicas em profundidade, dispositivos de rede (hub, switch, roteador, modem) e fundamentos de cabeamento estruturado</p>
+    </div>
+
+    <!-- CARD 1 — Topologia Física vs Lógica -->
+    <div class="content-card">
+        <h2>&#x1F4D0; Topologia F&iacute;sica vs Topologia L&oacute;gica</h2>
+        <p>&Eacute; fundamental distinguir dois conceitos que frequentemente s&atilde;o confundidos:</p>
+
+        <div class="compare-grid">
+            <div class="compare-box blue">
+                <h4>&#x1F9F1; Topologia F&iacute;sica</h4>
+                <p style="margin:0.5rem 0 0">Descreve como os dispositivos est&atilde;o <strong>fisicamente conectados</strong> &mdash; o layout real dos cabos, switches e equipamentos. &Eacute; o que voc&ecirc; v&ecirc; ao olhar para a sala ou rack de servidores.</p>
+            </div>
+            <div class="compare-box green">
+                <h4>&#x1F4CA; Topologia L&oacute;gica</h4>
+                <p style="margin:0.5rem 0 0">Descreve como os <strong>dados fluem</strong> pela rede &mdash; o caminho que a informa&ccedil;&atilde;o percorre independentemente de como os cabos est&atilde;o dispostos fisicamente.</p>
+            </div>
+        </div>
+
+        <div class="highlight-box">
+            <p>&#x1F4A1; <strong>Exemplo cl&aacute;ssico:</strong> Uma rede Ethernet moderna usa topologia f&iacute;sica <strong>estrela</strong> (todos os cabos v&atilde;o ao switch central), mas a topologia l&oacute;gica &eacute; de <strong>barramento</strong> (os dados s&atilde;o transmitidos para todos e cada dispositivo verifica se o pacote &eacute; seu). Em redes modernas com switches, at&eacute; essa dist&ccedil;&atilde;o &eacute; superada pela comuta&ccedil;&atilde;o seletiva.</p>
+        </div>
+    </div>
+
+    <!-- CARD 2 — Topologias em Detalhe -->
+    <div class="content-card">
+        <h2>&#x1F578;&#xFE0F; Topologias em Detalhe</h2>
+
+        <h3>&#x2B50; Estrela (Star)</h3>
+        <p>Todos os dispositivos se conectam a um <strong>ponto central</strong> (switch ou hub). &Eacute; a topologia dominante nas LANs modernas.</p>
+
+        <div class="terminal-block">
+            <div class="terminal-header">Diagrama &mdash; Topologia Estrela</div>
+<pre>
+        [PC-1]
+           |
+[PC-2] --[SWITCH]-- [PC-3]
+           |
+        [PC-4]
+</pre>
+        </div>
+
+        <table class="info-table">
+            <thead><tr><th>Vantagens</th><th>Desvantagens</th></tr></thead>
+            <tbody>
+                <tr>
+                    <td>Falha em um cabo n&atilde;o afeta os demais</td>
+                    <td>Switch central &eacute; ponto &uacute;nico de falha</td>
+                </tr>
+                <tr>
+                    <td>F&aacute;cil de adicionar/remover dispositivos</td>
+                    <td>Maior quantidade de cabeamento</td>
+                </tr>
+                <tr>
+                    <td>F&aacute;cil de diagnosticar problemas</td>
+                    <td>Custo do switch central</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>&#x1F6A6; Barramento (Bus)</h3>
+        <p>Todos os dispositivos compartilham um &uacute;nico cabo (backbone). Quando um dispositivo transmite, todos os outros recebem o sinal.</p>
+
+        <div class="terminal-block">
+            <div class="terminal-header">Diagrama &mdash; Topologia Barramento</div>
+<pre>
+[PC-1]--[PC-2]--[PC-3]--[PC-4]
+|___________________________|
+       Cabo coaxial
+</pre>
+        </div>
+
+        <table class="info-table">
+            <thead><tr><th>Vantagens</th><th>Desvantagens</th></tr></thead>
+            <tbody>
+                <tr>
+                    <td>Simples e barata de implementar</td>
+                    <td>Falha no cabo central derruba toda a rede</td>
+                </tr>
+                <tr>
+                    <td>Poucos cabos necess&aacute;rios</td>
+                    <td>Desempenho cai com mais dispositivos</td>
+                </tr>
+                <tr>
+                    <td>Adequada para redes pequenas</td>
+                    <td>Praticamente obsoleta</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>&#x1F501; Anel (Ring)</h3>
+        <p>Os dispositivos formam um c&iacute;rculo fechado. Cada n&oacute; recebe e regenera o sinal antes de pass&aacute;-lo adiante. Usada no padr&atilde;o Token Ring (legado) e em redes SONET/SDH de alta disponibilidade.</p>
+
+        <div class="terminal-block">
+            <div class="terminal-header">Diagrama &mdash; Topologia Anel</div>
+<pre>
+   [PC-1]
+   /     \
+[PC-4] [PC-2]
+   \     /
+   [PC-3]
+</pre>
+        </div>
+
+        <table class="info-table">
+            <thead><tr><th>Vantagens</th><th>Desvantagens</th></tr></thead>
+            <tbody>
+                <tr>
+                    <td>Sem colis&otilde;es (acesso controlado por token)</td>
+                    <td>Falha em um n&oacute; pode derrubar o anel</td>
+                </tr>
+                <tr>
+                    <td>Desempenho previs&iacute;vel sob carga</td>
+                    <td>Adicionar dispositivos interrompe a rede</td>
+                </tr>
+                <tr>
+                    <td>Anel duplo oferece redund&acirc;ncia</td>
+                    <td>Tecnologia em desuso nas LANs</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>&#x1F9F6; Malha (Mesh)</h3>
+        <p>Cada dispositivo possui conex&otilde;es diretas com v&aacute;rios outros. Na <strong>malha completa</strong> (full mesh) todos se conectam a todos. Na <strong>malha parcial</strong> (partial mesh) apenas alguns n&oacute;s t&ecirc;m m&uacute;ltiplas conex&otilde;es.</p>
+
+        <div class="terminal-block">
+            <div class="terminal-header">Diagrama &mdash; Malha Completa (4 n&oacute;s)</div>
+<pre>
+[A]---[B]
+ | \ / |
+ |  X  |
+ | / \ |
+[D]---[C]
+</pre>
+        </div>
+
+        <div class="tip-box">
+            <p>&#x2705; <strong>F&oacute;rmula:</strong> Em uma malha completa com <em>n</em> dispositivos, o n&uacute;mero de conex&otilde;es necess&aacute;rias &eacute; <strong>n(n&minus;1)/2</strong>. Com 10 dispositivos: 10&times;9/2 = <strong>45 conex&otilde;es</strong>. Por isso a malha &eacute; usada no backbone da internet, n&atilde;o em redes locais.</p>
+        </div>
+
+        <h3>&#x1F331; Estrela Estendida (Hier&aacute;rquica)</h3>
+        <p>Na pr&aacute;tica, a maioria das redes corporativas e escolares usa uma <strong>estrela estendida</strong>: switches conectados a outros switches, formando camadas (acesso, distribui&ccedil;&atilde;o e n&uacute;cleo).</p>
+
+        <div class="terminal-block">
+            <div class="terminal-header">Diagrama &mdash; Estrela Estendida (modelo real)</div>
+<pre>
+              [Switch N&uacute;cleo]
+              /              \
+   [Switch Dist. A]    [Switch Dist. B]
+    /         \           /         \
+[SW Acesso] [SW Acesso] [SW Acesso] [SW Acesso]
+   |  |         |  |       |  |        |  |
+  PCs PCs      PCs PCs    PCs PCs    PCs PCs
+</pre>
+        </div>
+    </div>
+
+    <!-- CARD 3 — Dispositivos de Rede -->
+    <div class="content-card">
+        <h2>&#x1F9E9; Dispositivos de Rede em Profundidade</h2>
+
+        <h3>Hub &mdash; Concentrador (Legado)</h3>
+        <p>O hub &eacute; o dispositivo mais simples: ao receber um sinal em uma porta, ele <strong>replica para todas as outras portas</strong> sem nenhum tipo de filtragem. Isso cria um &uacute;nico <em>dom&iacute;nio de colis&atilde;o</em> para todos os dispositivos conectados.</p>
+
+        <div class="alert-box">
+            <p>&#x26A0;&#xFE0F; <strong>Por que o hub &eacute; obsoleto?</strong> Com um hub, se dois dispositivos transmitem ao mesmo tempo ocorre uma <strong>colis&atilde;o</strong>: os dados s&atilde;o corrompidos e precisam ser retransmitidos. Quanto mais dispositivos, mais colis&otilde;es e pior o desempenho. O switch resolve completamente esse problema.</p>
+        </div>
+
+        <h3>Switch &mdash; Comutador</h3>
+        <p>O switch aprende o <strong>endere&ccedil;o MAC</strong> de cada dispositivo e encaminha os quadros somente para a porta correta. Cada porta forma seu pr&oacute;prio dom&iacute;nio de colis&atilde;o &mdash; praticamente eliminando as colis&otilde;es.</p>
+
+        <div class="compare-grid">
+            <div class="compare-box blue">
+                <h4>&#x1F512; Switch N&atilde;o Gerenci&aacute;vel</h4>
+                <ul>
+                    <li>Liga e funciona (plug and play)</li>
+                    <li>Sem configura&ccedil;&atilde;o necess&aacute;ria</li>
+                    <li>Sem suporte a VLANs</li>
+                    <li>Ideal para redes dom&eacute;sticas e pequenos escrit&oacute;rios</li>
+                </ul>
+            </div>
+            <div class="compare-box green">
+                <h4>&#x2699;&#xFE0F; Switch Gerenci&aacute;vel</h4>
+                <ul>
+                    <li>Configur&aacute;vel via CLI ou interface web</li>
+                    <li>Suporte a VLANs, QoS, STP, SNMP</li>
+                    <li>Monitoramento de tr&aacute;fego por porta</li>
+                    <li>Indispens&aacute;vel em redes corporativas</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="terminal-block">
+            <div class="terminal-header">Como o switch aprende endere&ccedil;os MAC</div>
+<pre>
+1. PC-A envia quadro para PC-B
+2. Switch recebe na porta 1 e registra: "MAC de A = porta 1"
+3. Switch ainda n&atilde;o sabe onde est&aacute; B: envia para TODAS as portas (flooding)
+4. PC-B responde: switch registra "MAC de B = porta 2"
+5. Pr&oacute;xima vez: switch envia diretamente porta 1 &rarr; porta 2
+   (sem flooding, sem colis&atilde;o com os demais)
+</pre>
+        </div>
+
+        <h3>Roteador &mdash; Router</h3>
+        <p>O roteador opera na <strong>Camada 3 (Rede)</strong> e conecta redes diferentes. Enquanto o switch usa endere&ccedil;os MAC para encaminhar dentro de uma rede, o roteador usa <strong>endere&ccedil;os IP</strong> para encaminhar entre redes.</p>
+
+        <div class="cmd-grid">
+            <div class="cmd-card">
+                <span class="cmd">Roteamento</span>
+                <strong>Encaminhamento IP</strong>
+                <span>Decide o melhor caminho para cada pacote usando tabelas de roteamento</span>
+            </div>
+            <div class="cmd-card">
+                <span class="cmd">NAT</span>
+                <strong>Tradu&ccedil;&atilde;o de Endere&ccedil;os</strong>
+                <span>Permite que v&aacute;rios dispositivos compartilhem um &uacute;nico IP p&uacute;blico</span>
+            </div>
+            <div class="cmd-card">
+                <span class="cmd">DHCP</span>
+                <strong>Distribui&ccedil;&atilde;o de IP</strong>
+                <span>Roteadores dom&eacute;sticos geralmente incluem servidor DHCP integrado</span>
+            </div>
+            <div class="cmd-card">
+                <span class="cmd">Firewall</span>
+                <strong>Filtragem b&aacute;sica</strong>
+                <span>Roteadores modernos t&ecirc;m ACLs e filtragem de pacotes integradas</span>
+            </div>
+        </div>
+
+        <h3>Modem &mdash; Modulador/Demodulador</h3>
+        <p>O modem converte os sinais digitais do computador no formato adequado para o meio f&iacute;sico da operadora (linha telef&ocirc;nica, cabo de TV, fibra &oacute;ptica). Em redes modernas, o <strong>modem &eacute; frequentemente integrado ao roteador</strong> em um &uacute;nico equipamento.</p>
+
+        <table class="info-table">
+            <thead>
+                <tr>
+                    <th>Dispositivo</th>
+                    <th>Camada OSI</th>
+                    <th>Identifica&ccedil;&atilde;o usada</th>
+                    <th>Fun&ccedil;&atilde;o principal</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Hub</strong></td>
+                    <td>Camada 1 (F&iacute;sica)</td>
+                    <td>Nenhuma</td>
+                    <td>Replica sinal para todas as portas</td>
+                </tr>
+                <tr>
+                    <td><strong>Switch</strong></td>
+                    <td>Camada 2 (Enlace)</td>
+                    <td>Endere&ccedil;o MAC</td>
+                    <td>Encaminha quadros seletivamente</td>
+                </tr>
+                <tr>
+                    <td><strong>Roteador</strong></td>
+                    <td>Camada 3 (Rede)</td>
+                    <td>Endere&ccedil;o IP</td>
+                    <td>Interliga redes distintas</td>
+                </tr>
+                <tr>
+                    <td><strong>Modem</strong></td>
+                    <td>Camada 1 (F&iacute;sica)</td>
+                    <td>Nenhuma</td>
+                    <td>Adapta o sinal ao meio da operadora</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- CARD 4 — Cabeamento Estruturado -->
+    <div class="content-card">
+        <h2>&#x1F9F5; Cabeamento Estruturado</h2>
+        <p>O <strong>cabeamento estruturado</strong> &eacute; um sistema padronizado de cabos e conex&otilde;es que suporta m&uacute;ltiplos servi&ccedil;os (dados, voz, v&iacute;deo) de forma organizada e flex&iacute;vel. O principal padr&atilde;o &eacute; o <strong>ANSI/TIA-568</strong>.</p>
+
+        <h3>Categorias de Cabo UTP</h3>
+        <table class="info-table">
+            <thead>
+                <tr>
+                    <th>Categoria</th>
+                    <th>Velocidade m&aacute;x.</th>
+                    <th>Frequ&ecirc;ncia</th>
+                    <th>Uso t&iacute;pico</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Cat 5e</strong></td>
+                    <td>1 Gbps</td>
+                    <td>100 MHz</td>
+                    <td>Redes dom&eacute;sticas e escrit&oacute;rios (ainda muito comum)</td>
+                </tr>
+                <tr>
+                    <td><strong>Cat 6</strong></td>
+                    <td>10 Gbps (at&eacute; 55m)</td>
+                    <td>250 MHz</td>
+                    <td>Redes corporativas modernas</td>
+                </tr>
+                <tr>
+                    <td><strong>Cat 6A</strong></td>
+                    <td>10 Gbps (at&eacute; 100m)</td>
+                    <td>500 MHz</td>
+                    <td>Data centers e redes de alto desempenho</td>
+                </tr>
+                <tr>
+                    <td><strong>Cat 7</strong></td>
+                    <td>10 Gbps</td>
+                    <td>600 MHz</td>
+                    <td>Ambientes com alta interfer&ecirc;ncia eletromagn&eacute;tica</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>Pinagem RJ-45: T568A e T568B</h3>
+        <p>O conector RJ-45 tem 8 pinos. Existem dois padr&otilde;es de pinagem definidos pela TIA-568:</p>
+
+        <div class="compare-grid">
+            <div class="compare-box blue">
+                <h4>&#x1F7E2; Padr&atilde;o T568B (mais comum no Brasil)</h4>
+                <ul>
+                    <li>Pino 1: Laranja/Branco</li>
+                    <li>Pino 2: Laranja</li>
+                    <li>Pino 3: Verde/Branco</li>
+                    <li>Pino 4: Azul</li>
+                    <li>Pino 5: Azul/Branco</li>
+                    <li>Pino 6: Verde</li>
+                    <li>Pino 7: Marrom/Branco</li>
+                    <li>Pino 8: Marrom</li>
+                </ul>
+            </div>
+            <div class="compare-box green">
+                <h4>&#x1F7E1; Padr&atilde;o T568A</h4>
+                <ul>
+                    <li>Pino 1: Verde/Branco</li>
+                    <li>Pino 2: Verde</li>
+                    <li>Pino 3: Laranja/Branco</li>
+                    <li>Pino 4: Azul</li>
+                    <li>Pino 5: Azul/Branco</li>
+                    <li>Pino 6: Laranja</li>
+                    <li>Pino 7: Marrom/Branco</li>
+                    <li>Pino 8: Marrom</li>
+                </ul>
+            </div>
+        </div>
+
+        <h3>Cabo Direto vs Cabo Crossover</h3>
+        <div class="compare-grid">
+            <div class="compare-box blue">
+                <h4>&#x27A1;&#xFE0F; Cabo Direto (Straight-through)</h4>
+                <p style="margin:0.5rem 0 0">Ambas as pontas com o <strong>mesmo padr&atilde;o</strong> (T568B&ndash;T568B ou T568A&ndash;T568A). Conecta dispositivos <em>diferentes</em>: computador &rarr; switch, switch &rarr; roteador.</p>
+            </div>
+            <div class="compare-box green">
+                <h4>&#x21C4; Cabo Crossover</h4>
+                <p style="margin:0.5rem 0 0">Uma ponta T568A e outra T568B. Conecta dispositivos do <strong>mesmo tipo</strong>: computador &rarr; computador, switch &rarr; switch. Hoje em dia, a maioria dos dispositivos detecta automaticamente (Auto-MDI/MDIX).</p>
+            </div>
+        </div>
+
+        <div class="tip-box">
+            <p>&#x2705; <strong>Dist&acirc;ncia m&aacute;xima:</strong> O cabo UTP tem limite de <strong>100 metros</strong> por segmento para garantir a integridade do sinal. Al&eacute;m disso, &eacute; necess&aacute;rio um repetidor, switch ou conversor para fibra &oacute;ptica.</p>
+        </div>
+    </div>
+
+    <!-- ATIVIDADE PRÁTICA -->
+    <div class="content-card exercise-card" id="prat-rc02">
+        <h2>&#x1F4DD; Atividade Pr&aacute;tica</h2>
+        <p class="prat-intro">Identifica&ccedil;&atilde;o de dispositivos e cria&ccedil;&atilde;o de diagrama de rede real.</p>
+
+        <div class="prat-steps">
+            <div class="prat-step">
+                <div class="step-num">1</div>
+                <div class="step-body">
+                    <div class="step-label">Identificar dispositivos no laborat&oacute;rio</div>
+                    <div class="step-desc">Observe os equipamentos do laborat&oacute;rio e identifique: qual o modelo do switch? Ele &eacute; gerenci&aacute;vel ou n&atilde;o? H&aacute; roteador? H&aacute; access point? Registre marca, modelo e n&uacute;mero de portas de cada equipamento encontrado.</div>
+                </div>
+            </div>
+            <div class="prat-step">
+                <div class="step-num">2</div>
+                <div class="step-body">
+                    <div class="step-label">Examinar um cabo UTP</div>
+                    <div class="step-desc">Pegue um cabo UTP com conector RJ-45 e observe a pinagem (olhe pelas laterais do conector). Identifique o padr&atilde;o: T568A ou T568B? O cabo &eacute; direto ou crossover? Qual a categoria do cabo (geralmente est&aacute; escrito no pr&oacute;prio cabo)?</div>
+                </div>
+            </div>
+            <div class="prat-step">
+                <div class="step-num">3</div>
+                <div class="step-body">
+                    <div class="step-label">Desenhar o diagrama de rede</div>
+                    <div class="step-desc">Com base no que observou, desenhe o diagrama de rede do laborat&oacute;rio usando s&iacute;mbolos padr&atilde;o (ret&acirc;ngulo para PCs, quadrado com setas para switch, cilindro para servidor). Indique a topologia f&iacute;sica.</div>
+                </div>
+            </div>
+            <div class="prat-step">
+                <div class="step-num">4</div>
+                <div class="step-body">
+                    <div class="step-label">Calcular conex&otilde;es de malha</div>
+                    <div class="step-desc">Usando a f&oacute;rmula n(n&minus;1)/2, calcule quantas conex&otilde;es seriam necess&aacute;rias para criar uma malha completa com todos os computadores do laborat&oacute;rio. Esse n&uacute;mero &eacute; vi&aacute;vel na pr&aacute;tica? Justifique.</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="prat-observe">
+            <strong>&#x1F4CC; Para refletir:</strong> a escolha entre hub e switch pode parecer simples hoje, mas no final dos anos 90 switches eram caros e hubs eram comuns. Entender <em>por qu&ecirc;</em> o switch venceu &eacute; entender um dos princ&iacute;pios mais importantes de redes: eliminar colis&otilde;es aumenta dramaticamente o desempenho.
+        </div>
+
+        <div class="ex-actions">
+            <button class="btn-print" onclick="printPractical('prat-rc02', 'Aula 2 \u2014 Topologias e Componentes de Rede')">&#x1F5A8;&#xFE0F; Imprimir roteiro</button>
+        </div>
+    </div>
+
+    <!-- MÚLTIPLA ESCOLHA -->
+    <div class="content-card exercise-card">
+        <h2>&#x2753; Verifique seu Conhecimento</h2>
+
+        <div class="mc-question" data-correct="c">
+            <p class="mc-q-text">Qual &eacute; a principal diferen&ccedil;a entre um hub e um switch?</p>
+            <div class="mc-options">
+                <div class="mc-option" data-option="a"><span class="mc-letter">A</span><span>O switch conecta redes diferentes usando endere&ccedil;os IP</span></div>
+                <div class="mc-option" data-option="b"><span class="mc-letter">B</span><span>O hub &eacute; mais r&aacute;pido pois n&atilde;o processa os endere&ccedil;os</span></div>
+                <div class="mc-option" data-option="c"><span class="mc-letter">C</span><span>O switch encaminha quadros seletivamente pelo endere&ccedil;o MAC, eliminando colis&otilde;es</span></div>
+                <div class="mc-option" data-option="d"><span class="mc-letter">D</span><span>O hub suporta VLANs enquanto o switch n&atilde;o suporta</span></div>
+            </div>
+            <div class="mc-explanation">✓ O switch aprende os endereços MAC de cada porta e encaminha quadros somente para a porta correta, criando domínios de colisão individuais. O hub replica para todas as portas, gerando colisões e desperdiçando banda.</div>
+        </div>
+        <hr class="mc-sep">
+        <div class="mc-question" data-correct="b">
+            <p class="mc-q-text">Para conectar dois computadores diretamente, sem usar switch, qual tipo de cabo UTP deve ser utilizado?</p>
+            <div class="mc-options">
+                <div class="mc-option" data-option="a"><span class="mc-letter">A</span><span>Cabo direto (straight-through) T568B&ndash;T568B</span></div>
+                <div class="mc-option" data-option="b"><span class="mc-letter">B</span><span>Cabo crossover T568A&ndash;T568B</span></div>
+                <div class="mc-option" data-option="c"><span class="mc-letter">C</span><span>Cabo coaxial com conector BNC</span></div>
+                <div class="mc-option" data-option="d"><span class="mc-letter">D</span><span>Cabo direto T568A&ndash;T568A</span></div>
+            </div>
+            <div class="mc-explanation">✓ O cabo crossover (uma ponta T568A e outra T568B) é usado para conectar dispositivos do mesmo tipo — como computador a computador ou switch a switch — sem a necessidade de um dispositivo intermediário.</div>
+        </div>
+        <hr class="mc-sep">
+        <div class="mc-question" data-correct="d">
+            <p class="mc-q-text">Uma empresa possui sede em S&atilde;o Paulo e filial no Rio de Janeiro. A rede que interliga as duas unidades &eacute; classificada como:</p>
+            <div class="mc-options">
+                <div class="mc-option" data-option="a"><span class="mc-letter">A</span><span>LAN &mdash; Local Area Network</span></div>
+                <div class="mc-option" data-option="b"><span class="mc-letter">B</span><span>PAN &mdash; Personal Area Network</span></div>
+                <div class="mc-option" data-option="c"><span class="mc-letter">C</span><span>MAN &mdash; Metropolitan Area Network</span></div>
+                <div class="mc-option" data-option="d"><span class="mc-letter">D</span><span>WAN &mdash; Wide Area Network</span></div>
+            </div>
+            <div class="mc-explanation">✓ Uma rede que conecta localidades geograficamente distantes (cidades, estados ou países) é classificada como WAN (Wide Area Network). A internet é o maior exemplo de WAN existente.</div>
+        </div>
+        <hr class="mc-sep">
+        <div class="mc-question" data-correct="a">
+            <p class="mc-q-text">Qual topologia de rede &eacute; usada no backbone da internet, garantindo m&uacute;ltiplos caminhos alternativos entre os n&oacute;s?</p>
+            <div class="mc-options">
+                <div class="mc-option" data-option="a"><span class="mc-letter">A</span><span>Malha (Mesh)</span></div>
+                <div class="mc-option" data-option="b"><span class="mc-letter">B</span><span>Estrela (Star)</span></div>
+                <div class="mc-option" data-option="c"><span class="mc-letter">C</span><span>Barramento (Bus)</span></div>
+                <div class="mc-option" data-option="d"><span class="mc-letter">D</span><span>Anel (Ring)</span></div>
+            </div>
+            <div class="mc-explanation">✓ A topologia em malha é usada no backbone da internet pois oferece múltiplos caminhos entre os nós. Se um link falha, o tráfego é redirecionado automaticamente — exatamente o princípio que motivou a criação da ARPANET.</div>
+        </div>
+    </div>
+
+    <div class="nav-footer">
+        <a href="rc01-introducao.html" class="nav-link">&#x2B05; Anterior: Introdu&ccedil;&atilde;o &agrave;s Redes</a>
+        <a href="rc03-modelo-osi.html" class="nav-link">Pr&oacute;xima: Modelo OSI &#x27A1;</a>
+    </div>
+
+</div>
+
+<script src="slide-mode.js"></script>
+<script src="exercise-drag.js"></script>
+<script src="exercise-print.js"></script>
+<script src="exercise-mc.js"></script>
+</body>
+</html>
