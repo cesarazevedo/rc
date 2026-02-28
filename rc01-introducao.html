@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aula 1 &mdash; Introdu&ccedil;&atilde;o &agrave;s Redes de Computadores</title>
+    <link rel="stylesheet" href="slide-mode.css">
+    <link rel="stylesheet" href="exercise.css">
+    <link rel="stylesheet" href="lesson.css">
+    <style>
+        :root {
+            --primary:   #1a73e8;
+            --secondary: #0d47a1;
+            --bg-light:  #f4f7fe;
+            --text-dark: #2d3748;
+        }
+    </style>
+</head>
+<body>
+
+<div class="top-bar">
+    <a href="index.html" class="back-btn">&#x2B05; Voltar ao Dashboard</a>
+    <span class="page-badge">1&ordm; Bimestre &mdash; Fundamentos e Modelos</span>
+    <button class="slide-toggle" id="slideToggleBtn">&#x1F4FA; Modo Slide</button>
+</div>
+
+<div class="content-wrapper">
+
+    <div class="lesson-hero">
+        <h1>&#x1F5A7;&#xFE0F; Introdu&ccedil;&atilde;o &agrave;s Redes de Computadores</h1>
+        <p class="subtitle">Aula 1 &mdash; O que &eacute; uma rede, como surgiram, como se classificam e quais s&atilde;o os componentes fundamentais de qualquer rede de computadores</p>
+    </div>
+
+    <!-- CARD 1 — O que é uma rede de computadores -->
+    <div class="content-card">
+        <h2>&#x1F4BB; O que &eacute; uma Rede de Computadores</h2>
+        <p>Uma <strong>rede de computadores</strong> &eacute; um conjunto de dois ou mais dispositivos interconectados que compartilham recursos e trocam informa&ccedil;&otilde;es. Essa troca &eacute; poss&iacute;vel graças a uma combina&ccedil;&atilde;o de <strong>hardware</strong> (cabos, switches, roteadores) e <strong>software</strong> (protocolos e sistemas operacionais).</p>
+
+        <div class="highlight-box">
+            <p>&#x1F4A1; <strong>Analogia:</strong> Uma rede de computadores funciona como o sistema rodovi&aacute;rio de uma cidade. As estradas s&atilde;o os cabos (ou o ar, no caso do Wi-Fi), os carros s&atilde;o os pacotes de dados, os sem&aacute;foros e placas s&atilde;o os protocolos que organizam o tr&aacute;fego, e os destinos s&atilde;o os dispositivos.</p>
+        </div>
+
+        <p>Por que conectar computadores? Os principais objetivos s&atilde;o:</p>
+        <ul>
+            <li><strong>Compartilhamento de recursos:</strong> impressoras, arquivos e conex&otilde;es com a internet</li>
+            <li><strong>Comunica&ccedil;&atilde;o:</strong> e-mail, mensagens instant&acirc;neas, videoconfer&ecirc;ncia</li>
+            <li><strong>Centraliza&ccedil;&atilde;o:</strong> backups e dados armazenados em servidores</li>
+            <li><strong>Redu&ccedil;&atilde;o de custos:</strong> um &uacute;nico dispositivo compartilhado &eacute; mais econ&ocirc;mico</li>
+            <li><strong>Acesso remoto:</strong> trabalhar de qualquer lugar com acesso &agrave; rede</li>
+        </ul>
+    </div>
+
+    <!-- CARD 2 — História e Evolução -->
+    <div class="content-card">
+        <h2>&#x1F4C5; Hist&oacute;ria e Evolu&ccedil;&atilde;o das Redes</h2>
+        <p>As redes de computadores n&atilde;o surgiram prontas &mdash; foram evoluindo ao longo de d&eacute;cadas, impulsionadas por necessidades militares, acad&ecirc;micas e comerciais.</p>
+
+        <table class="info-table">
+            <thead>
+                <tr>
+                    <th>Per&iacute;odo</th>
+                    <th>Marco</th>
+                    <th>Significado</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>1969</strong></td>
+                    <td>ARPANET</td>
+                    <td>Primeira rede de computadores, criada pelo Departamento de Defesa dos EUA. Conectou 4 universidades.</td>
+                </tr>
+                <tr>
+                    <td><strong>1971</strong></td>
+                    <td>Primeiro e-mail</td>
+                    <td>Ray Tomlinson envia a primeira mensagem de e-mail entre computadores conectados &agrave; ARPANET.</td>
+                </tr>
+                <tr>
+                    <td><strong>1973</strong></td>
+                    <td>Ethernet</td>
+                    <td>Robert Metcalfe cria o padr&atilde;o Ethernet na Xerox PARC, base das LANs modernas.</td>
+                </tr>
+                <tr>
+                    <td><strong>1983</strong></td>
+                    <td>TCP/IP como padr&atilde;o</td>
+                    <td>A ARPANET adota o TCP/IP. Essa data marca o nascimento formal da internet.</td>
+                </tr>
+                <tr>
+                    <td><strong>1991</strong></td>
+                    <td>World Wide Web</td>
+                    <td>Tim Berners-Lee cria a WWW no CERN, tornando a internet acess&iacute;vel ao p&uacute;blico geral.</td>
+                </tr>
+                <tr>
+                    <td><strong>1997</strong></td>
+                    <td>Wi-Fi (802.11)</td>
+                    <td>Surge o padr&atilde;o IEEE 802.11, iniciando a era das redes sem fio comerciais.</td>
+                </tr>
+                <tr>
+                    <td><strong>2000s</strong></td>
+                    <td>Banda larga e m&oacute;vel</td>
+                    <td>Internet de alta velocidade chega &agrave;s casas. Redes m&oacute;veis (3G, 4G, 5G) conectam bilh&otilde;es de dispositivos.</td>
+                </tr>
+                <tr>
+                    <td><strong>Hoje</strong></td>
+                    <td>Internet das Coisas (IoT)</td>
+                    <td>Mais de 15 bilh&otilde;es de dispositivos conectados: celulares, TVs, carros, geladeiras e at&eacute; rel&oacute;gios.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="tip-box">
+            <p>&#x2705; <strong>Curiosidade:</strong> A ARPANET foi projetada para sobreviver a um ataque nuclear. Por isso, ela n&atilde;o tinha um &uacute;nico ponto central &mdash; os pacotes podiam seguir rotas alternativas. Esse princ&iacute;pio ainda rege a internet hoje.</p>
+        </div>
+    </div>
+
+    <!-- CARD 3 — Classificação por Área de Cobertura -->
+    <div class="content-card">
+        <h2>&#x1F5FA;&#xFE0F; Classifica&ccedil;&atilde;o por &Aacute;rea de Cobertura</h2>
+        <p>As redes s&atilde;o classificadas de acordo com a dist&acirc;ncia geogr&aacute;fica que cobrem. Cada tipo tem caracter&iacute;sticas e tecnologias pr&oacute;prias.</p>
+
+        <div class="cmd-grid">
+            <div class="cmd-card">
+                <span class="cmd">PAN</span>
+                <strong>Personal Area Network</strong>
+                <span>Alcance de alguns metros. Ex: Bluetooth entre celular e fone de ouvido, smartwatch.</span>
+            </div>
+            <div class="cmd-card">
+                <span class="cmd">LAN</span>
+                <strong>Local Area Network</strong>
+                <span>Edif&iacute;cio ou campus. Ex: rede de um escrit&oacute;rio, laborat&oacute;rio de inform&aacute;tica ou resid&ecirc;ncia.</span>
+            </div>
+            <div class="cmd-card">
+                <span class="cmd">MAN</span>
+                <strong>Metropolitan Area Network</strong>
+                <span>Cidade ou regi&atilde;o metropolitana. Ex: rede de uma prefeitura conectando v&aacute;rias secretarias.</span>
+            </div>
+            <div class="cmd-card">
+                <span class="cmd">WAN</span>
+                <strong>Wide Area Network</strong>
+                <span>Pa&iacute;ses ou continentes. Ex: a pr&oacute;pria internet, que conecta o mundo inteiro.</span>
+            </div>
+        </div>
+
+        <table class="info-table" style="margin-top:1.5rem;">
+            <thead>
+                <tr>
+                    <th>Tipo</th>
+                    <th>Alcance</th>
+                    <th>Velocidade t&iacute;pica</th>
+                    <th>Tecnologia</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>PAN</strong></td>
+                    <td>1 &mdash; 10 m</td>
+                    <td>1 &mdash; 50 Mbps</td>
+                    <td>Bluetooth, ZigBee, USB</td>
+                </tr>
+                <tr>
+                    <td><strong>LAN</strong></td>
+                    <td>At&eacute; 1 km</td>
+                    <td>100 Mbps &mdash; 10 Gbps</td>
+                    <td>Ethernet (802.3), Wi-Fi (802.11)</td>
+                </tr>
+                <tr>
+                    <td><strong>MAN</strong></td>
+                    <td>At&eacute; 50 km</td>
+                    <td>10 &mdash; 1000 Mbps</td>
+                    <td>Fibra &oacute;ptica, WiMAX</td>
+                </tr>
+                <tr>
+                    <td><strong>WAN</strong></td>
+                    <td>Ilimitado</td>
+                    <td>Vari&aacute;vel</td>
+                    <td>MPLS, fibra submarina, sat&eacute;lite</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- CARD 4 — Topologias de Rede -->
+    <div class="content-card">
+        <h2>&#x1F4CD; Topologias de Rede</h2>
+        <p>A <strong>topologia</strong> descreve como os dispositivos est&atilde;o organizados e interconectados. Existe a topologia <em>f&iacute;sica</em> (como os cabos realmente est&atilde;o) e a topologia <em>l&oacute;gica</em> (como os dados fluem).</p>
+
+        <div class="compare-grid">
+            <div class="compare-box blue">
+                <h4>&#x2B50; Estrela (Star)</h4>
+                <ul>
+                    <li>Todos os dispositivos conectam a um ponto central (switch/hub)</li>
+                    <li>Falha em um cabo n&atilde;o afeta os demais</li>
+                    <li>Topologia mais usada em LANs hoje</li>
+                    <li>Desvantagem: ponto &uacute;nico de falha no switch central</li>
+                </ul>
+            </div>
+            <div class="compare-box green">
+                <h4>&#x1F6A6; Barramento (Bus)</h4>
+                <ul>
+                    <li>Todos compartilham um &uacute;nico cabo (backbone)</li>
+                    <li>Simples e barata de implementar</li>
+                    <li>Falha no cabo central derruba toda a rede</li>
+                    <li>Usada no Ethernet original (coaxial)</li>
+                </ul>
+            </div>
+            <div class="compare-box blue">
+                <h4>&#x1F501; Anel (Ring)</h4>
+                <ul>
+                    <li>Dados circulam em um &uacute;nico sentido</li>
+                    <li>Cada dispositivo regenera o sinal</li>
+                    <li>Falha em um n&oacute; compromete o anel</li>
+                    <li>Usada em Token Ring (legado)</li>
+                </ul>
+            </div>
+            <div class="compare-box green">
+                <h4>&#x1F578;&#xFE0F; Malha (Mesh)</h4>
+                <ul>
+                    <li>Cada dispositivo conecta a v&aacute;rios outros</li>
+                    <li>Altamente redundante e tolerante a falhas</li>
+                    <li>Custo elevado de cabeamento</li>
+                    <li>Usada no backbone da internet</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="alert-box">
+            <p>&#x26A0;&#xFE0F; <strong>Aten&ccedil;&atilde;o:</strong> A maioria das redes modernas usa uma topologia <strong>estrela estendida</strong>: switches conectados a outros switches, formando uma hierarquia. &Eacute; o padr&atilde;o em escolas, empresas e pr&eacute;dios comerciais.</p>
+        </div>
+    </div>
+
+    <!-- CARD 5 — Componentes de uma Rede -->
+    <div class="content-card">
+        <h2>&#x1F9E9; Componentes de uma Rede</h2>
+        <p>Toda rede &eacute; formada por tr&ecirc;s elementos fundamentais: <strong>dispositivos</strong>, <strong>meios de transmiss&atilde;o</strong> e <strong>protocolos</strong>.</p>
+
+        <h3>Dispositivos</h3>
+        <div class="cmd-grid">
+            <div class="cmd-card">
+                <span class="cmd">Hub</span>
+                <strong>Concentrador (legado)</strong>
+                <span>Replica o sinal para todas as portas. N&atilde;o filtra tr&aacute;fego. Praticamente obsoleto.</span>
+            </div>
+            <div class="cmd-card">
+                <span class="cmd">Switch</span>
+                <strong>Comutador</strong>
+                <span>Encaminha quadros pelo endere&ccedil;o MAC. Opera na camada 2. Principal dispositivo de LAN.</span>
+            </div>
+            <div class="cmd-card">
+                <span class="cmd">Roteador</span>
+                <strong>Router</strong>
+                <span>Conecta redes diferentes. Encaminha pacotes pelo endere&ccedil;o IP. Opera na camada 3.</span>
+            </div>
+            <div class="cmd-card">
+                <span class="cmd">Access Point</span>
+                <strong>Ponto de Acesso</strong>
+                <span>Conecta dispositivos sem fio &agrave; rede cabeada. Implementa o padr&atilde;o 802.11 (Wi-Fi).</span>
+            </div>
+            <div class="cmd-card">
+                <span class="cmd">Modem</span>
+                <strong>Modulador/Demodulador</strong>
+                <span>Converte o sinal da operadora (DSL, cabo, fibra) para o formato usado na LAN.</span>
+            </div>
+            <div class="cmd-card">
+                <span class="cmd">Firewall</span>
+                <strong>Barreira de seguran&ccedil;a</strong>
+                <span>Filtra o tr&aacute;fego de rede com base em regras. Protege a rede interna de amea&ccedil;as externas.</span>
+            </div>
+        </div>
+
+        <h3>Meios de Transmiss&atilde;o</h3>
+        <div class="compare-grid">
+            <div class="compare-box blue">
+                <h4>&#x1F9F5; Guiados (com fio)</h4>
+                <ul>
+                    <li>Par tran&ccedil;ado (UTP/STP) &mdash; Cat5e, Cat6</li>
+                    <li>Cabo coaxial (legado e TV a cabo)</li>
+                    <li>Fibra &oacute;ptica (alta velocidade, longa dist&acirc;ncia)</li>
+                </ul>
+            </div>
+            <div class="compare-box green">
+                <h4>&#x1F4F6; N&atilde;o guiados (sem fio)</h4>
+                <ul>
+                    <li>R&aacute;dio frequência (Wi-Fi: 2,4 GHz e 5 GHz)</li>
+                    <li>Micro-ondas (enlaces ponto a ponto)</li>
+                    <li>Infravermelho e sat&eacute;lite</li>
+                </ul>
+            </div>
+        </div>
+
+        <h3>Protocolos</h3>
+        <p>Um <strong>protocolo</strong> &eacute; um conjunto de regras que define como os dispositivos se comunicam. Assim como pessoas precisam falar o mesmo idioma, computadores precisam usar os mesmos protocolos. Exemplos:</p>
+        <ul>
+            <li><strong>IP:</strong> endere&ccedil;amento e roteamento de pacotes</li>
+            <li><strong>TCP:</strong> entrega confi&aacute;vel de dados</li>
+            <li><strong>HTTP:</strong> transfer&ecirc;ncia de p&aacute;ginas web</li>
+            <li><strong>DNS:</strong> resolu&ccedil;&atilde;o de nomes em endere&ccedil;os IP</li>
+        </ul>
+    </div>
+
+    <!-- ATIVIDADE PRÁTICA -->
+    <div class="content-card exercise-card" id="prat-rc01">
+        <h2>&#x1F4DD; Atividade Pr&aacute;tica</h2>
+        <p class="prat-intro">Explora&ccedil;&atilde;o guiada sobre redes &mdash; identificando e classificando redes do cotidiano.</p>
+
+        <div class="prat-steps">
+            <div class="prat-step">
+                <div class="step-num">1</div>
+                <div class="step-body">
+                    <div class="step-label">Identificar redes ao seu redor</div>
+                    <div class="step-desc">Liste pelo menos 5 redes de computadores que voc&ecirc; usa ou que existem no seu cotidiano (escola, casa, celular etc.). Para cada uma, indique o tipo (PAN, LAN, MAN ou WAN) e o meio de transmiss&atilde;o (cabeado ou sem fio).</div>
+                </div>
+            </div>
+            <div class="prat-step">
+                <div class="step-num">2</div>
+                <div class="step-body">
+                    <div class="step-label">Mapear a rede da escola</div>
+                    <div class="step-desc">Desenhe um diagrama simples da rede do laborat&oacute;rio de inform&aacute;tica da escola. Identifique: quantos computadores, qual(is) switch(es), se h&aacute; roteador, se h&aacute; Wi-Fi. Classifique a topologia f&iacute;sica observada.</div>
+                </div>
+            </div>
+            <div class="prat-step">
+                <div class="step-num">3</div>
+                <div class="step-body">
+                    <div class="step-label">Pesquisa hist&oacute;rica</div>
+                    <div class="step-desc">Pesquise sobre a ARPANET: quais universidades foram as primeiras conectadas em 1969? Qual foi a primeira mensagem transmitida (e o que aconteceu com ela)? Registre sua resposta em 3&ndash;5 linhas.</div>
+                </div>
+            </div>
+            <div class="prat-step">
+                <div class="step-num">4</div>
+                <div class="step-body">
+                    <div class="step-label">Comparar topologias</div>
+                    <div class="step-desc">Para cada cen&aacute;rio abaixo, indique qual topologia seria mais adequada e justifique: (a) Laborat&oacute;rio escolar com 30 computadores; (b) Backbone da internet conectando pa&iacute;ses; (c) Rede dom&eacute;stica com 5 dispositivos e um roteador.</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="prat-observe">
+            <strong>&#x1F4CC; Para refletir:</strong> toda vez que voc&ecirc; acessa um site, assiste a um v&iacute;deo ou envia uma mensagem, pacotes de dados percorrem v&aacute;rios tipos de rede &mdash; da sua LAN dom&eacute;stica at&eacute; a WAN global. Nas pr&oacute;ximas aulas vamos entender exatamente como isso acontece.
+        </div>
+
+        <div class="ex-actions">
+            <button class="btn-print" onclick="printPractical('prat-rc01', 'Aula 1 \u2014 Introdu\u00e7\u00e3o \u00e0s Redes de Computadores')">&#x1F5A8;&#xFE0F; Imprimir roteiro</button>
+        </div>
+    </div>
+
+    <!-- MÚLTIPLA ESCOLHA -->
+    <div class="content-card exercise-card">
+        <h2>&#x2753; Verifique seu Conhecimento</h2>
+
+        <div class="mc-question" data-correct="b">
+            <p class="mc-q-text">Um laborat&oacute;rio de inform&aacute;tica de uma escola com 30 computadores conectados a um switch central &eacute; um exemplo de qual tipo de rede?</p>
+            <div class="mc-options">
+                <div class="mc-option" data-option="a"><span class="mc-letter">A</span><span>WAN &mdash; Wide Area Network</span></div>
+                <div class="mc-option" data-option="b"><span class="mc-letter">B</span><span>LAN &mdash; Local Area Network</span></div>
+                <div class="mc-option" data-option="c"><span class="mc-letter">C</span><span>MAN &mdash; Metropolitan Area Network</span></div>
+                <div class="mc-option" data-option="d"><span class="mc-letter">D</span><span>PAN &mdash; Personal Area Network</span></div>
+            </div>
+            <div class="mc-explanation">✓ Uma rede que cobre um único ambiente como um laboratório ou escritório é classificada como LAN (Local Area Network), com alcance de até 1 km.</div>
+        </div>
+        <hr class="mc-sep">
+        <div class="mc-question" data-correct="a">
+            <p class="mc-q-text">Qual dispositivo de rede encaminha pacotes entre redes diferentes com base no endere&ccedil;o IP?</p>
+            <div class="mc-options">
+                <div class="mc-option" data-option="a"><span class="mc-letter">A</span><span>Roteador</span></div>
+                <div class="mc-option" data-option="b"><span class="mc-letter">B</span><span>Switch</span></div>
+                <div class="mc-option" data-option="c"><span class="mc-letter">C</span><span>Hub</span></div>
+                <div class="mc-option" data-option="d"><span class="mc-letter">D</span><span>Access Point</span></div>
+            </div>
+            <div class="mc-explanation">✓ O roteador opera na camada 3 (rede) e encaminha pacotes entre redes diferentes usando o endereço IP de destino. O switch usa endereços MAC e opera dentro de uma mesma rede.</div>
+        </div>
+        <hr class="mc-sep">
+        <div class="mc-question" data-correct="c">
+            <p class="mc-q-text">A ARPANET, precursora da internet, foi criada originalmente com qual objetivo principal?</p>
+            <div class="mc-options">
+                <div class="mc-option" data-option="a"><span class="mc-letter">A</span><span>Permitir compras online entre universidades americanas</span></div>
+                <div class="mc-option" data-option="b"><span class="mc-letter">B</span><span>Transmitir programas de televis&atilde;o via computador</span></div>
+                <div class="mc-option" data-option="c"><span class="mc-letter">C</span><span>Criar uma rede de comunica&ccedil;&atilde;o resistente a ataques militares</span></div>
+                <div class="mc-option" data-option="d"><span class="mc-letter">D</span><span>Conectar computadores pessoais de usu&aacute;rios dom&eacute;sticos</span></div>
+            </div>
+            <div class="mc-explanation">✓ A ARPANET foi financiada pelo Departamento de Defesa dos EUA (DARPA) com o objetivo de criar uma rede descentralizada que sobrevivesse a ataques, sem ponto único de falha.</div>
+        </div>
+        <hr class="mc-sep">
+        <div class="mc-question" data-correct="d">
+            <p class="mc-q-text">Na topologia em malha (mesh), qual &eacute; a principal vantagem em rela&ccedil;&atilde;o &agrave;s demais topologias?</p>
+            <div class="mc-options">
+                <div class="mc-option" data-option="a"><span class="mc-letter">A</span><span>Menor custo de implementa&ccedil;&atilde;o</span></div>
+                <div class="mc-option" data-option="b"><span class="mc-letter">B</span><span>Facilidade de instala&ccedil;&atilde;o e manuten&ccedil;&atilde;o</span></div>
+                <div class="mc-option" data-option="c"><span class="mc-letter">C</span><span>Uso de um &uacute;nico cabo central compartilhado</span></div>
+                <div class="mc-option" data-option="d"><span class="mc-letter">D</span><span>Alta redund&acirc;ncia e toler&acirc;ncia a falhas</span></div>
+            </div>
+            <div class="mc-explanation">✓ Na topologia mesh cada dispositivo tem múltiplas conexões, criando caminhos alternativos. Se um link falha, os dados seguem por outra rota — o que explica por que a internet (a maior rede mesh do mundo) é tão resiliente.</div>
+        </div>
+    </div>
+
+    <div class="nav-footer">
+        <a href="index.html" class="nav-link">&#x2B05; Voltar ao Dashboard</a>
+        <a href="rc02-topologias.html" class="nav-link">Pr&oacute;xima: Topologias e Componentes &#x27A1;</a>
+    </div>
+
+</div>
+
+<script src="slide-mode.js"></script>
+<script src="exercise-drag.js"></script>
+<script src="exercise-print.js"></script>
+<script src="exercise-mc.js"></script>
+</body>
+</html>
