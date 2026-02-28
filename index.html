@@ -1087,21 +1087,21 @@
         // ─── DICAS MOTIVACIONAIS ─────────────────────────────────────────
         (function() {
             const dicas = [
-                "O modelo OSI tem 7 camadas porque cada uma resolve um problema diferente. Entender cada camada &eacute; entender como os dados viajam de um ponto ao outro do planeta.",
-                "Um endere&ccedil;o IP sem m&aacute;scara de sub-rede &eacute; como um CEP sem cidade. A m&aacute;scara diz ao roteador qual parte &eacute; rede e qual &eacute; host.",
-                "DNS &eacute; a agenda telef&ocirc;nica da internet. Sem ele, voc&ecirc; precisaria decorar o IP de cada site que quisesse acessar.",
-                "O three-way handshake do TCP (SYN, SYN-ACK, ACK) &eacute; o aperto de m&atilde;os digital que garante que os dois lados est&atilde;o prontos antes de transmitir dados.",
-                "HTTPS n&atilde;o &eacute; um protocolo diferente do HTTP &mdash; &eacute; o HTTP dentro de um t&uacute;nel TLS. O cadeado no navegador representa essa camada de prote&ccedil;&atilde;o.",
-                "IPv4 tem cerca de 4 bilh&otilde;es de endere&ccedil;os. Parecia infinito em 1983. Hoje, o NAT e o IPv6 s&atilde;o necess&aacute;rios porque a internet cresceu mais do que o imaginado.",
-                "Um firewall sem regras bem definidas &eacute; como uma porta sem chave. Bloqueie tudo por padr&atilde;o e libere apenas o necess&aacute;rio &mdash; princ&iacute;pio do menor privil&eacute;gio.",
-                "Wi-Fi n&atilde;o &eacute; m&aacute;gica: &eacute; r&aacute;dio. Os padr&otilde;es 802.11 definem frequ&ecirc;ncia, largura de canal e modula&ccedil;&atilde;o. WPA2 protege o canal; o hardware define a velocidade.",
-                "O DHCP eliminou a configura&ccedil;&atilde;o manual de IP em cada dispositivo. O processo DORA acontece em milissegundos toda vez que voc&ecirc; conecta &agrave; rede.",
-                "SSH substituiu o Telnet porque criptografa tudo. Usar Telnet em 2024 &eacute; como enviar a senha por cart&atilde;o postal &mdash; qualquer um no caminho pode ler.",
-                "Roteamento est&aacute;tico &eacute; previs&iacute;vel e r&aacute;pido; roteamento din&acirc;mico &eacute; flex&iacute;vel e se adapta a falhas. Redes grandes precisam dos dois.",
-                "Um ataque DDoS n&atilde;o invade o sistema &mdash; ele o sufoca. Centenas de milhares de dispositivos comprometidos (botnet) inundam o alvo com tr&aacute;fego at&eacute; derrubar o servi&ccedil;o.",
-                "O Wireshark &eacute; o raio-X da rede. Com ele, voc&ecirc; v&ecirc; cada pacote que trafega, depura protocolos e entende na pr&aacute;tica o que os livros ensinam na teoria.",
-                "VPN n&atilde;o &eacute; anonimato total &mdash; &eacute; um t&uacute;nel criptografado. Ela protege seus dados em tr&acirc;nsito, especialmente em redes p&uacute;blicas.",
-                "A diferen&ccedil;a entre IMAP e POP3 &eacute; simples: IMAP sincroniza e-mails no servidor; POP3 baixa e apaga. Para m&uacute;ltiplos dispositivos, IMAP &eacute; sempre a escolha certa."
+                "O modelo OSI tem 7 camadas porque cada uma resolve um problema diferente. Entender cada camada é entender como os dados viajam de um ponto ao outro do planeta.",
+                "Um endereço IP sem máscara de sub-rede é como um CEP sem cidade. A máscara diz ao roteador qual parte é rede e qual é host.",
+                "DNS é a agenda telefônica da internet. Sem ele, você precisaria decorar o IP de cada site que quisesse acessar.",
+                "O three-way handshake do TCP (SYN, SYN-ACK, ACK) é o aperto de mãos digital que garante que os dois lados estão prontos antes de transmitir dados.",
+                "HTTPS não é um protocolo diferente do HTTP — é o HTTP dentro de um túnel TLS. O cadeado no navegador representa essa camada de proteção.",
+                "IPv4 tem cerca de 4 bilhões de endereços. Parecia infinito em 1983. Hoje, o NAT e o IPv6 são necessários porque a internet cresceu mais do que o imaginado.",
+                "Um firewall sem regras bem definidas é como uma porta sem chave. Bloqueie tudo por padrão e libere apenas o necessário — princípio do menor privilégio.",
+                "Wi-Fi não é mágica: é rádio. Os padrões 802.11 definem frequência, largura de canal e modulação. WPA2 protege o canal; o hardware define a velocidade.",
+                "O DHCP eliminou a configuração manual de IP em cada dispositivo. O processo DORA acontece em milissegundos toda vez que você conecta à rede.",
+                "SSH substituiu o Telnet porque criptografa tudo. Usar Telnet em 2024 é como enviar a senha por cartão postal — qualquer um no caminho pode ler.",
+                "Roteamento estático é previsível e rápido; roteamento dinâmico é flexível e se adapta a falhas. Redes grandes precisam dos dois.",
+                "Um ataque DDoS não invade o sistema — ele o sufoca. Centenas de milhares de dispositivos comprometidos (botnet) inundam o alvo com tráfego até derrubar o serviço.",
+                "O Wireshark é o raio-X da rede. Com ele, você vê cada pacote que trafega, depura protocolos e entende na prática o que os livros ensinam na teoria.",
+                "VPN não é anonimato total — é um túnel criptografado. Ela protege seus dados em trânsito, especialmente em redes públicas.",
+                "A diferença entre IMAP e POP3 é simples: IMAP sincroniza e-mails no servidor; POP3 baixa e apaga. Para múltiplos dispositivos, IMAP é sempre a escolha certa."
             ];
             document.addEventListener('DOMContentLoaded', function() {
                 const el = document.getElementById('motivationText');
