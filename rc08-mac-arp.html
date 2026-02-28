@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aula 8 &mdash; Endere&ccedil;amento MAC e Protocolo ARP</title>
+    <link rel="stylesheet" href="slide-mode.css">
+    <link rel="stylesheet" href="exercise.css">
+    <link rel="stylesheet" href="lesson.css">
+    <style>
+        :root {
+            --primary:   #1a73e8;
+            --secondary: #0d47a1;
+            --bg-light:  #f4f7fe;
+            --text-dark: #2d3748;
+        }
+    </style>
+</head>
+<body>
+
+<div class="top-bar">
+    <a href="index.html" class="back-btn">&#x2B05; Voltar ao Dashboard</a>
+    <span class="page-badge">1&ordm; Bimestre &mdash; Fundamentos e Modelos</span>
+    <button class="slide-toggle" id="slideToggleBtn">&#x1F4FA; Modo Slide</button>
+</div>
+
+<div class="content-wrapper">
+
+    <div class="lesson-hero">
+        <h1>&#x1F4EE; Endere&ccedil;amento MAC e Protocolo ARP</h1>
+        <p class="subtitle">Aula 8 &mdash; Como o endere&ccedil;o f&iacute;sico MAC identifica cada interface de rede e como o ARP faz a ponte entre o mundo IP e o mundo Ethernet &mdash; incluindo seguran&ccedil;a e troubleshooting</p>
+    </div>
+
+    <!-- CARD 1 — MAC em profundidade -->
+    <div class="content-card">
+        <h2>&#x1F3F7;&#xFE0F; Endere&ccedil;o MAC em Profundidade</h2>
+        <p>O endere&ccedil;o MAC <em>(Media Access Control)</em> &eacute; o identificador que opera na <strong>Camada 2 &mdash; Enlace de Dados</strong>. Enquanto o endere&ccedil;o IP identifica um dispositivo na rede l&oacute;gica (e pode mudar), o MAC identifica a interface de rede no n&iacute;vel f&iacute;sico e &eacute; gravado pelo fabricante na mem&oacute;ria ROM da placa.</p>
+
+        <div class="terminal-block">
+            <div class="terminal-header">Estrutura detalhada do endereço MAC (48 bits)</div>
+<pre>
+  Bit mais significativo de cada byte → transmitido primeiro
+
+  Byte 1          Byte 2    Byte 3    Byte 4    Byte 5    Byte 6
+  ┌──────────┐   ┌───────┬──────────────────────────────────────┐
+  │ b7...b2  │   │ b1 b0 │                                      │
+  │  OUI     │   │  │  └─ U/L bit (0=universal, 1=local)       │
+  │ (3 bytes)│   │  └──── I/G bit (0=unicast,  1=multi/broad)  │
+  └──────────┘   └────────────────── NIC (3 bytes) ────────────┘
+
+  Exemplo:  A8:5E:45 : F3:2B:7C
+            ─────────  ─────────
+            OUI        NIC
+            (fabricante)(placa específica)
+
+  Bits especiais no PRIMEIRO byte:
+  • Bit 0 (I/G): 0 = Unicast | 1 = Multicast/Broadcast
+  • Bit 1 (U/L): 0 = Universal (atribuído pelo IEEE)
+                  1 = Local (atribuído manualmente ou virtualizado)
+</pre>
+        </div>
+
+        <h3>Tipos de Endere&ccedil;o MAC</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Tipo</th>
+                    <th>Bit I/G</th>
+                    <th>Exemplo</th>
+                    <th>Uso</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Unicast</strong></td>
+                    <td>0 (par)</td>
+                    <td>A8:5E:45:F3:2B:7C</td>
+                    <td>Identifica uma &uacute;nica interface. Entrega ponto a ponto</td>
+                </tr>
+                <tr>
+                    <td><strong>Multicast</strong></td>
+                    <td>1 (&iacute;mpar)</td>
+                    <td>01:00:5E:00:00:01</td>
+                    <td>Grupo de dispositivos registrados. 01:00:5E:xx = IPv4 multicast</td>
+                </tr>
+                <tr>
+                    <td><strong>Broadcast</strong></td>
+                    <td>1 (todos)</td>
+                    <td>FF:FF:FF:FF:FF:FF</td>
+                    <td>Todos os dispositivos da LAN recebem e processam</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>MAC Est&aacute;tico, Din&acirc;mico e MAC Spoofing</h3>
+        <p>Embora o MAC seja gravado na ROM, o sistema operacional pode <strong>sobrescrev&ecirc;-lo via software</strong> &mdash; t&eacute;cnica conhecida como <em>MAC spoofing</em>. Isso &eacute; leg&iacute;timo em virtualiza&ccedil;&atilde;o (VMs recebem MACs gerados pelo hypervisor, com bit U/L=1) e em testes, mas tamb&eacute;m &eacute; usado para contornar filtros de MAC ou realizar ataques.</p>
+
+        <div class="terminal-block">
+            <div class="terminal-header">Visualizar e alterar o MAC no Linux</div>
+<pre>
+  # Ver o MAC atual
+  ip link show eth0
+  # ou
+  cat /sys/class/net/eth0/address
+
+  # Desativar a interface
+  ip link set eth0 down
+
+  # Alterar o MAC temporariamente
+  ip link set eth0 address 02:AA:BB:CC:DD:EE
+
+  # Reativar
+  ip link set eth0 up
+
+  # No Windows (via Gerenciador de Dispositivos > Propriedades
+  # da placa de rede > Endereço de Rede)
+</pre>
+        </div>
+
+        <div class="alert-box">
+            <p>&#x26A0;&#xFE0F; <strong>Filtro de MAC n&atilde;o &eacute; seguran&ccedil;a:</strong> muitos roteadores e APs oferecem &ldquo;filtro de endere&ccedil;os MAC&rdquo; como recurso de seguran&ccedil;a. Na pr&aacute;tica, qualquer atacante pode capturar um MAC autorizado via sniffing e clon&aacute;-lo em segundos. Filtro de MAC &eacute; seguran&ccedil;a por obscuridade &mdash; nunca deve ser a &uacute;nica medida.</p>
+        </div>
+    </div>
+
+    <!-- CARD 2 — ARP em profundidade -->
+    <div class="content-card">
+        <h2>&#x1F50D; Protocolo ARP em Profundidade</h2>
+        <p>O <strong>ARP &mdash; Address Resolution Protocol (RFC 826, 1982)</strong> resolve endere&ccedil;os IP em endere&ccedil;os MAC dentro de uma mesma LAN. Sem o ARP, o IP n&atilde;o consegue construir o quadro Ethernet necess&aacute;rio para entregar o pacote localmente.</p>
+
+        <div class="terminal-block">
+            <div class="terminal-header">ARP Request e Reply — fluxo completo</div>
+<pre>
+  PC-A (IP: 192.168.1.10 / MAC: AA:AA:AA:AA:AA:AA)
+  PC-B (IP: 192.168.1.20 / MAC: BB:BB:BB:BB:BB:BB)
+
+  ── ARP REQUEST (broadcast) ──────────────────────────────────
+  Src MAC:  AA:AA:AA:AA:AA:AA
+  Dst MAC:  FF:FF:FF:FF:FF:FF  ← broadcast Ethernet
+  Src IP:   192.168.1.10
+  Dst IP:   192.168.1.20
+  Mensagem: "Quem tem 192.168.1.20? Me diga seu MAC."
+  ─────────────────────────────────────────────────────────────
+       ↓ todos os dispositivos da LAN recebem
+       ↓ somente PC-B reconhece o IP e responde
+
+  ── ARP REPLY (unicast) ───────────────────────────────────────
+  Src MAC:  BB:BB:BB:BB:BB:BB
+  Dst MAC:  AA:AA:AA:AA:AA:AA  ← unicast de volta ao PC-A
+  Src IP:   192.168.1.20
+  Dst IP:   192.168.1.10
+  Mensagem: "Eu tenho 192.168.1.20. Meu MAC é BB:BB:BB:BB:BB:BB."
+  ─────────────────────────────────────────────────────────────
+  PC-A armazena na tabela ARP (cache):
+    192.168.1.20  →  BB:BB:BB:BB:BB:BB  (TTL: ~2 minutos)
+</pre>
+        </div>
+
+        <h3>Tipos especiais de ARP</h3>
+        <div class="cmd-grid">
+            <div class="cmd-card">
+                <span class="cmd">Gratuitous ARP</span>
+                <strong>Anúncio espontâneo</strong>
+                <span>Dispositivo anuncia seu pr&oacute;prio IP/MAC sem ser perguntado. Usado ao inicializar (atualizar caches) e para detectar conflitos de IP</span>
+            </div>
+            <div class="cmd-card">
+                <span class="cmd">Proxy ARP</span>
+                <strong>O roteador responde por outro</strong>
+                <span>Um roteador responde ARP Requests em nome de hosts em outra rede. Permite comunica&ccedil;&atilde;o sem gateway configurado, mas pode causar problemas</span>
+            </div>
+            <div class="cmd-card">
+                <span class="cmd">ARP Cache</span>
+                <strong>Tabela em mem&oacute;ria</strong>
+                <span>Armazena mapeamentos IP&rarr;MAC por ~2 minutos (Windows) ou ~1 minuto (Linux). Entradas est&aacute;ticas n&atilde;o expiram</span>
+            </div>
+            <div class="cmd-card">
+                <span class="cmd">ARP Probe</span>
+                <strong>Detec&ccedil;&atilde;o de conflito</strong>
+                <span>Antes de usar um IP (via DHCP ou est&aacute;tico), o dispositivo envia um ARP Probe para verificar se o IP j&aacute; est&aacute; em uso</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- CARD 3 — ARP Spoofing e Segurança -->
+    <div class="content-card">
+        <h2>&#x26A0;&#xFE0F; ARP Spoofing e Seguran&ccedil;a</h2>
+        <p>O ARP foi projetado em 1982 sem nenhum mecanismo de autentica&ccedil;&atilde;o. Qualquer dispositivo na LAN pode enviar um ARP Reply falso, e os outros aceitam sem questionar. Isso &eacute; a base do <strong>ARP Spoofing (ou ARP Poisoning)</strong>.</p>
+
+        <div class="terminal-block">
+            <div class="terminal-header">ARP Spoofing — ataque Man-in-the-Middle</div>
+<pre>
+  Cenário normal:
+  PC-A (192.168.1.10) → Switch → Gateway (192.168.1.1)
+
+  ── Ataque ───────────────────────────────────────────────────
+  Atacante (192.168.1.99 / MAC: EE:EE:EE:EE:EE:EE) envia:
+
+  Para PC-A:    "192.168.1.1  está em  EE:EE:EE:EE:EE:EE"  ← FALSO
+  Para Gateway: "192.168.1.10 está em  EE:EE:EE:EE:EE:EE"  ← FALSO
+
+  Resultado: a tabela ARP de PC-A e do Gateway ficam envenenadas.
+
+  PC-A → [pensa que vai pro gateway] → Atacante → Gateway → Internet
+                                            ↑
+                                     intercepta, lê e
+                                     repassa o tráfego
+                                     (Man-in-the-Middle)
+  ─────────────────────────────────────────────────────────────
+  O atacante pode: ler senhas em texto claro, injetar conteúdo,
+  derrubar conexões (DoS) ou redirecionar para sites falsos.
+</pre>
+        </div>
+
+        <h3>Contramedidas contra ARP Spoofing</h3>
+        <div class="cmd-grid">
+            <div class="cmd-card">
+                <span class="cmd">Dynamic ARP Inspection</span>
+                <strong>DAI (switches gerenci&aacute;veis)</strong>
+                <span>O switch valida cada ARP Reply contra a tabela DHCP Snooping. Pacotes ARP inv&aacute;lidos s&atilde;o descartados</span>
+            </div>
+            <div class="cmd-card">
+                <span class="cmd">Entradas ARP est&aacute;ticas</span>
+                <strong>Em servidores cr&iacute;ticos</strong>
+                <span>Mapeamentos IP&rarr;MAC fixos que n&atilde;o s&atilde;o sobrescritos por ARPs recebidos. Impraticável em redes grandes</span>
+            </div>
+            <div class="cmd-card">
+                <span class="cmd">Segmenta&ccedil;&atilde;o com VLANs</span>
+                <strong>Isolar dom&iacute;nios de broadcast</strong>
+                <span>Limitar o raio do ARP Spoofing: um atacante s&oacute; envenena a VLAN em que est&aacute;</span>
+            </div>
+            <div class="cmd-card">
+                <span class="cmd">Criptografia (TLS/HTTPS)</span>
+                <strong>Proteção na camada superior</strong>
+                <span>Mesmo interceptado, o tr&aacute;fego cifrado &eacute; in&uacute;til. HTTPS protege contra ARP Spoofing no n&iacute;vel de aplica&ccedil;&atilde;o</span>
+            </div>
+        </div>
+
+        <div class="tip-box">
+            <p>&#x2705; <strong>Contexto did&aacute;tico:</strong> ARP Spoofing &eacute; um dos ataques mais estudados em seguran&ccedil;a de redes por ser simples de entender e demonstrar em laborat&oacute;rio, al&eacute;m de ilustrar perfeitamente o princ&iacute;pio de que protocolos antigos sem autentica&ccedil;&atilde;o s&atilde;o inerentemente vulner&aacute;veis.</p>
+        </div>
+    </div>
+
+    <!-- CARD 4 — IPv6 e NDP -->
+    <div class="content-card">
+        <h2>&#x1F310; IPv6 e o NDP: o Substituto do ARP</h2>
+        <p>O IPv6 n&atilde;o usa ARP. Em seu lugar, o <strong>NDP &mdash; Neighbor Discovery Protocol (RFC 4861)</strong> realiza as mesmas fun&ccedil;&otilde;es (e muito mais) usando mensagens <strong>ICMPv6</strong>. O NDP opera com multicast em vez de broadcast, sendo muito mais eficiente em redes grandes.</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Fun&ccedil;&atilde;o</th>
+                    <th>IPv4 (ARP)</th>
+                    <th>IPv6 (NDP / ICMPv6)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Resolver IP &rarr; MAC</td>
+                    <td>ARP Request / Reply</td>
+                    <td>NS (Neighbor Solicitation) / NA (Neighbor Advertisement)</td>
+                </tr>
+                <tr>
+                    <td>Descobrir roteador</td>
+                    <td>Configurado manualmente ou via DHCP</td>
+                    <td>RS (Router Solicitation) / RA (Router Advertisement)</td>
+                </tr>
+                <tr>
+                    <td>Detectar conflito de IP</td>
+                    <td>ARP Probe (Gratuitous ARP)</td>
+                    <td>DAD &mdash; Duplicate Address Detection (via NS)</td>
+                </tr>
+                <tr>
+                    <td>Autoconfigurar endere&ccedil;o</td>
+                    <td>N&atilde;o (precisa de DHCP)</td>
+                    <td>SLAAC &mdash; Stateless Address Autoconfiguration</td>
+                </tr>
+                <tr>
+                    <td>Meio de entrega</td>
+                    <td>Broadcast (FF:FF:FF:FF:FF:FF)</td>
+                    <td>Multicast IPv6 solicitado por n&oacute; (33:33:xx:xx:xx:xx)</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="terminal-block">
+            <div class="terminal-header">NDP — Neighbor Solicitation e Advertisement</div>
+<pre>
+  PC-A quer descobrir o MAC do host com IPv6 fe80::B
+
+  1. PC-A calcula o "endereço multicast solicitado por nó":
+     ff02::1:ffxx:xxxx (baseado nos últimos 24 bits do IPv6 de B)
+
+  2. PC-A envia Neighbor Solicitation (NS) para esse multicast:
+     "Quem tem fe80::B? Me diga seu MAC."
+     (apenas hosts com aquele IPv6 recebem — não toda a rede)
+
+  3. PC-B responde com Neighbor Advertisement (NA) em unicast:
+     "Sou eu. Meu MAC é BB:BB:BB:BB:BB:BB."
+
+  Vantagem: o multicast solicitado reduz drasticamente o tráfego
+  comparado ao broadcast ARP em redes com muitos hosts IPv6.
+</pre>
+        </div>
+    </div>
+
+    <!-- CARD 5 — Troubleshooting com ARP -->
+    <div class="content-card">
+        <h2>&#x1F6E0;&#xFE0F; Ferramentas e Troubleshooting com ARP</h2>
+        <p>O conhecimento pr&aacute;tico do ARP &eacute; fundamental para diagnosticar problemas de conectividade na LAN. As ferramentas abaixo s&atilde;o usadas no dia a dia de qualquer administrador de redes.</p>
+
+        <div class="terminal-block">
+            <div class="terminal-header">Comandos essenciais — Windows e Linux</div>
+<pre>
+  ── WINDOWS ──────────────────────────────────────────────────
+
+  arp -a
+    Exibe a tabela ARP completa (IP → MAC de todos os hosts vistos)
+
+  arp -a 192.168.1.1
+    Exibe somente a entrada ARP para o IP especificado
+
+  arp -s 192.168.1.10 AA-BB-CC-DD-EE-FF
+    Adiciona uma entrada estática (permanente) na tabela ARP
+
+  arp -d 192.168.1.10
+    Remove uma entrada específica da tabela ARP
+
+  ── LINUX ────────────────────────────────────────────────────
+
+  ip neigh show
+    Exibe a tabela de vizinhos ARP/NDP (substituto moderno do arp -a)
+
+  ip neigh flush dev eth0
+    Limpa todas as entradas ARP da interface eth0
+
+  arping -I eth0 192.168.1.10
+    Envia ARP Requests e mede o tempo de resposta (similar ao ping
+    mas na camada 2 — funciona mesmo com ICMP bloqueado)
+
+  arping -D -I eth0 192.168.1.10
+    Modo de detecção de IP duplicado (ARP Probe)
+</pre>
+        </div>
+
+        <h3>Problemas comuns diagnosticados com ARP</h3>
+        <div class="cmd-grid">
+            <div class="cmd-card">
+                <span class="cmd">IP duplicado</span>
+                <strong>Dois hosts com o mesmo IP</strong>
+                <span>Sintoma: conectividade intermitente. Ferramenta: <code>arping -D</code> ou verificar a tabela ARP &mdash; o mesmo IP aparecer&aacute; com MACs diferentes</span>
+            </div>
+            <div class="cmd-card">
+                <span class="cmd">Gateway inating</span>
+                <strong>Tabela ARP do gateway incompleta</strong>
+                <span>Hosts com IP mas sem conectividade externa. Verificar <code>arp -a</code>: se o gateway aparece como &ldquo;incomplete&rdquo; &mdash; sem resposta ARP</span>
+            </div>
+            <div class="cmd-card">
+                <span class="cmd">Cache ARP envenenado</span>
+                <strong>MAC errado para um IP</strong>
+                <span>Sintoma: tráfego some ou vai para lugar errado. Solução imediata: <code>arp -d &lt;ip&gt;</code> para forçar novo ARP Request</span>
+            </div>
+            <div class="cmd-card">
+                <span class="cmd">Tabela ARP cheia</span>
+                <strong>Em roteadores e switches</strong>
+                <span>Redes muito grandes podem esgotar a tabela ARP do roteador. Solução: segmentação com VLANs para reduzir o tamanho dos domínios de broadcast</span>
+            </div>
+        </div>
+
+        <div class="terminal-block">
+            <div class="terminal-header">Exemplo — tabela ARP e diagnóstico</div>
+<pre>
+  $ arp -a
+
+  gateway (192.168.1.1) at a8:5e:45:f3:2b:7c [ether] on eth0
+  servidor (192.168.1.50) at &lt;incomplete&gt;      [ether] on eth0  ← PROBLEMA!
+  impressora (192.168.1.100) at b4:2e:99:1a:c7:f0 [ether] on eth0
+
+  "incomplete" significa que o ARP Request foi enviado mas
+  não houve resposta:
+  → O host pode estar desligado
+  → Pode haver problema de cabo/switch
+  → O IP pode estar errado
+  → O host pode estar bloqueando ARP (firewall)
+</pre>
+        </div>
+    </div>
+
+    <!-- CARD 6 — ARP no contexto maior da rede -->
+    <div class="content-card">
+        <h2>&#x1F9E9; O ARP no Contexto da Pilha TCP/IP</h2>
+        <p>Entender onde o ARP se encaixa na pilha TCP/IP &eacute; fundamental para compreender por que ele &eacute; necess&aacute;rio e quais s&atilde;o seus limites.</p>
+
+        <div class="terminal-block">
+            <div class="terminal-header">Quando o ARP é acionado — exemplo completo</div>
+<pre>
+  PC-A (192.168.1.10) quer acessar www.exemplo.com (200.10.5.3)
+
+  ── Passo 1: o IP é local ou remoto? ─────────────────────────
+  PC-A compara 200.10.5.3 com sua máscara (192.168.1.0/24):
+  → 200.10.5.3 está FORA da rede local.
+  → PC-A deve enviar o pacote ao gateway (192.168.1.1).
+
+  ── Passo 2: PC-A tem o MAC do gateway? ──────────────────────
+  Verifica a tabela ARP:
+  → SIM  → usa o MAC direto e monta o quadro Ethernet.
+  → NÃO  → dispara um ARP Request para 192.168.1.1 (broadcast).
+             Aguarda ARP Reply, armazena no cache, monta o quadro.
+
+  ── Passo 3: quadro Ethernet montado ─────────────────────────
+  [ MAC-gateway | MAC-PC-A | 0x0800 | pacote IP → 200.10.5.3 | FCS ]
+       ↑ endereço Ethernet muda a cada salto (roteador)
+       ↑ endereço IP permanece 200.10.5.3 do início ao fim
+
+  ── Passo 4: no roteador (gateway) ───────────────────────────
+  Roteador recebe o quadro, desencapsula o pacote IP,
+  consulta a tabela de roteamento e repete o processo ARP
+  para o próximo salto — com o MAC do próximo roteador.
+</pre>
+        </div>
+
+        <div class="alert-box">
+            <p>&#x26A0;&#xFE0F; <strong>Ponto cr&iacute;tico:</strong> o endere&ccedil;o IP de destino <strong>nunca muda</strong> ao longo do caminho &mdash; ele identifica o destino final. O endere&ccedil;o MAC de destino <strong>muda a cada salto</strong> &mdash; ele sempre aponta para o pr&oacute;ximo dispositivo na rede local imediata. O ARP &eacute; executado em cada segmento de rede separadamente.</p>
+        </div>
+    </div>
+
+    <!-- ATIVIDADE PRÁTICA -->
+    <div class="content-card exercise-card" id="prat-rc08">
+        <h2>&#x1F4DD; Atividade Pr&aacute;tica</h2>
+        <p class="prat-intro">Investigar a tabela ARP, simular resolu&ccedil;&atilde;o de endere&ccedil;os e identificar vulnerabilidades.</p>
+
+        <div class="prat-steps">
+            <div class="prat-step">
+                <div class="step-num">1</div>
+                <div class="step-body">
+                    <div class="step-label">Explorar a tabela ARP da m&aacute;quina local</div>
+                    <div class="step-desc">No seu computador ou no laborat&oacute;rio, execute <code>arp -a</code> (Windows/Linux) ou <code>ip neigh show</code> (Linux). (a) Liste todos os dispositivos na tabela e identifique: IP, MAC e tipo (din&acirc;mico ou est&aacute;tico); (b) Pesquise o OUI dos MACs encontrados em um banco de dados online (ex: macvendors.com) e identifique o fabricante; (c) H&aacute; alguma entrada como &ldquo;incomplete&rdquo;? O que isso significa?</div>
+                </div>
+            </div>
+            <div class="prat-step">
+                <div class="step-num">2</div>
+                <div class="step-body">
+                    <div class="step-label">Rastrear o fluxo ARP passo a passo</div>
+                    <div class="step-desc">Para o cen&aacute;rio: PC-A (192.168.0.5 / MAC AA:BB:CC:11:22:33) quer se comunicar com PC-B (192.168.0.20 / MAC DD:EE:FF:44:55:66), mas a tabela ARP de PC-A est&aacute; vazia. Descreva em detalhes: (a) o conte&uacute;do completo do ARP Request enviado (MACs, IPs, tipo); (b) quem recebe esse pacote e por qu&ecirc;; (c) o conte&uacute;do do ARP Reply; (d) o que muda na tabela ARP de PC-A ap&oacute;s a troca; (e) se PC-B aprendeu algo sobre PC-A nesse processo.</div>
+                </div>
+            </div>
+            <div class="prat-step">
+                <div class="step-num">3</div>
+                <div class="step-body">
+                    <div class="step-label">Analisar o caminho IP vs. MAC em roteamento</div>
+                    <div class="step-desc">PC-A (192.168.1.5) acessa um servidor em 10.0.0.100 atrav&eacute;s de um roteador (gateway 192.168.1.1). Complete a tabela abaixo para cada trecho do caminho:<br><br>Trecho 1: PC-A → Roteador &mdash; MAC destino do quadro: ?, IP destino do pacote: ?<br>Trecho 2: Roteador → Servidor &mdash; MAC destino do quadro: ?, IP destino do pacote: ?<br><br>Por que o endere&ccedil;o MAC muda mas o IP n&atilde;o? Qual protocolo o roteador usa para descobrir o MAC do servidor?</div>
+                </div>
+            </div>
+            <div class="prat-step">
+                <div class="step-num">4</div>
+                <div class="step-body">
+                    <div class="step-label">Avaliar vulnerabilidades ARP e contramedidas</div>
+                    <div class="step-desc">Um atacante em 192.168.1.50 envia ARP Replies falsos para todos os hosts da rede alegando ser o gateway (192.168.1.1). (a) Quais dados o atacante consegue capturar? (b) Como o Dynamic ARP Inspection (DAI) bloquearia esse ataque? (c) Por que o uso de HTTPS dificulta a explora&ccedil;&atilde;o mesmo que o ARP Spoofing seja bem-sucedido? (d) Proponha duas configura&ccedil;&otilde;es de rede que reduziriam o impacto desse ataque.</div>
+                </div>
+            </div>
+            <div class="prat-step">
+                <div class="step-num">5</div>
+                <div class="step-body">
+                    <div class="step-label">&#x1F465; Trabalho em grupo &mdash; Julgamento do protocolo ARP</div>
+                    <div class="step-desc"><strong>(Aprendizagem Baseada em Equipes &mdash; grupos de 3&ndash;4 alunos)</strong> Simule um &ldquo;tribunal de protocolos&rdquo;: o ARP est&aacute; sendo julgado por ser inseguro e desatualizado. Um grupo &eacute; a <strong>defesa</strong> (argumente por que o ARP ainda &eacute; necess&aacute;rio e quais contramedidas o tornam aceit&aacute;vel); outro grupo &eacute; a <strong>acusa&ccedil;&atilde;o</strong> (liste falhas, ataques e por que o IPv6/NDP &eacute; superior); um terceiro grupo &eacute; o <strong>j&uacute;ri</strong> (avalia os argumentos e d&aacute; o veredito). <em>Ao final: o ARP deveria ser substitu&iacute;do imediatamente? O que impede a migra&ccedil;&atilde;o total para IPv6?</em></div>
+                </div>
+            </div>
+            <div class="prat-step">
+                <div class="step-num">6</div>
+                <div class="step-body">
+                    <div class="step-label">&#x1F9E9; Computa&ccedil;&atilde;o desplugada &mdash; Simula&ccedil;&atilde;o de ARP na turma</div>
+                    <div class="step-desc"><strong>(Metodologia ativa &mdash; sem computador)</strong> Cada aluno recebe um cart&atilde;o com IP e MAC (inventados). A &ldquo;rede&rdquo; &eacute; a sala de aula. Um aluno &eacute; o roteador; os demais s&atilde;o hosts. Roteiro: (a) PC-A quer enviar para PC-B &mdash; PC-A fica de costas (sem ver o MAC de B) e grita o ARP Request para todos; (b) PC-B responde em voz baixa (unicast); (c) PC-A anota na &ldquo;tabela ARP&rdquo; (folha de papel); (d) o professor anuncia &ldquo;ataque ARP Spoofing&rdquo;: o atacante grita uma resposta falsa antes de PC-B &mdash; o que acontece? <em>Discutam: como a turma poderia &ldquo;verificar&rdquo; se a resposta ARP &eacute; leg&iacute;tima? A atividade &eacute; adapt&aacute;vel: use cart&otilde;es escritos em vez de voz alta para alunos com defici&ecirc;ncia auditiva.</em></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="prat-observe">
+            <strong>&#x1F4CC; Para refletir:</strong> o ARP &eacute; um exemplo perfeito de como a internet foi constru&iacute;da sobre confian&ccedil;a: em 1982, as redes eram pequenas, fechadas e os usu&aacute;rios eram pesquisadores. Hoje, esse protocolo sem autentica&ccedil;&atilde;o roda em bilh&otilde;es de dispositivos. Conhecer o ARP n&atilde;o &eacute; apenas entender como a rede funciona &mdash; &eacute; entender por que a seguran&ccedil;a de redes &eacute; uma disciplina t&atilde;o complexa e essencial.
+        </div>
+
+        <div class="ex-actions">
+            <button class="btn-print" onclick="printPractical('prat-rc08', 'Aula 8 \u2014 Endere\u00e7amento MAC e Protocolo ARP')">&#x1F5A8;&#xFE0F; Imprimir roteiro</button>
+        </div>
+    </div>
+
+    <!-- MÚLTIPLA ESCOLHA -->
+    <div class="content-card exercise-card">
+        <h2>&#x2753; Verifique seu Conhecimento</h2>
+
+        <div class="mc-question" data-correct="c">
+            <p class="mc-q-text">Ao enviar um ARP Request, qual &eacute; o endere&ccedil;o MAC de destino usado no quadro Ethernet?</p>
+            <div class="mc-options">
+                <div class="mc-option" data-option="a"><span class="mc-letter">A</span><span>O MAC do gateway padr&atilde;o da rede</span></div>
+                <div class="mc-option" data-option="b"><span class="mc-letter">B</span><span>O MAC do dispositivo que se deseja descobrir (mesmo sem conhec&ecirc;-lo)</span></div>
+                <div class="mc-option" data-option="c"><span class="mc-letter">C</span><span>FF:FF:FF:FF:FF:FF (broadcast Ethernet)</span></div>
+                <div class="mc-option" data-option="d"><span class="mc-letter">D</span><span>00:00:00:00:00:00 (endere&ccedil;o nulo)</span></div>
+            </div>
+            <div class="mc-explanation">&#x2713; O ARP Request &eacute; enviado em broadcast Ethernet (FF:FF:FF:FF:FF:FF) porque o MAC de destino ainda &eacute; desconhecido &mdash; esse &eacute; exatamente o motivo do ARP. Todos os dispositivos na LAN recebem o Request, mas somente o dono do IP responde com um ARP Reply unicast.</div>
+        </div>
+        <hr class="mc-sep">
+        <div class="mc-question" data-correct="b">
+            <p class="mc-q-text">PC-A acessa um servidor em outra rede atrav&eacute;s de um roteador. Em rela&ccedil;&atilde;o ao quadro Ethernet enviado por PC-A:</p>
+            <div class="mc-options">
+                <div class="mc-option" data-option="a"><span class="mc-letter">A</span><span>O MAC de destino &eacute; o MAC do servidor final e o IP de destino &eacute; o IP do roteador</span></div>
+                <div class="mc-option" data-option="b"><span class="mc-letter">B</span><span>O MAC de destino &eacute; o MAC do roteador (gateway) e o IP de destino &eacute; o IP do servidor final</span></div>
+                <div class="mc-option" data-option="c"><span class="mc-letter">C</span><span>Tanto o MAC quanto o IP de destino s&atilde;o os do servidor final</span></div>
+                <div class="mc-option" data-option="d"><span class="mc-letter">D</span><span>Tanto o MAC quanto o IP de destino s&atilde;o os do roteador</span></div>
+            </div>
+            <div class="mc-explanation">&#x2713; O endere&ccedil;o IP de destino &eacute; sempre o do servidor final (n&atilde;o muda ao longo do caminho). O MAC de destino &eacute; o do pr&oacute;ximo salto &mdash; neste caso o roteador/gateway &mdash; e muda a cada salto. PC-A descobre o MAC do roteador via ARP antes de enviar o quadro.</div>
+        </div>
+        <hr class="mc-sep">
+        <div class="mc-question" data-correct="d">
+            <p class="mc-q-text">Um administrador executa <code>arp -a</code> e v&ecirc; a entrada: <code>192.168.1.20 &lt;incomplete&gt;</code>. O que isso indica?</p>
+            <div class="mc-options">
+                <div class="mc-option" data-option="a"><span class="mc-letter">A</span><span>O dispositivo 192.168.1.20 est&aacute; realizando um ataque ARP Spoofing</span></div>
+                <div class="mc-option" data-option="b"><span class="mc-letter">B</span><span>A entrada ARP expirou e ser&aacute; renovada automaticamente em 30 segundos</span></div>
+                <div class="mc-option" data-option="c"><span class="mc-letter">C</span><span>O endere&ccedil;o IP 192.168.1.20 est&aacute; duplicado na rede</span></div>
+                <div class="mc-option" data-option="d"><span class="mc-letter">D</span><span>Um ARP Request foi enviado para 192.168.1.20 mas nenhuma resposta foi recebida, indicando que o host pode estar offline, com problema de conex&atilde;o ou com ICMP/ARP bloqueado</span></div>
+            </div>
+            <div class="mc-explanation">&#x2713; &ldquo;incomplete&rdquo; na tabela ARP significa que houve uma tentativa de descobrir o MAC (ARP Request enviado), mas nenhum ARP Reply chegou. As causas mais comuns s&atilde;o: host desligado, cabo desconectado, IP incorreto ou firewall bloqueando respostas ARP.</div>
+        </div>
+        <hr class="mc-sep">
+        <div class="mc-question" data-correct="a">
+            <p class="mc-q-text">Qual a principal diferen&ccedil;a entre o ARP (IPv4) e o NDP (IPv6) na forma como descobrem o endere&ccedil;o de camada 2 de um vizinho?</p>
+            <div class="mc-options">
+                <div class="mc-option" data-option="a"><span class="mc-letter">A</span><span>O ARP usa broadcast Ethernet; o NDP usa multicast IPv6 solicitado por n&oacute;, atingindo apenas o host alvo</span></div>
+                <div class="mc-option" data-option="b"><span class="mc-letter">B</span><span>O ARP usa multicast; o NDP usa broadcast, por isso &eacute; menos eficiente</span></div>
+                <div class="mc-option" data-option="c"><span class="mc-letter">C</span><span>O NDP usa o mesmo mecanismo de broadcast do ARP, mas em IPv6</span></div>
+                <div class="mc-option" data-option="d"><span class="mc-letter">D</span><span>O NDP requer um servidor DHCP para funcionar, enquanto o ARP &eacute; aut&ocirc;nomo</span></div>
+            </div>
+            <div class="mc-explanation">&#x2713; O ARP envia o Request para FF:FF:FF:FF:FF:FF (todos os hosts da LAN recebem). O NDP envia um Neighbor Solicitation para o endere&ccedil;o multicast solicitado por n&oacute; (ff02::1:ffxx:xxxx), que &eacute; um multicast derivado do IPv6 do alvo &mdash; somente o host alvo (e alguns outros com hash semelhante) recebe a mensagem, reduzindo drasticamente o tr&aacute;fego desnecess&aacute;rio.</div>
+        </div>
+    </div>
+
+    <div class="nav-footer">
+        <a href="rc07-wifi.html" class="nav-link">&#x2B05; Anterior: Redes sem Fio (IEEE 802.11)</a>
+        <a href="rc09-ipv4.html" class="nav-link">Pr&oacute;xima: Endere&ccedil;amento IPv4 &#x27A1;</a>
+    </div>
+
+</div>
+
+<script src="slide-mode.js"></script>
+<script src="exercise-drag.js"></script>
+<script src="exercise-print.js"></script>
+<script src="exercise-mc.js"></script>
+</body>
+</html>
