@@ -28,7 +28,7 @@
 
     <div class="lesson-hero">
         <h1>&#x1F4CD; Topologias e Componentes de Rede</h1>
-        <p class="subtitle">Aula 2 &mdash; Topologias f&iacute;sicas e l&oacute;gicas em profundidade, dispositivos de rede (hub, switch, roteador, modem) e fundamentos de cabeamento estruturado</p>
+        <p class="subtitle">Aula 2 &mdash; Topologias f&iacute;sicas e l&oacute;gicas em profundidade e dispositivos de rede (hub, switch, roteador, modem)</p>
     </div>
 
     <!-- CARD 1 — Topologia Física vs Lógica -->
@@ -185,7 +185,77 @@
         </div>
     </div>
 
-    <!-- CARD 3 — Dispositivos de Rede -->
+    <!-- CARD 3 — Topologias Lógicas -->
+    <div class="content-card">
+        <h2>&#x1F4CA; Topologias L&oacute;gicas</h2>
+        <p>Enquanto a topologia f&iacute;sica mostra <em>onde</em> os cabos est&atilde;o, a topologia l&oacute;gica mostra <em>como os dados circulam</em>. As tr&ecirc;s principais s&atilde;o:</p>
+
+        <h3>&#x1F4E1; Barramento L&oacute;gico</h3>
+        <p>Todos os dispositivos compartilham o mesmo meio de transmiss&atilde;o logicamente. Quando um envia, <strong>todos recebem</strong> &mdash; e cada um verifica se o pacote &eacute; destinado a ele. O protocolo <strong>CSMA/CD</strong> (Carrier Sense Multiple Access with Collision Detection) gerencia o acesso para evitar colis&otilde;es.</p>
+
+        <div class="terminal-block">
+            <div class="terminal-header">Fluxo &mdash; Barramento L&oacute;gico (Ethernet com hub)</div>
+<pre>
+PC-A envia dado para PC-C:
+
+PC-A ──broadcast──&gt; [HUB] ──&gt; PC-B (descarta, n&atilde;o &eacute; para mim)
+                           ──&gt; PC-C (aceita, &eacute; para mim!)
+                           ──&gt; PC-D (descarta, n&atilde;o &eacute; para mim)
+</pre>
+        </div>
+
+        <div class="highlight-box">
+            <p>&#x1F4A1; <strong>CSMA/CD em 3 passos:</strong> (1) escuta o meio antes de transmitir; (2) se livre, transmite; (3) se detectar colis&atilde;o, para, aguarda tempo aleat&oacute;rio e tenta novamente. Usado no Ethernet cl&aacute;ssico (IEEE 802.3).</p>
+        </div>
+
+        <h3>&#x1F501; Anel L&oacute;gico</h3>
+        <p>Os dados circulam em uma s&oacute; dire&ccedil;&atilde;o passando por todos os n&oacute;s. Um <strong>token</strong> (ficha) circula continuamente: apenas o dispositivo que est&aacute; com o token pode transmitir, eliminando colis&otilde;es por controle de acesso.</p>
+
+        <div class="terminal-block">
+            <div class="terminal-header">Fluxo &mdash; Anel L&oacute;gico (Token Ring)</div>
+<pre>
+Token circula: PC-A &rarr; PC-B &rarr; PC-C &rarr; PC-D &rarr; PC-A ...
+
+PC-B quer transmitir:
+  1. Aguarda o token chegar
+  2. Captura o token
+  3. Transmite o dado (passa por PC-C e PC-D at&eacute; chegar ao destino)
+  4. Libera o token para o pr&oacute;ximo n&oacute;
+</pre>
+        </div>
+
+        <div class="alert-box">
+            <p>&#x26A0;&#xFE0F; <strong>Token Ring &eacute; legado.</strong> Criado pela IBM nos anos 80 (IEEE 802.5), foi amplamente substitu&iacute;do pelo Ethernet. Ainda existe em redes industriais como <strong>PROFIBUS</strong> e em backbones de operadoras (<strong>SONET/SDH</strong>).</p>
+        </div>
+
+        <h3>&#x1F517; Ponto a Ponto L&oacute;gico</h3>
+        <p>Uma conex&atilde;o dedicada e exclusiva entre dois n&oacute;s. Os dados n&atilde;o passam por outros dispositivos intermediariamente &mdash; o canal &eacute; privado. Muito usado em enlaces WAN e VPNs.</p>
+
+        <div class="terminal-block">
+            <div class="terminal-header">Exemplos &mdash; Ponto a Ponto L&oacute;gico</div>
+<pre>
+Filial A ════════════════════ Matriz  (link MPLS dedicado)
+   |                             |
+Filial B ── VPN criptografada ── Matriz  (t&uacute;nel sobre internet)
+</pre>
+        </div>
+
+        <h3>&#x1F4CB; Resumo: F&iacute;sica &times; L&oacute;gica</h3>
+        <table class="info-table">
+            <thead>
+                <tr><th>Topologia F&iacute;sica</th><th>Topologia L&oacute;gica</th><th>Exemplo real</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>Estrela (com hub)</td><td>Barramento</td><td>Ethernet 10BASE-T com hub</td></tr>
+                <tr><td>Estrela (com switch)</td><td>Ponto a ponto</td><td>Ethernet moderna (IEEE 802.3)</td></tr>
+                <tr><td>Anel f&iacute;sico</td><td>Anel (token)</td><td>Token Ring IBM, SONET</td></tr>
+                <tr><td>Malha</td><td>Ponto a ponto</td><td>Backbone da internet, MPLS</td></tr>
+                <tr><td>Barramento</td><td>Barramento</td><td>Ethernet coaxial 10BASE-2 (legado)</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- CARD 4 — Dispositivos de Rede -->
     <div class="content-card">
         <h2>&#x1F9E9; Dispositivos de Rede em Profundidade</h2>
 
@@ -299,98 +369,6 @@
         </table>
     </div>
 
-    <!-- CARD 4 — Cabeamento Estruturado -->
-    <div class="content-card">
-        <h2>&#x1F9F5; Cabeamento Estruturado</h2>
-        <p>O <strong>cabeamento estruturado</strong> &eacute; um sistema padronizado de cabos e conex&otilde;es que suporta m&uacute;ltiplos servi&ccedil;os (dados, voz, v&iacute;deo) de forma organizada e flex&iacute;vel. O principal padr&atilde;o &eacute; o <strong>ANSI/TIA-568</strong>.</p>
-
-        <h3>Categorias de Cabo UTP</h3>
-        <table class="info-table">
-            <thead>
-                <tr>
-                    <th>Categoria</th>
-                    <th>Velocidade m&aacute;x.</th>
-                    <th>Frequ&ecirc;ncia</th>
-                    <th>Uso t&iacute;pico</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td><strong>Cat 5e</strong></td>
-                    <td>1 Gbps</td>
-                    <td>100 MHz</td>
-                    <td>Redes dom&eacute;sticas e escrit&oacute;rios (ainda muito comum)</td>
-                </tr>
-                <tr>
-                    <td><strong>Cat 6</strong></td>
-                    <td>10 Gbps (at&eacute; 55m)</td>
-                    <td>250 MHz</td>
-                    <td>Redes corporativas modernas</td>
-                </tr>
-                <tr>
-                    <td><strong>Cat 6A</strong></td>
-                    <td>10 Gbps (at&eacute; 100m)</td>
-                    <td>500 MHz</td>
-                    <td>Data centers e redes de alto desempenho</td>
-                </tr>
-                <tr>
-                    <td><strong>Cat 7</strong></td>
-                    <td>10 Gbps</td>
-                    <td>600 MHz</td>
-                    <td>Ambientes com alta interfer&ecirc;ncia eletromagn&eacute;tica</td>
-                </tr>
-            </tbody>
-        </table>
-
-        <h3>Pinagem RJ-45: T568A e T568B</h3>
-        <p>O conector RJ-45 tem 8 pinos. Existem dois padr&otilde;es de pinagem definidos pela TIA-568:</p>
-
-        <div class="compare-grid">
-            <div class="compare-box blue">
-                <h4>&#x1F7E2; Padr&atilde;o T568B (mais comum no Brasil)</h4>
-                <ul>
-                    <li>Pino 1: Laranja/Branco</li>
-                    <li>Pino 2: Laranja</li>
-                    <li>Pino 3: Verde/Branco</li>
-                    <li>Pino 4: Azul</li>
-                    <li>Pino 5: Azul/Branco</li>
-                    <li>Pino 6: Verde</li>
-                    <li>Pino 7: Marrom/Branco</li>
-                    <li>Pino 8: Marrom</li>
-                </ul>
-            </div>
-            <div class="compare-box green">
-                <h4>&#x1F7E1; Padr&atilde;o T568A</h4>
-                <ul>
-                    <li>Pino 1: Verde/Branco</li>
-                    <li>Pino 2: Verde</li>
-                    <li>Pino 3: Laranja/Branco</li>
-                    <li>Pino 4: Azul</li>
-                    <li>Pino 5: Azul/Branco</li>
-                    <li>Pino 6: Laranja</li>
-                    <li>Pino 7: Marrom/Branco</li>
-                    <li>Pino 8: Marrom</li>
-                </ul>
-            </div>
-        </div>
-
-        <h3>Cabo Direto vs Cabo Crossover</h3>
-        <div class="compare-grid">
-            <div class="compare-box blue">
-                <h4>&#x27A1;&#xFE0F; Cabo Direto (Straight-through)</h4>
-                <p style="margin:0.5rem 0 0">Ambas as pontas com o <strong>mesmo padr&atilde;o</strong> (T568B&ndash;T568B ou T568A&ndash;T568A). Conecta dispositivos <em>diferentes</em>: computador &rarr; switch, switch &rarr; roteador.</p>
-            </div>
-            <div class="compare-box green">
-                <h4>&#x21C4; Cabo Crossover</h4>
-                <p style="margin:0.5rem 0 0">Uma ponta T568A e outra T568B. Conecta dispositivos do <strong>mesmo tipo</strong>: computador &rarr; computador, switch &rarr; switch. Hoje em dia, a maioria dos dispositivos detecta automaticamente (Auto-MDI/MDIX).</p>
-            </div>
-        </div>
-
-        <div class="tip-box">
-            <p>&#x2705; <strong>Dist&acirc;ncia m&aacute;xima:</strong> O cabo UTP tem limite de <strong>100 metros</strong> por segmento para garantir a integridade do sinal. Al&eacute;m disso, &eacute; necess&aacute;rio um repetidor, switch ou conversor para fibra &oacute;ptica.</p>
-        </div>
-    </div>
-
     <!-- ATIVIDADE PRÁTICA -->
     <div class="content-card exercise-card" id="prat-rc02">
         <h2>&#x1F4DD; Atividade Pr&aacute;tica</h2>
@@ -439,17 +417,6 @@
                 <div class="mc-option" data-option="d"><span class="mc-letter">D</span><span>O hub suporta VLANs enquanto o switch n&atilde;o suporta</span></div>
             </div>
             <div class="mc-explanation">✓ O switch aprende os endereços MAC de cada porta e encaminha quadros somente para a porta correta, criando domínios de colisão individuais. O hub replica para todas as portas, gerando colisões e desperdiçando banda.</div>
-        </div>
-        <hr class="mc-sep">
-        <div class="mc-question" data-correct="b">
-            <p class="mc-q-text">Para conectar dois computadores diretamente, sem usar switch, qual tipo de cabo UTP deve ser utilizado?</p>
-            <div class="mc-options">
-                <div class="mc-option" data-option="a"><span class="mc-letter">A</span><span>Cabo direto (straight-through) T568B&ndash;T568B</span></div>
-                <div class="mc-option" data-option="b"><span class="mc-letter">B</span><span>Cabo crossover T568A&ndash;T568B</span></div>
-                <div class="mc-option" data-option="c"><span class="mc-letter">C</span><span>Cabo coaxial com conector BNC</span></div>
-                <div class="mc-option" data-option="d"><span class="mc-letter">D</span><span>Cabo direto T568A&ndash;T568A</span></div>
-            </div>
-            <div class="mc-explanation">✓ O cabo crossover (uma ponta T568A e outra T568B) é usado para conectar dispositivos do mesmo tipo — como computador a computador ou switch a switch — sem a necessidade de um dispositivo intermediário.</div>
         </div>
         <hr class="mc-sep">
         <div class="mc-question" data-correct="d">
