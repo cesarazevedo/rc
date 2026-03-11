@@ -1000,9 +1000,7 @@
         //   Coluna A = nome do arquivo da aula (ex: rc01-introducao.html)
         //   Coluna B = TRUE ou FALSE
         // Depois substitua o valor abaixo pelo ID da sua planilha.
-        const SHEET_ID  = '1OUrNTQYKFRtfNrD5SRz81CSQObZyKX4JuYRt4vdLcJo';
-        const AULAS_URL = 'https://docs.google.com/spreadsheets/d/' + SHEET_ID
-                        + '/gviz/tq?tqx=out:csv&sheet=aulas&t=' + Date.now();
+        const AULAS_URL = 'https://script.google.com/macros/s/AKfycbxeNOjHPTmRcydPhBEG-tpfCW1Z4cghilm4WoMpHfuvPk0zM_4W8lR9BA-yVEAunekNCw/exec';
         // ─────────────────────────────────────────────────────────────────
 
         function updateProgress() {
@@ -1028,21 +1026,15 @@
             });
         }
 
-        function updateLessonCards(csv) {
-            const linhas = csv.trim().split('\n').slice(1);
-            linhas.forEach(function(linha) {
-                const partes = linha.split(',');
-                if (partes.length < 2) return;
-                const aula   = partes[0].trim().replace(/"/g, '');
-                const status = partes[1].trim().replace(/"/g, '').toUpperCase();
-                if (status !== 'TRUE') return;
-
+        function updateLessonCards(data) {
+            Object.keys(data).forEach(function(aula) {
+                if (data[aula] !== true) return;
                 const card = document.querySelector('a.lesson-card[href*="' + aula + '"]');
                 if (card) {
                     card.classList.add('done');
                     card.classList.remove('coming-soon');
                     const statusEl = card.querySelector('.lesson-status');
-                    if (statusEl) statusEl.textContent = '\u2705';
+                    if (statusEl) statusEl.textContent = '✅';
                 }
             });
             updateBimestreChecks();
@@ -1053,8 +1045,8 @@
             document.querySelectorAll('.chapter-check').forEach(function(cb) { cb.disabled = true; });
 
             fetch(AULAS_URL)
-                .then(function(r) { return r.text(); })
-                .then(function(csv) { updateLessonCards(csv); })
+                .then(function(r) { return r.json(); })
+                .then(function(data) { updateLessonCards(data); })
                 .catch(function() { updateProgress(); });
         });
 
