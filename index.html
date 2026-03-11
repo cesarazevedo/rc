@@ -1006,7 +1006,7 @@
         // ─────────────────────────────────────────────────────────────────
 
         function updateProgress() {
-            const totalCards = document.querySelectorAll('a.lesson-card:not(.coming-soon)');
+            const totalCards = document.querySelectorAll('a.lesson-card');
             const doneCards  = document.querySelectorAll('a.lesson-card.done');
             const total   = totalCards.length;
             const checked = doneCards.length;
