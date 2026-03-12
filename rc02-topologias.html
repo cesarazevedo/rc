@@ -28,7 +28,7 @@
 
     <div class="lesson-hero">
         <h1>&#x1F4CD; Topologias e Componentes de Rede</h1>
-        <p class="subtitle">Aula 2 &mdash; Topologias f&iacute;sicas e l&oacute;gicas em profundidade e dispositivos de rede (hub, switch, roteador, modem)</p>
+        <p class="subtitle">Aula 2 &mdash; Aprofundamento das topologias e dispositivos &mdash; CSMA/CD, dom&iacute;nios de colis&atilde;o, Token Ring, estrela estendida e switch gerenci&aacute;vel</p>
     </div>
 
     <!-- CARD 1 — Topologia Física vs Lógica -->
@@ -55,9 +55,10 @@
     <!-- CARD 2 — Topologias em Detalhe -->
     <div class="content-card">
         <h2>&#x1F578;&#xFE0F; Topologias em Detalhe</h2>
+        <p>Voc&ecirc;s j&aacute; conhecem as topologias b&aacute;sicas da Aula 1. Aqui vamos analisar cada uma com vantagens, desvantagens e diagramas &mdash; e apresentar duas novas: <strong>estrela estendida</strong> e o aprofundamento da <strong>malha</strong>.</p>
 
         <h3>&#x2B50; Estrela (Star)</h3>
-        <p>Todos os dispositivos se conectam a um <strong>ponto central</strong> (switch ou hub). &Eacute; a topologia dominante nas LANs modernas.</p>
+        <p>A topologia dominante nas LANs modernas. Veja por que ela &eacute; t&atilde;o usada &mdash; e qual &eacute; seu ponto fr&aacute;gil:</p>
 
         <div class="terminal-block">
             <div class="terminal-header">Diagrama &mdash; Topologia Estrela</div>
@@ -89,7 +90,7 @@
         </table>
 
         <h3>&#x1F6A6; Barramento (Bus)</h3>
-        <p>Todos os dispositivos compartilham um &uacute;nico cabo (backbone). Quando um dispositivo transmite, todos os outros recebem o sinal.</p>
+        <p>Todos compartilham um &uacute;nico cabo. Tecnologia legada &mdash; entender seus limites explica por que foi abandonada:</p>
 
         <div class="terminal-block">
             <div class="terminal-header">Diagrama &mdash; Topologia Barramento</div>
@@ -119,7 +120,7 @@
         </table>
 
         <h3>&#x1F501; Anel (Ring)</h3>
-        <p>Os dispositivos formam um c&iacute;rculo fechado. Cada n&oacute; recebe e regenera o sinal antes de pass&aacute;-lo adiante. Usada no padr&atilde;o Token Ring (legado) e em redes SONET/SDH de alta disponibilidade.</p>
+        <p>Cada n&oacute; recebe e regenera o sinal antes de pass&aacute;-lo adiante. Base do Token Ring (legado) e ainda presente em redes SONET/SDH de alta disponibilidade:</p>
 
         <div class="terminal-block">
             <div class="terminal-header">Diagrama &mdash; Topologia Anel</div>
@@ -151,7 +152,7 @@
         </table>
 
         <h3>&#x1F9F6; Malha (Mesh)</h3>
-        <p>Cada dispositivo possui conex&otilde;es diretas com v&aacute;rios outros. Na <strong>malha completa</strong> (full mesh) todos se conectam a todos. Na <strong>malha parcial</strong> (partial mesh) apenas alguns n&oacute;s t&ecirc;m m&uacute;ltiplas conex&otilde;es.</p>
+        <p>Conex&otilde;es diretas entre m&uacute;ltiplos n&oacute;s. Agora vamos al&eacute;m da defini&ccedil;&atilde;o &mdash; com a f&oacute;rmula que explica por que a malha <em>completa</em> n&atilde;o existe em LANs:</p>
 
         <div class="terminal-block">
             <div class="terminal-header">Diagrama &mdash; Malha Completa (4 n&oacute;s)</div>
@@ -258,16 +259,17 @@ Filial B ── VPN criptografada ── Matriz  (t&uacute;nel sobre internet)
     <!-- CARD 4 — Dispositivos de Rede -->
     <div class="content-card">
         <h2>&#x1F9E9; Dispositivos de Rede em Profundidade</h2>
+        <p>Voc&ecirc;s j&aacute; conhecem hub, switch, roteador e modem. Aqui vamos entender <em>como funcionam por dentro</em> &mdash; dom&iacute;nios de colis&atilde;o, tabela MAC, NAT e a diferen&ccedil;a entre switch gerenci&aacute;vel e n&atilde;o gerenci&aacute;vel.</p>
 
         <h3>Hub &mdash; Concentrador (Legado)</h3>
-        <p>O hub &eacute; o dispositivo mais simples: ao receber um sinal em uma porta, ele <strong>replica para todas as outras portas</strong> sem nenhum tipo de filtragem. Isso cria um &uacute;nico <em>dom&iacute;nio de colis&atilde;o</em> para todos os dispositivos conectados.</p>
+        <p>J&aacute; sabemos que o hub replica o sinal para todas as portas. O que isso significa na pr&aacute;tica? Ele cria um &uacute;nico <strong>dom&iacute;nio de colis&atilde;o</strong> para todos os dispositivos conectados.</p>
 
         <div class="alert-box">
             <p>&#x26A0;&#xFE0F; <strong>Por que o hub &eacute; obsoleto?</strong> Com um hub, se dois dispositivos transmitem ao mesmo tempo ocorre uma <strong>colis&atilde;o</strong>: os dados s&atilde;o corrompidos e precisam ser retransmitidos. Quanto mais dispositivos, mais colis&otilde;es e pior o desempenho. O switch resolve completamente esse problema.</p>
         </div>
 
         <h3>Switch &mdash; Comutador</h3>
-        <p>O switch aprende o <strong>endere&ccedil;o MAC</strong> de cada dispositivo e encaminha os quadros somente para a porta correta. Cada porta forma seu pr&oacute;prio dom&iacute;nio de colis&atilde;o &mdash; praticamente eliminando as colis&otilde;es.</p>
+        <p>O switch resolve o problema do hub criando um dom&iacute;nio de colis&atilde;o por porta. Mas <em>como</em> ele sabe para qual porta enviar cada quadro? Atrav&eacute;s da <strong>tabela MAC</strong> &mdash; aprendida dinamicamente:</p>
 
         <div class="compare-grid">
             <div class="compare-box blue">
@@ -303,7 +305,7 @@ Filial B ── VPN criptografada ── Matriz  (t&uacute;nel sobre internet)
         </div>
 
         <h3>Roteador &mdash; Router</h3>
-        <p>O roteador opera na <strong>Camada 3 (Rede)</strong> e conecta redes diferentes. Enquanto o switch usa endere&ccedil;os MAC para encaminhar dentro de uma rede, o roteador usa <strong>endere&ccedil;os IP</strong> para encaminhar entre redes.</p>
+        <p>O roteador opera na <strong>Camada 3 (Rede)</strong> e conecta redes diferentes usando IP. Al&eacute;m do roteamento b&aacute;sico, os roteadores modernos t&ecirc;m fun&ccedil;&otilde;es que voc&ecirc;s usam todo dia sem perceber:</p>
 
         <div class="cmd-grid">
             <div class="cmd-card">
@@ -419,15 +421,15 @@ Filial B ── VPN criptografada ── Matriz  (t&uacute;nel sobre internet)
             <div class="mc-explanation">✓ O switch aprende os endereços MAC de cada porta e encaminha quadros somente para a porta correta, criando domínios de colisão individuais. O hub replica para todas as portas, gerando colisões e desperdiçando banda.</div>
         </div>
         <hr class="mc-sep">
-        <div class="mc-question" data-correct="d">
-            <p class="mc-q-text">Uma empresa possui sede em S&atilde;o Paulo e filial no Rio de Janeiro. A rede que interliga as duas unidades &eacute; classificada como:</p>
+        <div class="mc-question" data-correct="b">
+            <p class="mc-q-text">O protocolo CSMA/CD detecta uma colis&atilde;o durante a transmiss&atilde;o. Qual &eacute; a a&ccedil;&atilde;o correta ap&oacute;s a detec&ccedil;&atilde;o?</p>
             <div class="mc-options">
-                <div class="mc-option" data-option="a"><span class="mc-letter">A</span><span>LAN &mdash; Local Area Network</span></div>
-                <div class="mc-option" data-option="b"><span class="mc-letter">B</span><span>PAN &mdash; Personal Area Network</span></div>
-                <div class="mc-option" data-option="c"><span class="mc-letter">C</span><span>MAN &mdash; Metropolitan Area Network</span></div>
-                <div class="mc-option" data-option="d"><span class="mc-letter">D</span><span>WAN &mdash; Wide Area Network</span></div>
+                <div class="mc-option" data-option="a"><span class="mc-letter">A</span><span>Continua transmitindo e ignora a colis&atilde;o</span></div>
+                <div class="mc-option" data-option="b"><span class="mc-letter">B</span><span>Para a transmiss&atilde;o, aguarda um tempo aleat&oacute;rio e tenta novamente</span></div>
+                <div class="mc-option" data-option="c"><span class="mc-letter">C</span><span>Solicita ao switch que reenvie o quadro pelo caminho correto</span></div>
+                <div class="mc-option" data-option="d"><span class="mc-letter">D</span><span>Envia um token para o pr&oacute;ximo n&oacute; assumir a transmiss&atilde;o</span></div>
             </div>
-            <div class="mc-explanation">✓ Uma rede que conecta localidades geograficamente distantes (cidades, estados ou países) é classificada como WAN (Wide Area Network). A internet é o maior exemplo de WAN existente.</div>
+            <div class="mc-explanation">✓ No CSMA/CD: (1) escuta antes de transmitir; (2) se detectar colisão durante a transmissão, para imediatamente; (3) aguarda um tempo aleatório (backoff exponencial) e tenta novamente. O token é mecanismo do Token Ring, não do CSMA/CD.</div>
         </div>
         <hr class="mc-sep">
         <div class="mc-question" data-correct="a">
