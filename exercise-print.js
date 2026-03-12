@@ -97,7 +97,7 @@ kbd {
 <body>
 
 <div class="ph">
-    <div class="ph-school">IFRN &mdash; Educa&ccedil;&atilde;o em Tecnologias Digitais &middot; T&eacute;cnico em Inform&aacute;tica Integrado</div>
+    <div class="ph-school">IFRN &mdash; Redes de Computadores &middot; T&eacute;cnico em Inform&aacute;tica Integrado</div>
     <div class="ph-title">${aulaTitle}</div>
     <div class="ph-sub">Roteiro de Atividade Pr&aacute;tica</div>
 </div>
@@ -123,7 +123,7 @@ ${clone.innerHTML}
 </div>
 
 <div class="pf">
-    <span>Educa&ccedil;&atilde;o em Tecnologias Digitais &mdash; IFRN</span>
+    <span>Redes de Computadores &mdash; IFRN</span>
     <span>cesarazevedo.github.io/infodigitais</span>
 </div>
 
