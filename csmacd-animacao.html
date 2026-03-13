@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CSMA/CD &ndash; Anima&ccedil;&atilde;o Interativa</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: #0f172a;
+      color: #e2e8f0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px 16px 40px;
+      min-height: 100vh;
+    }
+
+    h1 {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: #38bdf8;
+      margin-bottom: 2px;
+      text-align: center;
+      letter-spacing: -0.02em;
+    }
+
+    .subtitle {
+      color: #64748b;
+      font-size: 0.85rem;
+      margin-bottom: 22px;
+      text-align: center;
+      font-style: italic;
+    }
+
+    #canvas-wrapper {
+      background: #1e293b;
+      border-radius: 14px;
+      border: 1px solid #1e3a5f;
+      overflow: hidden;
+      box-shadow: 0 25px 70px rgba(0,0,0,0.6);
+    }
+
+    canvas { display: block; }
+
+    #progress-bar-wrapper {
+      max-width: 840px;
+      width: 100%;
+      margin-top: 10px;
+      background: #1e293b;
+      border-radius: 4px;
+      height: 5px;
+    }
+
+    #progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, #3b82f6, #38bdf8);
+      border-radius: 4px;
+      width: 0%;
+      transition: width 0.08s linear;
+    }
+
+    #desc-box {
+      margin-top: 14px;
+      background: #1e293b;
+      border: 1px solid #1e3a5f;
+      border-radius: 10px;
+      padding: 14px 20px;
+      max-width: 840px;
+      width: 100%;
+      min-height: 64px;
+      font-size: 0.93rem;
+      line-height: 1.55;
+      color: #cbd5e1;
+    }
+
+    .phase-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #38bdf8;
+      margin-bottom: 5px;
+    }
+
+    #controls {
+      display: flex;
+      gap: 10px;
+      margin-top: 14px;
+      align-items: center;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    button {
+      padding: 9px 22px;
+      border: none;
+      border-radius: 7px;
+      cursor: pointer;
+      font-size: 0.875rem;
+      font-weight: 700;
+      transition: all 0.15s;
+      letter-spacing: 0.01em;
+    }
+
+    #btnPlay  { background: #3b82f6; color: white; min-width: 110px; }
+    #btnPlay:hover  { background: #2563eb; transform: translateY(-1px); }
+    #btnReset { background: #334155; color: #e2e8f0; }
+    #btnReset:hover { background: #475569; }
+    #btnStep  { background: #1e3a5f; color: #93c5fd; }
+    #btnStep:hover  { background: #1e4976; }
+
+    .ctrl-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 7px;
+      padding: 6px 12px;
+    }
+
+    .ctrl-label { color: #64748b; font-size: 0.8rem; }
+
+    #speedSlider {
+      width: 90px;
+      accent-color: #3b82f6;
+      cursor: pointer;
+    }
+
+    #speed-val { color: #38bdf8; font-size: 0.85rem; font-weight: 700; min-width: 24px; }
+
+    .legend {
+      display: flex;
+      gap: 18px;
+      margin-top: 16px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 0.78rem;
+      color: #64748b;
+    }
+
+    .legend-dot {
+      width: 24px;
+      height: 6px;
+      border-radius: 3px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>CSMA/CD</h1>
+  <div class="subtitle">Carrier Sense Multiple Access with Collision Detection &mdash; Anima&ccedil;&atilde;o Interativa</div>
+
+  <div id="canvas-wrapper">
+    <canvas id="canvas" width="840" height="430"></canvas>
+  </div>
+
+  <div id="progress-bar-wrapper">
+    <div id="progress-bar"></div>
+  </div>
+
+  <div id="desc-box">
+    <div class="phase-label" id="phase-label">AGUARDANDO</div>
+    <div id="desc-text">Clique em &#9654; Play para iniciar a simula&ccedil;&atilde;o do protocolo CSMA/CD.</div>
+  </div>
+
+  <div id="controls">
+    <button id="btnPlay">&#9654; Play</button>
+    <button id="btnReset">&#8635; Reiniciar</button>
+    <button id="btnStep">&#8594; Pr&oacute;xima Fase</button>
+    <div class="ctrl-group">
+      <span class="ctrl-label">Velocidade:</span>
+      <input type="range" id="speedSlider" min="0.25" max="3" step="0.25" value="1">
+      <span id="speed-val">1&times;</span>
+    </div>
+  </div>
+
+  <div class="legend">
+    <div class="legend-item">
+      <div class="legend-dot" style="background:#3b82f6"></div>
+      <span>Sinal de A (dados)</span>
+    </div>
+    <div class="legend-item">
+      <div class="legend-dot" style="background:#f97316"></div>
+      <span>Sinal de D (dados)</span>
+    </div>
+    <div class="legend-item">
+      <div class="legend-dot" style="background:#ef4444"></div>
+      <span>Colis&atilde;o / JAM</span>
+    </div>
+    <div class="legend-item">
+      <div class="legend-dot" style="background:#22c55e"></div>
+      <span>Sucesso</span>
+    </div>
+    <div class="legend-item">
+      <div class="legend-dot" style="background:#f59e0b"></div>
+      <span>Backoff</span>
+    </div>
+  </div>
+
+<script>
+// ─────────────────────────────────────────────────────────────────────────────
+//  Canvas setup
+// ─────────────────────────────────────────────────────────────────────────────
+const canvas = document.getElementById('canvas');
+const ctx    = canvas.getContext('2d');
+const W = canvas.width;   // 840
+const H = canvas.height;  // 430
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  Layout
+// ─────────────────────────────────────────────────────────────────────────────
+const BUS_Y  = 200;
+const BUS_X1 = 60;
+const BUS_X2 = 780;
+const BUS_LEN = BUS_X2 - BUS_X1; // 720
+
+const STA_W = 72;
+const STA_H = 68;
+const STA_TOP = BUS_Y + 28;  // station boxes below bus
+
+const STATIONS = [
+  { id:'A', x:120, color:'#3b82f6', glow:'rgba(59,130,246,0.5)',  darkBg:'#0f2a4a' },
+  { id:'B', x:320, color:'#8b5cf6', glow:'rgba(139,92,246,0.4)', darkBg:'#1a1040' },
+  { id:'C', x:520, color:'#8b5cf6', glow:'rgba(139,92,246,0.4)', darkBg:'#1a1040' },
+  { id:'D', x:720, color:'#f97316', glow:'rgba(249,115,22,0.5)',  darkBg:'#3b1200' },
+];
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  Timeline (all times in ms at 1× speed)
+// ─────────────────────────────────────────────────────────────────────────────
+// Signal physics:
+//   speed = BUS_LEN / 3200 ≈ 0.225 px/ms
+//   A starts transmitting at t=3000, from x=120, direction →
+//   D starts transmitting at t=5000, from x=720, direction ←
+//
+// Collision time:
+//   120 + v*(t-3000) = 720 - v*(t-5000)
+//   2v*t = 600 + v*(5000+3000)  →  t = 300/v + 4000
+//   with v=BUS_LEN/3200 = 0.225: t = 300/0.225 + 4000 = 5333ms
+//   x_collision = 120 + 0.225*(5333-3000) = 120 + 525 = 645
+
+const SIG_V = BUS_LEN / 3200; // ~0.225 px/ms
+
+// Pre-compute collision
+const COL_T = 300 / SIG_V + 4000;          // ≈ 5333 ms
+const COL_X = 120 + SIG_V * (COL_T - 3000); // ≈ 645 px
+
+const T_IDLE_END    = 2000;
+const T_A_SENSE_END = 3000;
+const T_A_TX_START  = 3000;
+const T_D_SENSE     = 4600;   // D starts sensing
+const T_D_SENSE_END = 5000;
+const T_D_TX_START  = 5000;
+const T_COLLISION   = COL_T;  // ≈ 5333
+const T_JAM_START   = 5600;
+const T_JAM_END     = 6800;
+const T_BACKOFF_A   = 9000;   // A's timer expires → retry
+const T_BACKOFF_D   = 10500;  // D's timer expires (but senses busy, waits more)
+const T_RETRY_START = 9000;
+const T_RETRY_REACH = T_RETRY_START + BUS_LEN / SIG_V; // signal reaches end ≈ 12200
+const T_SUCCESS     = T_RETRY_REACH;
+const T_TOTAL       = 14000;
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  Phase definitions
+// ─────────────────────────────────────────────────────────────────────────────
+const PHASES = [
+  { start:0,              end:T_IDLE_END,    name:'IDLE',            color:'#22c55e' },
+  { start:T_IDLE_END,     end:T_A_TX_START,  name:'CARRIER SENSE',   color:'#38bdf8' },
+  { start:T_A_TX_START,   end:T_D_TX_START,  name:'TRANSMITINDO (A)',color:'#3b82f6' },
+  { start:T_D_TX_START,   end:T_COLLISION,   name:'TRANSMITINDO (A+D)',color:'#f97316'},
+  { start:T_COLLISION,    end:T_JAM_START,   name:'COLISAO!',        color:'#ef4444' },
+  { start:T_JAM_START,    end:T_JAM_END,     name:'JAM SIGNAL',      color:'#ef4444' },
+  { start:T_JAM_END,      end:T_BACKOFF_A,   name:'BACKOFF',         color:'#f59e0b' },
+  { start:T_BACKOFF_A,    end:T_SUCCESS,     name:'RETRANSMISSAO',   color:'#a78bfa' },
+  { start:T_SUCCESS,      end:T_TOTAL,       name:'SUCESSO!',        color:'#22c55e' },
+];
+
+const DESCS = [
+  { t:0,               text:'Canal livre (IDLE). As quatro esta\u00e7\u00f5es est\u00e3o conectadas ao barramento compartilhado e monitoram continuamente o meio. Nenhuma est\u00e1 transmitindo.' },
+  { t:T_IDLE_END,      text:'Esta\u00e7\u00e3o A quer enviar dados. Ela ESCUTA o canal primeiro (Carrier Sense) \u2014 detecta que est\u00e1 livre e se prepara para transmitir.' },
+  { t:T_A_TX_START,    text:'Esta\u00e7\u00e3o A come\u00e7a a transmitir! O sinal el\u00e9trico se propaga pelo cabo em dire\u00e7\u00e3o \u00e0s outras esta\u00e7\u00f5es. B e C j\u00e1 detectam o sinal.' },
+  { t:T_D_SENSE,       text:'Esta\u00e7\u00e3o D tamb\u00e9m quer transmitir. Ela escuta o canal, mas o sinal de A ainda n\u00e3o chegou at\u00e9 ela (atraso de propaga\u00e7\u00e3o). D acha que o canal est\u00e1 livre!' },
+  { t:T_D_TX_START,    text:'Esta\u00e7\u00e3o D come\u00e7a a transmitir tamb\u00e9m! Agora dois sinais viajam pelo mesmo meio em dire\u00e7\u00f5es opostas.' },
+  { t:T_COLLISION,     text:'\u26a1 COLIS\u00c3O! Os dois sinais se encontram e interferem mutuamente, corrompendo ambas as transmiss\u00f5es. Este \u00e9 o pior cen\u00e1rio do CSMA/CD.' },
+  { t:T_JAM_START,     text:'Ambas as esta\u00e7\u00f5es detectam a colis\u00e3o e enviam um sinal de bloqueio (JAM). Isso garante que TODAS as esta\u00e7\u00f5es na rede sejam avisadas da colis\u00e3o.' },
+  { t:T_JAM_END,       text:'Ap\u00f3s o JAM, as esta\u00e7\u00f5es param e iniciam o Truncated Binary Exponential Backoff. A espera 2s e D espera 3.5s (tempos aleat\u00f3rios por slot).' },
+  { t:T_BACKOFF_A,     text:'Backoff de A expirou! A escuta o canal \u2014 est\u00e1 livre. Retransmite os dados. D ainda aguarda seu pr\u00f3prio timer.' },
+  { t:T_SUCCESS,       text:'\u2713 Transmiss\u00e3o bem-sucedida! Os dados de A chegaram a todas as esta\u00e7\u00f5es. D detecta o sinal de A e aguarda o canal ficar livre antes de tentar novamente.' },
+];
+
+function getDesc(t) {
+  let text = DESCS[0].text;
+  for (const d of DESCS) { if (t >= d.t) text = d.text; }
+  return text;
+}
+
+function getPhase(t) {
+  for (const p of PHASES) { if (t >= p.start && t < p.end) return p; }
+  return PHASES[PHASES.length - 1];
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  Drawing helpers
+// ─────────────────────────────────────────────────────────────────────────────
+function roundRect(x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+  ctx.lineTo(x + w, y + h - r);
+  ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+  ctx.lineTo(x + r, y + h);
+  ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+  ctx.lineTo(x, y + r);
+  ctx.quadraticCurveTo(x, y, x + r, y);
+  ctx.closePath();
+}
+
+function drawBus(t) {
+  // Determine bus color based on signals present
+  let busColor = '#334155';
+  if (t >= T_A_TX_START && t < T_COLLISION) busColor = '#1e3a5f';
+  if (t >= T_COLLISION && t < T_JAM_END) busColor = '#3b0a0a';
+  if (t >= T_RETRY_START && t < T_SUCCESS) busColor = '#052e16';
+  if (t >= T_SUCCESS) busColor = '#052e16';
+
+  // Bus fill (background glow)
+  if (t >= T_A_TX_START) {
+    ctx.beginPath();
+    ctx.rect(BUS_X1, BUS_Y - 6, BUS_LEN, 12);
+    ctx.fillStyle = busColor;
+    ctx.fill();
+  }
+
+  // Bus line
+  ctx.beginPath();
+  ctx.moveTo(BUS_X1, BUS_Y);
+  ctx.lineTo(BUS_X2, BUS_Y);
+  ctx.strokeStyle = t >= T_A_TX_START && t < T_COLLISION ? '#1e40af' :
+                    t >= T_COLLISION && t < T_JAM_END ? '#7f1d1d' :
+                    t >= T_RETRY_START && t < T_SUCCESS + 500 ? '#14532d' : '#475569';
+  ctx.lineWidth = 4;
+  ctx.stroke();
+
+  // Terminators
+  [BUS_X1, BUS_X2].forEach(ex => {
+    ctx.beginPath();
+    ctx.moveTo(ex, BUS_Y - 12);
+    ctx.lineTo(ex, BUS_Y + 12);
+    ctx.strokeStyle = '#475569';
+    ctx.lineWidth = 3;
+    ctx.stroke();
+  });
+
+  // "Barramento compartilhado" label
+  ctx.font = '10px monospace';
+  ctx.textAlign = 'center';
+  ctx.fillStyle = '#334155';
+  ctx.fillText('barramento compartilhado (half-duplex)', W / 2, BUS_Y + 18);
+}
+
+function drawStation(s, t) {
+  const opts = getStationState(s.id, t);
+  const bx = s.x - STA_W / 2;
+  const by = STA_TOP;
+
+  // Connection wire to bus
+  ctx.beginPath();
+  ctx.moveTo(s.x, BUS_Y);
+  ctx.lineTo(s.x, STA_TOP);
+  ctx.strokeStyle = opts.active || opts.sensing ? s.color : '#334155';
+  ctx.lineWidth = 2;
+  if (opts.active) ctx.lineWidth = 3;
+  ctx.stroke();
+
+  // Glow
+  ctx.shadowBlur = 0;
+  if (opts.active || opts.glowing) {
+    ctx.shadowBlur = 16;
+    ctx.shadowColor = s.glow;
+  }
+
+  // Box fill
+  roundRect(bx, by, STA_W, STA_H, 9);
+  if (opts.success)       ctx.fillStyle = '#052e16';
+  else if (opts.backoff)  ctx.fillStyle = '#1c0f00';
+  else if (opts.collision) ctx.fillStyle = '#2d0000';
+  else if (opts.active)   ctx.fillStyle = s.darkBg;
+  else if (opts.sensing)  ctx.fillStyle = '#0f1e30';
+  else                    ctx.fillStyle = '#1e293b';
+  ctx.fill();
+
+  // Box stroke
+  roundRect(bx, by, STA_W, STA_H, 9);
+  if (opts.success)        ctx.strokeStyle = '#22c55e';
+  else if (opts.backoff)   ctx.strokeStyle = '#f59e0b';
+  else if (opts.collision) ctx.strokeStyle = '#ef4444';
+  else if (opts.active)    ctx.strokeStyle = s.color;
+  else if (opts.sensing)   ctx.strokeStyle = '#38bdf8';
+  else                     ctx.strokeStyle = '#334155';
+  ctx.lineWidth = opts.active ? 2.5 : 1.5;
+  ctx.stroke();
+  ctx.shadowBlur = 0;
+
+  // Station ID
+  ctx.font = 'bold 24px monospace';
+  ctx.textAlign = 'center';
+  if (opts.success)        ctx.fillStyle = '#22c55e';
+  else if (opts.backoff)   ctx.fillStyle = '#f59e0b';
+  else if (opts.collision) ctx.fillStyle = '#f87171';
+  else if (opts.active)    ctx.fillStyle = s.color;
+  else if (opts.sensing)   ctx.fillStyle = '#38bdf8';
+  else                     ctx.fillStyle = '#64748b';
+  ctx.fillText(s.id, s.x, by + 32);
+
+  // Status text
+  ctx.font = '10px monospace';
+  ctx.fillStyle = opts.success ? '#22c55e' :
+                  opts.backoff ? '#f59e0b' :
+                  opts.collision ? '#f87171' :
+                  opts.active ? s.color :
+                  opts.sensing ? '#38bdf8' : '#475569';
+  const status = opts.success ? 'OK \u2713' :
+                 opts.backoff ? 'backoff' :
+                 opts.collision ? 'colisao!' :
+                 opts.active ? 'TX' :
+                 opts.sensing ? 'sensing...' : 'IDLE';
+  ctx.fillText(status, s.x, by + 52);
+
+  // Packet indicator above station (envelope)
+  if (opts.hasPacket) {
+    const px = s.x - 14;
+    const py = BUS_Y - 68;
+    const pw = 28, ph = 20;
+
+    // Envelope body
+    roundRect(px, py, pw, ph, 3);
+    ctx.fillStyle = s.color + '20';
+    ctx.strokeStyle = s.color;
+    ctx.lineWidth = 1.5;
+    ctx.fill();
+    ctx.stroke();
+
+    // Envelope flap
+    ctx.beginPath();
+    ctx.moveTo(px, py);
+    ctx.lineTo(s.x, py + 10);
+    ctx.lineTo(px + pw, py);
+    ctx.strokeStyle = s.color + 'bb';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+  }
+
+  // Sensing pulse rings
+  if (opts.sensing) {
+    const pulse = ((t % 600) / 600);
+    ctx.globalAlpha = (1 - pulse) * 0.6;
+    ctx.beginPath();
+    ctx.arc(s.x, BUS_Y - 4, 8 + pulse * 24, 0, Math.PI * 2);
+    ctx.strokeStyle = '#38bdf8';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+    ctx.globalAlpha = 1;
+  }
+}
+
+function getStationState(id, t) {
+  switch (id) {
+    case 'A':
+      if (t < T_IDLE_END)     return {};
+      if (t < T_A_TX_START)   return { sensing: true, hasPacket: true };
+      if (t < T_COLLISION)    return { active: true, glowing: true, hasPacket: true };
+      if (t < T_JAM_START)    return { collision: true, hasPacket: true };
+      if (t < T_JAM_END)      return { collision: true };
+      if (t < T_BACKOFF_A)    return { backoff: true };
+      if (t < T_SUCCESS)      return { active: true, glowing: true };
+      return { success: true };
+
+    case 'D':
+      if (t < T_D_SENSE)      return {};
+      if (t < T_D_TX_START)   return { sensing: true, hasPacket: true };
+      if (t < T_COLLISION)    return { active: true, glowing: true, hasPacket: true };
+      if (t < T_JAM_START)    return { collision: true, hasPacket: true };
+      if (t < T_JAM_END)      return { collision: true };
+      if (t < T_BACKOFF_D)    return { backoff: true };
+      if (t < T_SUCCESS)      return { backoff: true }; // senses A's retry, keeps waiting
+      return { success: true };
+
+    default: // B and C
+      if (t >= T_SUCCESS)     return { success: true };
+      if (t >= T_A_TX_START && t < T_JAM_END) {
+        // B senses when A's signal reaches it: A@x=120, B@x=320, dt=(320-120)/SIG_V≈889ms
+        const reachT = T_A_TX_START + (STATIONS.find(s=>s.id===id).x - 120) / SIG_V;
+        if (t >= reachT) return { sensing: true };
+      }
+      if (t >= T_RETRY_START) {
+        const reachT2 = T_RETRY_START + (STATIONS.find(s=>s.id===id).x - 120) / SIG_V;
+        if (t >= reachT2) return { success: true };
+      }
+      return {};
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  Signal rendering
+// ─────────────────────────────────────────────────────────────────────────────
+function drawSignalOnBus(fromX, toX, color, lineW, alpha, waveAnim) {
+  if (Math.abs(toX - fromX) < 1) return;
+  const dir = toX > fromX ? 1 : -1;
+  const len = Math.abs(toX - fromX);
+
+  ctx.globalAlpha = alpha;
+  ctx.shadowBlur = 8;
+  ctx.shadowColor = color + '99';
+
+  // Signal band
+  ctx.beginPath();
+  ctx.moveTo(fromX, BUS_Y);
+  ctx.lineTo(toX, BUS_Y);
+  ctx.strokeStyle = color;
+  ctx.lineWidth = lineW;
+  ctx.lineCap = 'round';
+  ctx.stroke();
+
+  ctx.shadowBlur = 0;
+
+  // Waveform overlay (data visualization)
+  if (waveAnim && len > 20) {
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(Math.min(fromX, toX), BUS_Y - lineW/2, len, lineW);
+    ctx.clip();
+    ctx.beginPath();
+    const step = 8;
+    const off = (waveAnim * 40) % (step * 2);
+    let first = true;
+    for (let x = Math.min(fromX, toX) - off; x <= Math.max(fromX, toX) + step; x += step / 2) {
+      const y = BUS_Y + Math.sin((x + off) / step * Math.PI) * (lineW / 3 - 1);
+      if (first) { ctx.moveTo(x, y); first = false; }
+      else ctx.lineTo(x, y);
+    }
+    ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  // Leading edge dot
+  ctx.beginPath();
+  ctx.arc(toX, BUS_Y, lineW / 2 + 2, 0, Math.PI * 2);
+  ctx.fillStyle = color;
+  ctx.fill();
+
+  ctx.globalAlpha = 1;
+}
+
+function drawAllSignals(t) {
+  const wave = t / 1000; // animation time for wave movement
+
+  // ── A's original transmission ──────────────────────────────────────────────
+  if (t >= T_A_TX_START && t < T_JAM_END) {
+    const dt    = t - T_A_TX_START;
+    const lead  = Math.min(BUS_X2, 120 + dt * SIG_V);
+    const color = t >= T_COLLISION ? '#ef4444' : '#3b82f6';
+    const doWave = t < T_COLLISION;
+    drawSignalOnBus(120, lead, color, 8, 1, doWave ? wave : null);
+  }
+
+  // ── D's original transmission ──────────────────────────────────────────────
+  if (t >= T_D_TX_START && t < T_JAM_END) {
+    const dt    = t - T_D_TX_START;
+    const lead  = Math.max(BUS_X1, 720 - dt * SIG_V);
+    const color = t >= T_COLLISION ? '#ef4444' : '#f97316';
+    const doWave = t < T_COLLISION;
+    drawSignalOnBus(720, lead, color, 8, 1, doWave ? wave : null);
+  }
+
+  // ── Collision burst ────────────────────────────────────────────────────────
+  if (t >= T_COLLISION && t < T_JAM_START) {
+    const p = (t - T_COLLISION) / (T_JAM_START - T_COLLISION);
+    drawCollisionBurst(COL_X, p);
+    // Labels
+    ctx.font = 'bold 13px monospace';
+    ctx.textAlign = 'center';
+    ctx.fillStyle = '#ef4444';
+    ctx.globalAlpha = 0.6 + 0.4 * Math.sin(t / 80);
+    ctx.fillText('\u26a1 COLIS\u00c3O!', COL_X, BUS_Y - 38);
+    ctx.globalAlpha = 1;
+  }
+
+  // ── JAM signal ─────────────────────────────────────────────────────────────
+  if (t >= T_JAM_START && t < T_JAM_END) {
+    const dt = t - T_JAM_START;
+    const jamA = Math.min(BUS_X2, 120 + dt * SIG_V * 1.4);
+    const jamD = Math.max(BUS_X1, 720 - dt * SIG_V * 1.4);
+
+    // Dashed red jam signal
+    ctx.setLineDash([8, 6]);
+    drawSignalOnBus(120, jamA, '#ef4444', 7, 0.9, null);
+    drawSignalOnBus(720, jamD, '#ef4444', 7, 0.9, null);
+    ctx.setLineDash([]);
+
+    // JAM labels
+    if (jamA > 140) {
+      ctx.font = 'bold 11px monospace';
+      ctx.textAlign = 'center';
+      ctx.fillStyle = '#f87171';
+      ctx.fillText('JAM', 120 + (jamA - 120)/2, BUS_Y - 22);
+    }
+    if (jamD < 700) {
+      ctx.font = 'bold 11px monospace';
+      ctx.textAlign = 'center';
+      ctx.fillStyle = '#f87171';
+      ctx.fillText('JAM', 720 - (720 - jamD)/2, BUS_Y - 22);
+    }
+  }
+
+  // ── A's "sensing" label before TX ─────────────────────────────────────────
+  if (t >= T_IDLE_END && t < T_A_TX_START) {
+    const p = (t - T_IDLE_END) / (T_A_TX_START - T_IDLE_END);
+    ctx.globalAlpha = 0.5 + 0.5 * Math.sin(t / 250);
+    ctx.font = '11px monospace';
+    ctx.textAlign = 'center';
+    ctx.fillStyle = '#38bdf8';
+    ctx.fillText('\ud83d\udc41\ufe0f canal livre! iniciando TX...', 120, BUS_Y - 52);
+    ctx.globalAlpha = 1;
+  }
+
+  // ── D sensing label ───────────────────────────────────────────────────────
+  if (t >= T_D_SENSE && t < T_D_TX_START) {
+    ctx.globalAlpha = 0.5 + 0.5 * Math.sin(t / 250);
+    ctx.font = '11px monospace';
+    ctx.textAlign = 'center';
+    ctx.fillStyle = '#f97316';
+    ctx.fillText('\ud83d\udc41\ufe0f n\u00e3o detectei sinal! vou transmitir!', 720, BUS_Y - 52);
+    ctx.globalAlpha = 1;
+  }
+
+  // ── Backoff timers ────────────────────────────────────────────────────────
+  if (t >= T_JAM_END && t < T_SUCCESS) {
+    // A's timer
+    if (t < T_BACKOFF_A) {
+      const remA = (T_BACKOFF_A - t) / 1000;
+      drawTimer(120, BUS_Y - 60, remA, T_JAM_END, T_BACKOFF_A, t, '#f59e0b', 'A backoff');
+    }
+    // D's timer
+    if (t < T_BACKOFF_D) {
+      const remD = (T_BACKOFF_D - t) / 1000;
+      drawTimer(720, BUS_Y - 60, remD, T_JAM_END, T_BACKOFF_D, t, '#f59e0b', 'D backoff');
+    }
+  }
+
+  // ── A's retry transmission ────────────────────────────────────────────────
+  if (t >= T_RETRY_START && t < T_TOTAL) {
+    const dt   = t - T_RETRY_START;
+    const lead = Math.min(BUS_X2, 120 + dt * SIG_V);
+    drawSignalOnBus(120, lead, '#22c55e', 9, 1, wave);
+
+    if (lead > 200) {
+      ctx.font = '11px monospace';
+      ctx.textAlign = 'center';
+      ctx.fillStyle = '#22c55e';
+      ctx.globalAlpha = 0.8;
+      ctx.fillText('\u2713 dados', (120 + lead) / 2, BUS_Y - 20);
+      ctx.globalAlpha = 1;
+    }
+  }
+}
+
+function drawCollisionBurst(cx, p) {
+  // Expanding shockwave
+  const maxR = 50;
+  for (let i = 0; i < 3; i++) {
+    const rp = Math.min(1, p * 1.5 - i * 0.15);
+    if (rp <= 0) continue;
+    const r = rp * maxR * (0.6 + i * 0.2);
+    ctx.globalAlpha = (1 - rp) * 0.7;
+    ctx.beginPath();
+    ctx.arc(cx, BUS_Y, r, 0, Math.PI * 2);
+    ctx.strokeStyle = '#ef4444';
+    ctx.lineWidth = 3 - i;
+    ctx.stroke();
+  }
+
+  // Core explosion
+  const cr = 8 + p * 14;
+  ctx.globalAlpha = Math.max(0, 1 - p * 1.2);
+  ctx.beginPath();
+  ctx.arc(cx, BUS_Y, cr, 0, Math.PI * 2);
+  ctx.fillStyle = '#fca5a5';
+  ctx.fill();
+
+  // Sparks
+  const numSparks = 10;
+  for (let i = 0; i < numSparks; i++) {
+    const angle = (i / numSparks) * Math.PI * 2 + p * 1.5;
+    const r1 = cr * 0.4;
+    const r2 = (20 + p * 30) * (0.7 + (i % 3) * 0.15);
+    ctx.beginPath();
+    ctx.moveTo(cx + Math.cos(angle) * r1, BUS_Y + Math.sin(angle) * r1);
+    ctx.lineTo(cx + Math.cos(angle) * r2, BUS_Y + Math.sin(angle) * r2);
+    ctx.strokeStyle = i % 2 === 0 ? '#fca5a5' : '#fde68a';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+  }
+  ctx.globalAlpha = 1;
+}
+
+function drawTimer(cx, cy, remaining, startT, endT, t, color, label) {
+  const total = endT - startT;
+  const elapsed = t - startT;
+  const progress = Math.min(1, elapsed / total);
+
+  // Pie countdown
+  const R = 16;
+  ctx.beginPath();
+  ctx.arc(cx, cy, R, -Math.PI / 2, -Math.PI / 2 + (1 - progress) * Math.PI * 2);
+  ctx.lineTo(cx, cy);
+  ctx.closePath();
+  ctx.fillStyle = color + '33';
+  ctx.fill();
+
+  ctx.beginPath();
+  ctx.arc(cx, cy, R, 0, Math.PI * 2);
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  // Remaining time
+  ctx.font = 'bold 10px monospace';
+  ctx.textAlign = 'center';
+  ctx.fillStyle = color;
+  ctx.fillText(remaining.toFixed(1) + 's', cx, cy + 4);
+
+  // Label below
+  ctx.font = '10px monospace';
+  ctx.fillStyle = '#94a3b8';
+  ctx.fillText(label, cx, cy + R + 12);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  Step labels on top of bus (propagation annotations)
+// ─────────────────────────────────────────────────────────────────────────────
+function drawAnnotations(t) {
+  // Show signal reach markers for B and C during A's first TX
+  if (t >= T_A_TX_START && t < T_COLLISION) {
+    const leadA = 120 + (t - T_A_TX_START) * SIG_V;
+    STATIONS.forEach(s => {
+      if (s.id === 'A' || s.id === 'D') return;
+      if (leadA >= s.x) {
+        // Signal reached this station
+        ctx.beginPath();
+        ctx.moveTo(s.x, BUS_Y - 4);
+        ctx.lineTo(s.x, BUS_Y - 16);
+        ctx.strokeStyle = '#3b82f6';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+      }
+    });
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  Main draw function
+// ─────────────────────────────────────────────────────────────────────────────
+function draw(t) {
+  // Clear
+  ctx.clearRect(0, 0, W, H);
+
+  // Background gradient
+  const bgGrad = ctx.createLinearGradient(0, 0, 0, H);
+  bgGrad.addColorStop(0, '#0f172a');
+  bgGrad.addColorStop(1, '#0a1628');
+  ctx.fillStyle = bgGrad;
+  ctx.fillRect(0, 0, W, H);
+
+  // Title bar
+  ctx.fillStyle = '#0f1e35';
+  ctx.fillRect(0, 0, W, 36);
+  ctx.font = 'bold 13px monospace';
+  ctx.textAlign = 'left';
+  ctx.fillStyle = '#38bdf8';
+  ctx.fillText('CSMA/CD Simulation', 16, 23);
+  ctx.font = '11px monospace';
+  ctx.textAlign = 'right';
+  ctx.fillStyle = '#475569';
+  ctx.fillText('t = ' + (t / 1000).toFixed(2) + 's', W - 16, 23);
+
+  // Grid lines (subtle)
+  ctx.globalAlpha = 0.04;
+  for (let y = 60; y < H; y += 40) {
+    ctx.beginPath();
+    ctx.moveTo(0, y); ctx.lineTo(W, y);
+    ctx.strokeStyle = '#94a3b8';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+  }
+  ctx.globalAlpha = 1;
+
+  // ── Draw bus ──────────────────────────────────────────────────────────────
+  drawBus(t);
+
+  // ── Draw signals ──────────────────────────────────────────────────────────
+  drawAllSignals(t);
+
+  // ── Draw stations ─────────────────────────────────────────────────────────
+  STATIONS.forEach(s => drawStation(s, t));
+
+  // ── Draw annotations ──────────────────────────────────────────────────────
+  drawAnnotations(t);
+
+  // ── Phase badge (bottom left) ─────────────────────────────────────────────
+  const ph = getPhase(t);
+  ctx.font = 'bold 11px monospace';
+  ctx.textAlign = 'left';
+  ctx.fillStyle = ph.color + 'cc';
+  ctx.fillText('[ ' + ph.name + ' ]', 16, H - 14);
+
+  // ── Step indicator (bottom right) ─────────────────────────────────────────
+  ctx.font = '10px monospace';
+  ctx.textAlign = 'right';
+  ctx.fillStyle = '#334155';
+  const curPhIdx = PHASES.indexOf(ph) + 1;
+  ctx.fillText('fase ' + curPhIdx + '/' + PHASES.length, W - 16, H - 14);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  Animation loop
+// ─────────────────────────────────────────────────────────────────────────────
+let running  = false;
+let elapsed  = 0;
+let lastTs   = null;
+let rafId    = null;
+let speed    = 1.0;
+
+function frame(ts) {
+  if (!running) return;
+  if (lastTs === null) lastTs = ts;
+  const dt = (ts - lastTs) * speed;
+  lastTs = ts;
+  elapsed = Math.min(T_TOTAL, elapsed + dt);
+
+  draw(elapsed);
+  updateUI(elapsed);
+
+  if (elapsed < T_TOTAL && running) {
+    rafId = requestAnimationFrame(frame);
+  } else if (elapsed >= T_TOTAL) {
+    running = false;
+    document.getElementById('btnPlay').textContent = '\u25b6 Play';
+  }
+}
+
+function updateUI(t) {
+  const ph = getPhase(t);
+  const phLbl = document.getElementById('phase-label');
+  phLbl.textContent = ph.name;
+  phLbl.style.color = ph.color;
+  document.getElementById('desc-text').textContent = getDesc(t);
+  document.getElementById('progress-bar').style.width = (t / T_TOTAL * 100) + '%';
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  Controls
+// ─────────────────────────────────────────────────────────────────────────────
+document.getElementById('btnPlay').addEventListener('click', () => {
+  if (elapsed >= T_TOTAL) { resetAnim(); return; }
+  running = !running;
+  document.getElementById('btnPlay').textContent = running ? '\u23f8 Pausar' : '\u25b6 Play';
+  if (running) {
+    lastTs = null;
+    rafId = requestAnimationFrame(frame);
+  }
+});
+
+document.getElementById('btnReset').addEventListener('click', resetAnim);
+
+document.getElementById('btnStep').addEventListener('click', () => {
+  // Jump to next phase start
+  const ph = getPhase(elapsed);
+  const idx = PHASES.indexOf(ph);
+  if (idx < PHASES.length - 1) {
+    running = false;
+    document.getElementById('btnPlay').textContent = '\u25b6 Play';
+    elapsed = PHASES[idx + 1].start;
+    lastTs = null;
+    draw(elapsed);
+    updateUI(elapsed);
+  }
+});
+
+document.getElementById('speedSlider').addEventListener('input', (e) => {
+  speed = parseFloat(e.target.value);
+  document.getElementById('speed-val').textContent = speed + '\u00d7';
+});
+
+function resetAnim() {
+  running = false;
+  elapsed = 0;
+  lastTs  = null;
+  if (rafId) cancelAnimationFrame(rafId);
+  document.getElementById('btnPlay').textContent = '\u25b6 Play';
+  draw(0);
+  updateUI(0);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  Initial render
+// ─────────────────────────────────────────────────────────────────────────────
+draw(0);
+updateUI(0);
+</script>
+</body>
+</html>
