@@ -450,6 +450,17 @@ Filial B ── VPN criptografada ── Matriz  (t&uacute;nel sobre internet)
             </div>
             <div class="mc-explanation">✓ A topologia em malha é usada no backbone da internet pois oferece múltiplos caminhos entre os nós. Se um link falha, o tráfego é redirecionado automaticamente — exatamente o princípio que motivou a criação da ARPANET.</div>
         </div>
+        <hr class="mc-sep">
+        <div class="mc-question" data-correct="c">
+            <p class="mc-q-text">Uma empresa precisa interligar 7 servidores em uma topologia de malha <em>completa</em>, onde todo par de servidores possui um cabo dedicado. Quantas conex&otilde;es f&iacute;sicas ser&atilde;o necess&aacute;rias?</p>
+            <div class="mc-options">
+                <div class="mc-option" data-option="a"><span class="mc-letter">A</span><span>14 &mdash; cada servidor tem 2 conex&otilde;es (7 &times; 2)</span></div>
+                <div class="mc-option" data-option="b"><span class="mc-letter">B</span><span>42 &mdash; cada servidor conecta aos outros 6 (7 &times; 6)</span></div>
+                <div class="mc-option" data-option="c"><span class="mc-letter">C</span><span>21 &mdash; aplicando n(n&minus;1)/2 = 7 &times; 6 / 2</span></div>
+                <div class="mc-option" data-option="d"><span class="mc-letter">D</span><span>49 &mdash; 7 servidores ao quadrado (7&sup2;)</span></div>
+            </div>
+            <div class="mc-explanation">✓ Correto! A fórmula n(n−1)/2 divide por 2 para não contar o mesmo cabo duas vezes (A→B e B→A são o mesmo fio). Com 7 dispositivos: 7 × 6 = 42 pares ordenados ÷ 2 = 21 cabos. A alternativa B é o erro mais comum — ela esquece a divisão. Isso explica por que a malha completa escala muito mal: com apenas 100 dispositivos já seriam 4.950 conexões!</div>
+        </div>
     </div>
 
     <div class="nav-footer">
