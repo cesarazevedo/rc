@@ -242,16 +242,22 @@ li { margin-bottom: 8px; }
 .yaml-hl    { color: #fbd38d; font-weight: bold; }
 
 /* ── TABELA ── */
+.info-table,
 .cmp-table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: .88em; }
+.info-table th,
 .cmp-table th {
     background: var(--primary);
     color: white;
     padding: 10px 14px;
     text-align: left;
 }
+.info-table th:first-child,
 .cmp-table th:first-child { border-radius: 6px 0 0 0; }
+.info-table th:last-child,
 .cmp-table th:last-child  { border-radius: 0 6px 0 0; }
+.info-table td,
 .cmp-table td { padding: 9px 14px; border-bottom: 1px solid #e5e7eb; }
+.info-table tr:nth-child(even) td,
 .cmp-table tr:nth-child(even) td { background: #f8f7ff; }
 .cmp-table td code {
     font-family: 'Consolas',monospace;

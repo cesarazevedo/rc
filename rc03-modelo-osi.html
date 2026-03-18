@@ -14,6 +14,56 @@
             --bg-light:  #f4f7fe;
             --text-dark: #2d3748;
         }
+
+        /* ── PILHA OSI ── */
+        .osi-stack { display: flex; flex-direction: column; gap: 3px; margin: 20px 0; }
+        .osi-layer {
+            display: flex; align-items: stretch;
+            border-radius: 8px; overflow: hidden;
+            box-shadow: 0 2px 6px rgba(0,0,0,.15);
+            transition: transform .15s;
+        }
+        .osi-layer:hover { transform: translateX(4px); }
+        .osi-num {
+            min-width: 48px; display: flex; align-items: center; justify-content: center;
+            font-size: 1.25em; font-weight: 900; color: white;
+            background: rgba(0,0,0,.2); padding: 12px 0;
+        }
+        .osi-pt  { flex: 1.3; padding: 12px 16px; font-weight: 700; font-size: .95em; color: white; display: flex; align-items: center; }
+        .osi-en  { flex: 1.3; padding: 12px 16px; font-size: .85em; color: rgba(255,255,255,.75); font-family: 'Consolas',monospace; display: flex; align-items: center; }
+        .osi-pdu { padding: 0 14px; display: flex; align-items: center; margin-right: 10px; }
+        .osi-pdu span {
+            background: rgba(255,255,255,.22); border-radius: 20px;
+            padding: 3px 10px; font-size: .75em; color: white; white-space: nowrap;
+        }
+        .osi-l7 { background: linear-gradient(135deg,#7c3aed,#5b21b6); }
+        .osi-l6 { background: linear-gradient(135deg,#4f46e5,#3730a3); }
+        .osi-l5 { background: linear-gradient(135deg,#2563eb,#1d4ed8); }
+        .osi-l4 { background: linear-gradient(135deg,#0891b2,#0e7490); }
+        .osi-l3 { background: linear-gradient(135deg,#059669,#047857); }
+        .osi-l2 { background: linear-gradient(135deg,#d97706,#b45309); }
+        .osi-l1 { background: linear-gradient(135deg,#dc2626,#b91c1c); }
+        .osi-group-label {
+            font-size: .7em; font-weight: 700; text-transform: uppercase;
+            letter-spacing: .07em; color: #718096; padding: 10px 4px 3px;
+        }
+        .osi-group-label:first-child { padding-top: 2px; }
+
+        /* ── BADGES DE CAMADA ── */
+        .layer-badge {
+            display: inline-block; padding: 2px 10px; border-radius: 20px;
+            font-size: .72em; font-weight: 700; color: white; margin-right: 8px;
+            vertical-align: middle;
+        }
+        .lb-7 { background: #7c3aed; } .lb-6 { background: #4f46e5; }
+        .lb-5 { background: #2563eb; } .lb-4 { background: #0891b2; }
+        .lb-3 { background: #059669; } .lb-2 { background: #d97706; }
+        .lb-1 { background: #dc2626; }
+
+        @media (max-width: 520px) {
+            .osi-en  { display: none; }
+            .osi-pt  { font-size: .85em; }
+        }
     </style>
 </head>
 <body>
@@ -71,54 +121,52 @@
         <h2>&#x1F4CA; Vis&atilde;o Geral das 7 Camadas</h2>
         <p>Cada camada do OSI tem uma fun&ccedil;&atilde;o espec&iacute;fica e se comunica apenas com a camada imediatamente acima e abaixo dela. As camadas s&atilde;o numeradas de baixo para cima (1 a 7).</p>
 
-        <div class="terminal-block">
-            <div class="terminal-header">Modelo OSI &mdash; Pilha de Camadas</div>
-            <table style="width:100%;border-collapse:collapse;font-family:monospace;font-size:0.9em;color:#e2e8f0;">
-                <tbody>
-                    <tr style="border-top:1px solid #4a5568;">
-                        <td style="padding:5px 12px;border-left:1px solid #4a5568;border-right:1px solid #4a5568;white-space:nowrap;color:#90cdf4;"><strong>7</strong></td>
-                        <td style="padding:5px 12px;border-right:1px solid #4a5568;white-space:nowrap;">Aplica&ccedil;&atilde;o</td>
-                        <td style="padding:5px 12px;border-right:1px solid #4a5568;white-space:nowrap;color:#a0aec0;">Application</td>
-                        <td style="padding:5px 12px;border-right:1px solid #4a5568;white-space:nowrap;color:#68d391;">Dados</td>
-                    </tr>
-                    <tr>
-                        <td style="padding:5px 12px;border-left:1px solid #4a5568;border-right:1px solid #4a5568;white-space:nowrap;color:#90cdf4;"><strong>6</strong></td>
-                        <td style="padding:5px 12px;border-right:1px solid #4a5568;white-space:nowrap;">Apresenta&ccedil;&atilde;o</td>
-                        <td style="padding:5px 12px;border-right:1px solid #4a5568;white-space:nowrap;color:#a0aec0;">Presentation</td>
-                        <td style="padding:5px 12px;border-right:1px solid #4a5568;white-space:nowrap;color:#68d391;">Dados</td>
-                    </tr>
-                    <tr>
-                        <td style="padding:5px 12px;border-left:1px solid #4a5568;border-right:1px solid #4a5568;white-space:nowrap;color:#90cdf4;"><strong>5</strong></td>
-                        <td style="padding:5px 12px;border-right:1px solid #4a5568;white-space:nowrap;">Sess&atilde;o</td>
-                        <td style="padding:5px 12px;border-right:1px solid #4a5568;white-space:nowrap;color:#a0aec0;">Session</td>
-                        <td style="padding:5px 12px;border-right:1px solid #4a5568;white-space:nowrap;color:#68d391;">Dados</td>
-                    </tr>
-                    <tr>
-                        <td style="padding:5px 12px;border-left:1px solid #4a5568;border-right:1px solid #4a5568;white-space:nowrap;color:#90cdf4;"><strong>4</strong></td>
-                        <td style="padding:5px 12px;border-right:1px solid #4a5568;white-space:nowrap;">Transporte</td>
-                        <td style="padding:5px 12px;border-right:1px solid #4a5568;white-space:nowrap;color:#a0aec0;">Transport</td>
-                        <td style="padding:5px 12px;border-right:1px solid #4a5568;white-space:nowrap;color:#68d391;">Segmento / Datagrama</td>
-                    </tr>
-                    <tr>
-                        <td style="padding:5px 12px;border-left:1px solid #4a5568;border-right:1px solid #4a5568;white-space:nowrap;color:#90cdf4;"><strong>3</strong></td>
-                        <td style="padding:5px 12px;border-right:1px solid #4a5568;white-space:nowrap;">Rede</td>
-                        <td style="padding:5px 12px;border-right:1px solid #4a5568;white-space:nowrap;color:#a0aec0;">Network</td>
-                        <td style="padding:5px 12px;border-right:1px solid #4a5568;white-space:nowrap;color:#68d391;">Pacote</td>
-                    </tr>
-                    <tr>
-                        <td style="padding:5px 12px;border-left:1px solid #4a5568;border-right:1px solid #4a5568;white-space:nowrap;color:#90cdf4;"><strong>2</strong></td>
-                        <td style="padding:5px 12px;border-right:1px solid #4a5568;white-space:nowrap;">Enlace</td>
-                        <td style="padding:5px 12px;border-right:1px solid #4a5568;white-space:nowrap;color:#a0aec0;">Data Link</td>
-                        <td style="padding:5px 12px;border-right:1px solid #4a5568;white-space:nowrap;color:#68d391;">Quadro (Frame)</td>
-                    </tr>
-                    <tr style="border-bottom:1px solid #4a5568;">
-                        <td style="padding:5px 12px;border-left:1px solid #4a5568;border-right:1px solid #4a5568;white-space:nowrap;color:#90cdf4;"><strong>1</strong></td>
-                        <td style="padding:5px 12px;border-right:1px solid #4a5568;white-space:nowrap;">F&iacute;sica</td>
-                        <td style="padding:5px 12px;border-right:1px solid #4a5568;white-space:nowrap;color:#a0aec0;">Physical</td>
-                        <td style="padding:5px 12px;border-right:1px solid #4a5568;white-space:nowrap;color:#68d391;">Bits</td>
-                    </tr>
-                </tbody>
-            </table>
+        <div class="osi-stack">
+            <div class="osi-group-label">Camadas de Aplica&ccedil;&atilde;o (orientadas ao usu&aacute;rio)</div>
+            <div class="osi-layer osi-l7">
+                <span class="osi-num">7</span>
+                <span class="osi-pt">Aplica&ccedil;&atilde;o</span>
+                <span class="osi-en">Application</span>
+                <span class="osi-pdu"><span>Dados</span></span>
+            </div>
+            <div class="osi-layer osi-l6">
+                <span class="osi-num">6</span>
+                <span class="osi-pt">Apresenta&ccedil;&atilde;o</span>
+                <span class="osi-en">Presentation</span>
+                <span class="osi-pdu"><span>Dados</span></span>
+            </div>
+            <div class="osi-layer osi-l5">
+                <span class="osi-num">5</span>
+                <span class="osi-pt">Sess&atilde;o</span>
+                <span class="osi-en">Session</span>
+                <span class="osi-pdu"><span>Dados</span></span>
+            </div>
+            <div class="osi-group-label">Camada de Transporte</div>
+            <div class="osi-layer osi-l4">
+                <span class="osi-num">4</span>
+                <span class="osi-pt">Transporte</span>
+                <span class="osi-en">Transport</span>
+                <span class="osi-pdu"><span>Segmento / Datagrama</span></span>
+            </div>
+            <div class="osi-group-label">Camadas de Rede (orientadas &agrave; transmiss&atilde;o)</div>
+            <div class="osi-layer osi-l3">
+                <span class="osi-num">3</span>
+                <span class="osi-pt">Rede</span>
+                <span class="osi-en">Network</span>
+                <span class="osi-pdu"><span>Pacote</span></span>
+            </div>
+            <div class="osi-layer osi-l2">
+                <span class="osi-num">2</span>
+                <span class="osi-pt">Enlace</span>
+                <span class="osi-en">Data Link</span>
+                <span class="osi-pdu"><span>Quadro (Frame)</span></span>
+            </div>
+            <div class="osi-layer osi-l1">
+                <span class="osi-num">1</span>
+                <span class="osi-pt">F&iacute;sica</span>
+                <span class="osi-en">Physical</span>
+                <span class="osi-pdu"><span>Bits</span></span>
+            </div>
         </div>
 
         <div class="highlight-box">
@@ -131,7 +179,7 @@
         <h2>&#x1F527; Camadas Orientadas &agrave; Rede (1&ndash;3)</h2>
         <p>As tr&ecirc;s camadas inferiores lidam com a <strong>transmiss&atilde;o f&iacute;sica dos dados</strong> &mdash; como os bits chegam de um ponto ao outro da rede.</p>
 
-        <h3>Camada 1 &mdash; F&iacute;sica (Physical)</h3>
+        <h3><span class="layer-badge lb-1">C1</span>F&iacute;sica <small style="color:#a0aec0;font-weight:400;">— Physical</small></h3>
         <p>Respons&aacute;vel pela transmiss&atilde;o dos <strong>bits brutos</strong> pelo meio f&iacute;sico. Define tens&otilde;es, frequ&ecirc;ncias, tipos de conector, codifica&ccedil;&atilde;o do sinal e velocidade de transmiss&atilde;o. N&atilde;o interpreta o significado dos bits &mdash; apenas os move.</p>
 
         <table class="info-table">
@@ -145,7 +193,7 @@
             </tbody>
         </table>
 
-        <h3>Camada 2 &mdash; Enlace de Dados (Data Link)</h3>
+        <h3><span class="layer-badge lb-2">C2</span>Enlace de Dados <small style="color:#a0aec0;font-weight:400;">— Data Link</small></h3>
         <p>Garante a transfer&ecirc;ncia <strong>confi&aacute;vel de quadros (frames)</strong> entre dois dispositivos diretamente conectados. &Eacute; respons&aacute;vel pelo endere&ccedil;amento MAC, detec&ccedil;&atilde;o de erros (CRC) e controle de acesso ao meio (MAC &mdash; Media Access Control).</p>
         <p>A Camada 2 &eacute; dividida em duas subcamadas:</p>
         <ul>
@@ -164,7 +212,7 @@
             </tbody>
         </table>
 
-        <h3>Camada 3 &mdash; Rede (Network)</h3>
+        <h3><span class="layer-badge lb-3">C3</span>Rede <small style="color:#a0aec0;font-weight:400;">— Network</small></h3>
         <p>Respons&aacute;vel pelo <strong>endere&ccedil;amento l&oacute;gico</strong> (IP) e pelo <strong>roteamento de pacotes</strong> entre redes diferentes. Determina o melhor caminho para os dados chegarem ao destino, mesmo que passem por dezenas de roteadores.</p>
 
         <table class="info-table">
@@ -184,7 +232,7 @@
         <h2>&#x1F4F2; Camadas Orientadas &agrave; Aplica&ccedil;&atilde;o (4&ndash;7)</h2>
         <p>As quatro camadas superiores lidam com <strong>como os dados s&atilde;o apresentados e utilizados pelas aplica&ccedil;&otilde;es</strong> nos sistemas finais (computadores, servidores, celulares).</p>
 
-        <h3>Camada 4 &mdash; Transporte (Transport)</h3>
+        <h3><span class="layer-badge lb-4">C4</span>Transporte <small style="color:#a0aec0;font-weight:400;">— Transport</small></h3>
         <p>Respons&aacute;vel pela <strong>comunica&ccedil;&atilde;o fim a fim</strong> (end-to-end) entre processos em diferentes hosts. Segmenta os dados em unidades menores, controla o fluxo e garante (ou n&atilde;o) a entrega confi&aacute;vel. Os dois protocolos principais s&atilde;o o <strong>TCP</strong> (confi&aacute;vel) e o <strong>UDP</strong> (n&atilde;o confi&aacute;vel, r&aacute;pido).</p>
 
         <div class="compare-grid">
@@ -221,15 +269,15 @@
             </tbody>
         </table>
 
-        <h3>Camada 5 &mdash; Sess&atilde;o (Session)</h3>
+        <h3><span class="layer-badge lb-5">C5</span>Sess&atilde;o <small style="color:#a0aec0;font-weight:400;">— Session</small></h3>
         <p>Gerencia o <strong>estabelecimento, manuten&ccedil;&atilde;o e encerramento de sess&otilde;es</strong> entre aplica&ccedil;&otilde;es. Controla a sincronia e o di&aacute;logo entre processos. Exemplos: sess&atilde;o de login em um servidor, sess&atilde;o de videoconfer&ecirc;ncia.</p>
         <p>Protocolos: NetBIOS, RPC (Remote Procedure Call), PPTP.</p>
 
-        <h3>Camada 6 &mdash; Apresenta&ccedil;&atilde;o (Presentation)</h3>
+        <h3><span class="layer-badge lb-6">C6</span>Apresenta&ccedil;&atilde;o <small style="color:#a0aec0;font-weight:400;">— Presentation</small></h3>
         <p>Respons&aacute;vel pela <strong>tradu&ccedil;&atilde;o, compacta&ccedil;&atilde;o e criptografia</strong> dos dados. Garante que informa&ccedil;&otilde;es enviadas por um sistema sejam leg&iacute;veis para o receptor, mesmo que usem formatos diferentes.</p>
         <p>Exemplos: convers&atilde;o de caracteres (ASCII &harr; EBCDIC), compress&atilde;o (ZIP, JPEG), criptografia (SSL/TLS na camada de apresenta&ccedil;&atilde;o do OSI).</p>
 
-        <h3>Camada 7 &mdash; Aplica&ccedil;&atilde;o (Application)</h3>
+        <h3><span class="layer-badge lb-7">C7</span>Aplica&ccedil;&atilde;o <small style="color:#a0aec0;font-weight:400;">— Application</small></h3>
         <p>&Eacute; a camada mais pr&oacute;xima do usu&aacute;rio. Fornece a <strong>interface entre as aplica&ccedil;&otilde;es e a rede</strong>. N&atilde;o &eacute; a aplica&ccedil;&atilde;o em si (o navegador, o cliente de e-mail), mas os protocolos que as aplica&ccedil;&otilde;es usam para se comunicar.</p>
 
         <table class="info-table">
@@ -251,21 +299,24 @@
         <h2>&#x1F4E6; Encapsulamento e Desencapsulamento</h2>
         <p>Quando um dado percorre as camadas OSI do remetente at&eacute; o destinat&aacute;rio, ele passa por um processo chamado <strong>encapsulamento</strong>: cada camada adiciona seu pr&oacute;prio cabe&ccedil;alho (header) &mdash; e &agrave;s vezes um rodap&eacute; (trailer) &mdash; ao dado recebido da camada superior. No destino, o processo &eacute; invertido: <strong>desencapsulamento</strong>.</p>
 
-        <div class="terminal-block">
-            <div class="terminal-header">Processo de Encapsulamento (remetente &rarr; destinat&aacute;rio)</div>
-<pre>
-REMETENTE                           DESTINAT&Aacute;RIO
+        <div class="terminal">
+            <div class="terminal-bar">
+                <div class="term-dot red"></div>
+                <div class="term-dot yellow"></div>
+                <div class="term-dot green"></div>
+                <span class="term-title">encapsulamento.osi &mdash; remetente &rarr; destinat&aacute;rio</span>
+            </div>
+            <div class="terminal-body"><span class="t-comment">REMETENTE                               DESTINATÁRIO</span>
 
-[7] Dados                           Dados          [7]
-[6] Dados                           Dados          [6]
-[5] Dados                           Dados          [5]
-[4] [H4] Dados          &rarr;&rarr;&rarr;       [H4] Dados     [4]
-[3] [H3][H4] Dados                 [H3][H4] Dados [3]
-[2] [H2][H3][H4] Dados [T2]       [H2]...[T2]     [2]
-[1] 0101010101010101...            ...01010101     [1]
+<span class="t-out">[7]</span> <span class="t-string">Dados</span>                               <span class="t-string">Dados</span>              <span class="t-out">[7]</span>
+<span class="t-out">[6]</span> <span class="t-string">Dados</span>                               <span class="t-string">Dados</span>              <span class="t-out">[6]</span>
+<span class="t-out">[5]</span> <span class="t-string">Dados</span>                               <span class="t-string">Dados</span>              <span class="t-out">[5]</span>
+<span class="t-out">[4]</span> <span class="t-arg">[H4]</span> <span class="t-string">Dados</span>            <span class="t-ok">→→→</span>         <span class="t-arg">[H4]</span> <span class="t-string">Dados</span>         <span class="t-out">[4]</span>
+<span class="t-out">[3]</span> <span class="t-cmd">[H3]</span><span class="t-arg">[H4]</span> <span class="t-string">Dados</span>                       <span class="t-cmd">[H3]</span><span class="t-arg">[H4]</span> <span class="t-string">Dados</span>    <span class="t-out">[3]</span>
+<span class="t-out">[2]</span> <span class="t-flag">[H2]</span><span class="t-cmd">[H3]</span><span class="t-arg">[H4]</span> <span class="t-string">Dados</span> <span class="t-err">[T2]</span>             <span class="t-flag">[H2]</span>...<span class="t-err">[T2]</span>         <span class="t-out">[2]</span>
+<span class="t-out">[1]</span> <span class="t-var">010101010101...</span>                      <span class="t-var">...010101</span>          <span class="t-out">[1]</span>
 
-H = Header (Cabe&ccedil;alho)   T = Trailer (Rodap&eacute;)
-</pre>
+<span class="t-comment">H = Header (Cabeçalho)    T = Trailer (Rodapé)</span></div>
         </div>
 
         <div class="compare-grid">
