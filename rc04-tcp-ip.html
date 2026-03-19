@@ -14,6 +14,121 @@
             --bg-light:  #f4f7fe;
             --text-dark: #2d3748;
         }
+
+        /* ── PILHA TCP/IP ── */
+        .tcpip-stack { display: flex; flex-direction: column; gap: 3px; margin: 20px 0; }
+        .tcpip-layer {
+            display: flex; align-items: stretch;
+            border-radius: 8px; overflow: hidden;
+            box-shadow: 0 2px 6px rgba(0,0,0,.15);
+            transition: transform .15s; min-height: 56px;
+        }
+        .tcpip-layer:hover { transform: translateX(4px); }
+        .tcpip-num {
+            min-width: 48px; display: flex; align-items: center; justify-content: center;
+            font-size: 1.25em; font-weight: 900; color: white;
+            background: rgba(0,0,0,.2); padding: 12px 0;
+        }
+        .tcpip-info { flex: 1.4; padding: 10px 16px; display: flex; flex-direction: column; justify-content: center; }
+        .tcpip-pt { font-weight: 700; font-size: .95em; color: white; }
+        .tcpip-en { font-size: .75em; color: rgba(255,255,255,.65); font-family: 'Consolas',monospace; }
+        .tcpip-protos { flex: 2; padding: 10px 16px; font-size: .78em; color: rgba(255,255,255,.8); display: flex; align-items: center; font-family: 'Consolas',monospace; }
+        .tcpip-pdu { padding: 0 14px; display: flex; align-items: center; }
+        .tcpip-pdu span {
+            background: rgba(255,255,255,.22); border-radius: 20px;
+            padding: 3px 10px; font-size: .72em; color: white; white-space: nowrap;
+        }
+        .tcpip-l4 { background: linear-gradient(135deg,#7c3aed,#5b21b6); }
+        .tcpip-l3 { background: linear-gradient(135deg,#0891b2,#0e7490); }
+        .tcpip-l2 { background: linear-gradient(135deg,#059669,#047857); }
+        .tcpip-l1 { background: linear-gradient(135deg,#dc2626,#b91c1c); }
+
+        /* ── MAPEAMENTO OSI ↔ TCP/IP ── */
+        .model-map {
+            display: grid;
+            grid-template-columns: 1fr 38px 1fr;
+            grid-template-rows: auto repeat(7, 1fr);
+            gap: 3px; margin: 20px 0; align-items: stretch;
+        }
+        .mm-title {
+            font-size: .75em; font-weight: 700; text-transform: uppercase;
+            letter-spacing: .06em; color: #718096; text-align: center;
+            padding: 4px 0 10px;
+        }
+        .mm-osi-row {
+            display: flex; align-items: center;
+            border-radius: 6px; overflow: hidden;
+            color: white; font-size: .82em; font-weight: 600;
+            padding: 9px 12px; gap: 8px; transition: transform .12s;
+        }
+        .mm-osi-row:hover { transform: translateX(3px); }
+        .mm-osi-row .n {
+            background: rgba(0,0,0,.22); border-radius: 4px;
+            padding: 1px 6px; font-weight: 900; font-size: .88em;
+        }
+        .mm-arrow {
+            display: flex; align-items: center; justify-content: center;
+            color: #94a3b8; font-size: 1.2em;
+        }
+        .mm-tcpip-row {
+            display: flex; align-items: center; flex-direction: column; justify-content: center;
+            border-radius: 6px; color: white; font-weight: 700;
+            padding: 10px 8px; text-align: center; transition: transform .12s;
+        }
+        .mm-tcpip-row:hover { transform: translateX(-3px); }
+        .mm-tcpip-row .tnum { font-size: 1.5em; font-weight: 900; opacity: .65; line-height: 1; }
+        .mm-tcpip-row .tname { font-size: .82em; }
+        .mm-l7 { background: linear-gradient(135deg,#7c3aed,#5b21b6); }
+        .mm-l6 { background: linear-gradient(135deg,#4f46e5,#3730a3); }
+        .mm-l5 { background: linear-gradient(135deg,#2563eb,#1d4ed8); }
+        .mm-l4 { background: linear-gradient(135deg,#0891b2,#0e7490); }
+        .mm-l3 { background: linear-gradient(135deg,#059669,#047857); }
+        .mm-l2 { background: linear-gradient(135deg,#d97706,#b45309); }
+        .mm-l1 { background: linear-gradient(135deg,#dc2626,#b91c1c); }
+        .mm-tcp4 { background: linear-gradient(135deg,#7c3aed,#2563eb); }
+        .mm-tcp3 { background: linear-gradient(135deg,#0891b2,#0e7490); }
+        .mm-tcp2 { background: linear-gradient(135deg,#059669,#047857); }
+        .mm-tcp1 { background: linear-gradient(135deg,#dc2626,#d97706); }
+
+        /* ── ENCAPSULAMENTO VISUAL ── */
+        .encap-diagram { margin: 20px 0; }
+        .encap-layer-label {
+            font-size: .72em; font-weight: 700; text-transform: uppercase;
+            letter-spacing: .06em; color: #718096; margin-bottom: 4px; padding-left: 4px;
+        }
+        .encap-packet {
+            display: flex; align-items: stretch;
+            border-radius: 8px; overflow: hidden;
+            font-size: .82em; font-family: 'Consolas', monospace;
+            box-shadow: 0 1px 4px rgba(0,0,0,.1); min-height: 44px;
+        }
+        .encap-data {
+            flex: 1; padding: 10px 14px; background: #f1f5f9; color: #334155; font-weight: 600;
+            display: flex; align-items: center;
+        }
+        .hdr {
+            padding: 10px 12px; color: white; font-weight: 700; white-space: nowrap;
+            display: flex; align-items: center;
+        }
+        .hdr-app  { background: #7c3aed; }
+        .hdr-tcp  { background: #0891b2; }
+        .hdr-ip   { background: #059669; }
+        .hdr-eth  { background: #dc2626; }
+        .hdr-fcs  { background: #d97706; }
+        .encap-arrow {
+            text-align: center; color: #64748b; font-size: .8em;
+            padding: 5px 0; font-style: italic; margin: 2px 0;
+        }
+        .encap-bits {
+            text-align: center; background: #1a202c; color: #38ef7d;
+            border-radius: 8px; padding: 12px; font-family: 'Consolas',monospace;
+            font-size: .8em; margin-top: 6px; letter-spacing: .05em;
+        }
+
+        @media (max-width: 560px) {
+            .tcpip-protos { display: none; }
+            .mm-osi-row { font-size: .74em; }
+        }
     </style>
 </head>
 <body>
@@ -67,23 +182,43 @@
         <h2>&#x1F4CA; As 4 Camadas do Modelo TCP/IP</h2>
         <p>O TCP/IP organiza a comunica&ccedil;&atilde;o em <strong>4 camadas</strong>, da mais alta (mais pr&oacute;xima do usu&aacute;rio) para a mais baixa (mais pr&oacute;xima do hardware).</p>
 
-        <div class="terminal-block">
-            <div class="terminal-header">Modelo TCP/IP &mdash; Pilha de Camadas</div>
-<pre>
- ┌──────────────────────────────────────────────────────┐
- │  4 — Aplicação       Application Layer               │
- │      HTTP, HTTPS, FTP, SSH, DNS, SMTP, POP3, DHCP    │
- ├──────────────────────────────────────────────────────┤
- │  3 — Transporte      Transport Layer                 │
- │      TCP, UDP                                        │
- ├──────────────────────────────────────────────────────┤
- │  2 — Internet        Internet Layer                  │
- │      IP (v4/v6), ICMP, ARP, OSPF, BGP               │
- ├──────────────────────────────────────────────────────┤
- │  1 — Acesso à Rede   Network Access Layer            │
- │      Ethernet, Wi-Fi (802.11), PPP, cabo, fibra      │
- └──────────────────────────────────────────────────────┘
-</pre>
+        <div class="tcpip-stack">
+            <div class="tcpip-layer tcpip-l4">
+                <div class="tcpip-num">4</div>
+                <div class="tcpip-info">
+                    <span class="tcpip-pt">Aplica&ccedil;&atilde;o</span>
+                    <span class="tcpip-en">Application Layer</span>
+                </div>
+                <div class="tcpip-protos">HTTP &middot; HTTPS &middot; DNS &middot; DHCP &middot; SSH &middot; SMTP &middot; FTP</div>
+                <div class="tcpip-pdu"><span>message</span></div>
+            </div>
+            <div class="tcpip-layer tcpip-l3">
+                <div class="tcpip-num">3</div>
+                <div class="tcpip-info">
+                    <span class="tcpip-pt">Transporte</span>
+                    <span class="tcpip-en">Transport Layer</span>
+                </div>
+                <div class="tcpip-protos">TCP &middot; UDP</div>
+                <div class="tcpip-pdu"><span>segmento / datagrama</span></div>
+            </div>
+            <div class="tcpip-layer tcpip-l2">
+                <div class="tcpip-num">2</div>
+                <div class="tcpip-info">
+                    <span class="tcpip-pt">Internet</span>
+                    <span class="tcpip-en">Internet Layer</span>
+                </div>
+                <div class="tcpip-protos">IP (v4/v6) &middot; ICMP &middot; ARP &middot; OSPF &middot; BGP</div>
+                <div class="tcpip-pdu"><span>pacote</span></div>
+            </div>
+            <div class="tcpip-layer tcpip-l1">
+                <div class="tcpip-num">1</div>
+                <div class="tcpip-info">
+                    <span class="tcpip-pt">Acesso &agrave; Rede</span>
+                    <span class="tcpip-en">Network Access Layer</span>
+                </div>
+                <div class="tcpip-protos">Ethernet &middot; Wi-Fi 802.11 &middot; PPP &middot; cabo &middot; fibra</div>
+                <div class="tcpip-pdu"><span>quadro / bits</span></div>
+            </div>
         </div>
 
         <h3>Camada 4 &mdash; Aplica&ccedil;&atilde;o</h3>
@@ -113,23 +248,30 @@
         <h2>&#x1F500; TCP/IP vs. OSI: Compara&ccedil;&atilde;o</h2>
         <p>Os dois modelos descrevem o mesmo processo de comunica&ccedil;&atilde;o, mas com granularidades diferentes. Conhecer o mapeamento &eacute; essencial para falar a mesma l&iacute;ngua em qualquer equipe de redes.</p>
 
-        <div class="terminal-block">
-            <div class="terminal-header">Mapeamento OSI ↔ TCP/IP</div>
-<pre>
- OSI (7 camadas)                TCP/IP (4 camadas)
- ───────────────────────────────────────────────────
- 7 — Aplicação      ┐
- 6 — Apresentação   ├──────►  4 — Aplicação
- 5 — Sessão         ┘
- ───────────────────────────────────────────────────
- 4 — Transporte     ──────►   3 — Transporte
- ───────────────────────────────────────────────────
- 3 — Rede           ──────►   2 — Internet
- ───────────────────────────────────────────────────
- 2 — Enlace         ┐
- 1 — Física         ├──────►  1 — Acesso à Rede
-                    ┘
-</pre>
+        <div class="model-map">
+            <!-- Títulos -->
+            <div class="mm-title">OSI &mdash; 7 camadas</div>
+            <div class="mm-title"></div>
+            <div class="mm-title">TCP/IP &mdash; 4 camadas</div>
+            <!-- OSI 7,6,5 → TCP/IP Aplicação -->
+            <div class="mm-osi-row mm-l7" style="grid-column:1;grid-row:2"><span class="n">7</span> Aplica&ccedil;&atilde;o</div>
+            <div class="mm-arrow" style="grid-column:2;grid-row:2/5">&#x27A1;</div>
+            <div class="mm-tcpip-row mm-tcp4" style="grid-column:3;grid-row:2/5"><span class="tnum">4</span><span class="tname">Aplica&ccedil;&atilde;o</span></div>
+            <div class="mm-osi-row mm-l6" style="grid-column:1;grid-row:3"><span class="n">6</span> Apresenta&ccedil;&atilde;o</div>
+            <div class="mm-osi-row mm-l5" style="grid-column:1;grid-row:4"><span class="n">5</span> Sess&atilde;o</div>
+            <!-- OSI 4 → TCP/IP Transporte -->
+            <div class="mm-osi-row mm-l4" style="grid-column:1;grid-row:5"><span class="n">4</span> Transporte</div>
+            <div class="mm-arrow" style="grid-column:2;grid-row:5">&#x27A1;</div>
+            <div class="mm-tcpip-row mm-tcp3" style="grid-column:3;grid-row:5"><span class="tnum">3</span><span class="tname">Transporte</span></div>
+            <!-- OSI 3 → TCP/IP Internet -->
+            <div class="mm-osi-row mm-l3" style="grid-column:1;grid-row:6"><span class="n">3</span> Rede</div>
+            <div class="mm-arrow" style="grid-column:2;grid-row:6">&#x27A1;</div>
+            <div class="mm-tcpip-row mm-tcp2" style="grid-column:3;grid-row:6"><span class="tnum">2</span><span class="tname">Internet</span></div>
+            <!-- OSI 2,1 → TCP/IP Acesso à Rede -->
+            <div class="mm-osi-row mm-l2" style="grid-column:1;grid-row:7"><span class="n">2</span> Enlace</div>
+            <div class="mm-arrow" style="grid-column:2;grid-row:7/9">&#x27A1;</div>
+            <div class="mm-tcpip-row mm-tcp1" style="grid-column:3;grid-row:7/9"><span class="tnum">1</span><span class="tname">Acesso &agrave; Rede</span></div>
+            <div class="mm-osi-row mm-l1" style="grid-column:1;grid-row:8"><span class="n">1</span> F&iacute;sica</div>
         </div>
 
         <table>
@@ -272,27 +414,34 @@
         <h2>&#x1F4E6; Encapsulamento no TCP/IP</h2>
         <p>Assim como no OSI, cada camada TCP/IP <strong>encapsula</strong> os dados recebidos adicionando seu pr&oacute;prio cabe&ccedil;alho. No receptor, o processo inverso (desencapsulamento) ocorre camada por camada.</p>
 
-        <div class="terminal-block">
-            <div class="terminal-header">Encapsulamento — exemplo: acessar www.exemplo.com</div>
-<pre>
- EMISSOR                                            RECEPTOR
- ─────────────────────────────────────────────────────────────
- [Aplicação]   Mensagem HTTP GET /index.html
-     ↓ adiciona cabeçalho TCP (porta origem, destino)
- [Transporte]  Segmento TCP  [ HDR-TCP | Mensagem HTTP ]
-     ↓ adiciona cabeçalho IP (IP origem, IP destino)
- [Internet]    Pacote IP     [ HDR-IP | HDR-TCP | HTTP ]
-     ↓ adiciona cabeçalho Ethernet (MAC origem, destino)
- [Acesso Rede] Quadro Eth    [ HDR-ETH | HDR-IP | HDR-TCP | HTTP | FCS ]
-     ↓ converte em bits e transmite pelo cabo/Wi-Fi
-
-                              ← bits viajam pela rede →
-
-                                             [Acesso Rede] remove HDR-ETH
-                                             [Internet]    remove HDR-IP
-                                             [Transporte]  remove HDR-TCP
-                                             [Aplicação]   recebe HTTP GET
-</pre>
+        <div class="encap-diagram">
+            <div class="encap-layer-label">Aplica&ccedil;&atilde;o &mdash; cria a mensagem</div>
+            <div class="encap-packet">
+                <div class="encap-data">HTTP GET /index.html</div>
+            </div>
+            <div class="encap-arrow">&#x2193; Transporte adiciona cabe&ccedil;alho TCP (porta de origem, porta de destino, n&uacute;mero de sequ&ecirc;ncia)</div>
+            <div class="encap-layer-label">Transporte &mdash; Segmento TCP</div>
+            <div class="encap-packet">
+                <span class="hdr hdr-tcp">HDR-TCP</span>
+                <div class="encap-data">HTTP GET /index.html</div>
+            </div>
+            <div class="encap-arrow">&#x2193; Internet adiciona cabe&ccedil;alho IP (IP de origem, IP de destino)</div>
+            <div class="encap-layer-label">Internet &mdash; Pacote IP</div>
+            <div class="encap-packet">
+                <span class="hdr hdr-ip">HDR-IP</span>
+                <span class="hdr hdr-tcp">HDR-TCP</span>
+                <div class="encap-data">HTTP GET</div>
+            </div>
+            <div class="encap-arrow">&#x2193; Acesso &agrave; Rede adiciona cabe&ccedil;alho Ethernet (MAC de origem, MAC de destino) + trailer FCS</div>
+            <div class="encap-layer-label">Acesso &agrave; Rede &mdash; Quadro Ethernet</div>
+            <div class="encap-packet">
+                <span class="hdr hdr-eth">HDR-ETH</span>
+                <span class="hdr hdr-ip">HDR-IP</span>
+                <span class="hdr hdr-tcp">HDR-TCP</span>
+                <div class="encap-data">HTTP</div>
+                <span class="hdr hdr-fcs">FCS</span>
+            </div>
+            <div class="encap-bits">01001000 01010100 01010100 01010000 &nbsp;&middot;&middot;&middot;&nbsp; &#x27A1; bits transmitidos pelo cabo ou Wi-Fi</div>
         </div>
 
         <p>Cada cabe&ccedil;alho cont&eacute;m informa&ccedil;&otilde;es necess&aacute;rias para que a camada correspondente no receptor fa&ccedil;a seu trabalho. O cabe&ccedil;alho IP, por exemplo, carrega os endere&ccedil;os IP de origem e destino; o TCP carrega as portas e n&uacute;meros de sequ&ecirc;ncia.</p>
@@ -307,35 +456,35 @@
         <h2>&#x1F310; Como a Internet Realmente Funciona</h2>
         <p>Vamos seguir o caminho de uma requisi&ccedil;&atilde;o quando voc&ecirc; digita <code>https://google.com</code> no navegador:</p>
 
-        <div class="terminal-block">
-            <div class="terminal-header">Passo a passo — HTTPS para google.com</div>
-<pre>
- 1. [DNS]       Navegador pergunta ao servidor DNS: "qual é o IP de google.com?"
-                DNS responde: "142.250.x.x" (via UDP, porta 53)
-
- 2. [TCP Handshake]
-                Seu computador inicia conexão TCP com o IP do Google:
-                → SYN   (seu computador → Google)
-                ← SYN-ACK (Google → você)
-                → ACK   (você confirma)
-
- 3. [TLS Handshake]
-                Como é HTTPS, negociam criptografia (TLS 1.3).
-                Trocam certificados e chaves simétricas.
-
- 4. [HTTP GET]  Navegador envia: GET / HTTP/1.1 Host: google.com
-                Encapsulado em: Segmento TCP → Pacote IP → Quadro Ethernet
-
- 5. [Roteamento]
-                O pacote IP percorre roteadores (camada Internet):
-                Sua casa → modem → provedor → backbone → data center Google
-
- 6. [Resposta]  Google envia o HTML da página.
-                TCP garante que todos os segmentos chegaram na ordem certa.
-
- 7. [Renderização]
-                Navegador (camada Aplicação) interpreta HTML/CSS/JS e exibe a página.
-</pre>
+        <div class="flow-steps">
+            <div class="flow-step">
+                <div class="flow-num">1</div>
+                <p><strong>DNS</strong> &mdash; Navegador pergunta ao servidor DNS: <em>"qual &eacute; o IP de google.com?"</em> DNS responde com o endere&ccedil;o (via UDP, porta 53). Sem isso, voc&ecirc; precisaria memorizar IPs.</p>
+            </div>
+            <div class="flow-step">
+                <div class="flow-num">2</div>
+                <p><strong>TCP Handshake</strong> &mdash; Seu computador inicia conex&atilde;o TCP com o IP do Google: <code>SYN &rarr; SYN-ACK &rarr; ACK</code>. Ap&oacute;s os 3 pacotes, o canal est&aacute; aberto.</p>
+            </div>
+            <div class="flow-step">
+                <div class="flow-num">3</div>
+                <p><strong>TLS Handshake</strong> &mdash; Como &eacute; HTTPS, cliente e servidor negociam criptografia (TLS 1.3), trocam certificados e estabelecem chaves sim&eacute;tricas. O &ldquo;S&rdquo; de HTTPS entra aqui.</p>
+            </div>
+            <div class="flow-step">
+                <div class="flow-num">4</div>
+                <p><strong>HTTP GET</strong> &mdash; Navegador envia <code>GET / HTTP/1.1 Host: google.com</code>. A mensagem &eacute; encapsulada: Segmento TCP &rarr; Pacote IP &rarr; Quadro Ethernet &rarr; bits.</p>
+            </div>
+            <div class="flow-step">
+                <div class="flow-num">5</div>
+                <p><strong>Roteamento IP</strong> &mdash; O pacote percorre roteadores pela camada Internet: <code>sua casa &rarr; modem &rarr; provedor &rarr; backbone &rarr; data center Google</code>. Cada salto &eacute; decidido pelo IP.</p>
+            </div>
+            <div class="flow-step">
+                <div class="flow-num">6</div>
+                <p><strong>Resposta</strong> &mdash; Google envia o HTML da p&aacute;gina em m&uacute;ltiplos segmentos TCP. O protocolo garante que todos chegam na ordem certa e solicita reenvio se algum se perder.</p>
+            </div>
+            <div class="flow-step">
+                <div class="flow-num">7</div>
+                <p><strong>Renderiza&ccedil;&atilde;o</strong> &mdash; O navegador (camada Aplica&ccedil;&atilde;o) interpreta o HTML/CSS/JS e exibe a p&aacute;gina. Todo esse processo acontece em <strong>milissegundos</strong>.</p>
+            </div>
         </div>
 
         <p>Todo esse processo &mdash; DNS, TCP, TLS, HTTP, roteamento IP &mdash; acontece em <strong>milissegundos</strong>. &Eacute; o TCP/IP orquestrando cada etapa, camada por camada, de forma transparente para o usu&aacute;rio.</p>
