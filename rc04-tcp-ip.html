@@ -720,62 +720,525 @@
         </div>
     </div>
 
-    <!-- ATIVIDADE PRÁTICA -->
-    <div class="content-card exercise-card" id="prat-rc04">
-        <h2>&#x1F4DD; Atividade Pr&aacute;tica</h2>
-        <p class="prat-intro">Explorando o TCP/IP na pr&aacute;tica: protocolos, portas e o caminho dos dados.</p>
+    <!-- ATIVIDADE WIRESHARK -->
+    <div class="content-card exercise-card" id="prat-wireshark-rc04">
+        <h2>&#x1F988; Atividade Pr&aacute;tica &mdash; Wireshark por Camada</h2>
+        <p class="prat-intro">Capture pacotes reais e identifique cada camada do modelo TCP/IP com o Wireshark.</p>
+
+        <div class="prat-meta">
+            <span class="prat-tag">&#x1F6E0;&#xFE0F; Ferramenta: Wireshark</span>
+            <span class="prat-tag">&#x23F1;&#xFE0F; ~30 minutos</span>
+            <span class="prat-tag">&#x1F4BB; Individual ou dupla</span>
+        </div>
 
         <div class="prat-steps">
+
+            <!-- PREPARAÇÃO -->
             <div class="prat-step">
-                <div class="step-num">1</div>
+                <div class="step-num">0</div>
                 <div class="step-body">
-                    <div class="step-label">Classificar protocolos</div>
-                    <div class="step-desc">Para cada protocolo abaixo, indique: (a) em qual camada TCP/IP atua; (b) se usa TCP, UDP ou nenhum dos dois; (c) n&uacute;mero de porta (se houver). Protocolos: HTTP, DNS, ICMP, DHCP, SSH, ARP, FTP, HTTPS, UDP, SMTP, IPv6, Ethernet.</div>
+                    <div class="step-label">&#x2699;&#xFE0F; Prepara&ccedil;&atilde;o &mdash; Instalar e iniciar captura</div>
+                    <div class="step-desc">
+                        Baixe o Wireshark em <strong>wireshark.org</strong> (gratuito, Windows/Mac/Linux). Ap&oacute;s instalar:
+                        <ol style="margin:8px 0 0 18px; padding:0; display:flex; flex-direction:column; gap:5px;">
+                            <li>Abra o Wireshark e escolha a interface de rede ativa (Wi-Fi ou Ethernet)</li>
+                            <li>Clique na barbatana azul &#x25B6; para iniciar a captura</li>
+                            <li>Abra o navegador e acesse <code>http://example.com</code> <em>(use HTTP, n&atilde;o HTTPS, para ver o conte&uacute;do)</em></li>
+                            <li>Volte ao Wireshark e clique no &#x25A0; vermelho para parar</li>
+                        </ol>
+                        <br>Agora voc&ecirc; tem pacotes reais para analisar nas etapas abaixo.
+                    </div>
                 </div>
             </div>
+
+            <!-- CAMADA 1: ACESSO À REDE -->
             <div class="prat-step">
-                <div class="step-num">2</div>
+                <div class="step-num" style="background:#dc2626;">1</div>
                 <div class="step-body">
-                    <div class="step-label">TCP vs. UDP &mdash; quando usar cada um</div>
-                    <div class="step-desc">Para cada servi&ccedil;o abaixo, indique se usaria TCP ou UDP e justifique a escolha: (a) download de arquivo; (b) v&iacute;deo ao vivo (live streaming); (c) acesso SSH a um servidor; (d) jogo online em tempo real; (e) consulta DNS; (f) transfer&ecirc;ncia de e-mail. <em>Dica: pense em qual &eacute; mais prejudicial para cada servi&ccedil;o: um leve atraso ou um dado perdido?</em></div>
+                    <div class="step-label">
+                        <span style="display:inline-block;background:#fee2e2;color:#991b1b;border-radius:20px;padding:1px 10px;font-size:0.78em;margin-right:6px;font-weight:700;">ACESSO &Agrave; REDE</span>
+                        Quadros Ethernet e ARP
+                    </div>
+                    <div class="step-desc">
+                        Na barra de filtro do Wireshark, digite e pressione <kbd>Enter</kbd>:
+                        <code style="display:block;background:#0f172a;color:#a5f3fc;padding:10px 16px;border-radius:8px;font-size:0.95em;margin:8px 0;letter-spacing:0.5px;">eth</code>
+                        Clique em qualquer pacote e expanda <strong>Ethernet II</strong> no painel inferior. Observe:
+                        <ul style="margin:8px 0 4px 18px;padding:0;display:flex;flex-direction:column;gap:4px;">
+                            <li><em>Source</em> &mdash; endere&ccedil;o MAC do seu computador</li>
+                            <li><em>Destination</em> &mdash; endere&ccedil;o MAC do seu roteador</li>
+                            <li>Campo <em>Type</em>: <code>0x0800</code> = IPv4 &nbsp;|&nbsp; <code>0x0806</code> = ARP</li>
+                        </ul>
+                        Agora troque o filtro para:
+                        <code style="display:block;background:#0f172a;color:#a5f3fc;padding:10px 16px;border-radius:8px;font-size:0.95em;margin:8px 0;letter-spacing:0.5px;">arp</code>
+                        <strong>Responda:</strong> (a) Qual &eacute; a &ldquo;pergunta&rdquo; que o ARP est&aacute; fazendo nos pacotes <em>Who has</em>? (b) O que muda no MAC de destino nos pacotes ARP? Por qu&ecirc;?
+                    </div>
                 </div>
             </div>
+
+            <!-- CAMADA 2: INTERNET -->
             <div class="prat-step">
-                <div class="step-num">3</div>
+                <div class="step-num" style="background:#059669;">2</div>
                 <div class="step-body">
-                    <div class="step-label">Rastrear o caminho de uma requisi&ccedil;&atilde;o</div>
-                    <div class="step-desc">Descreva passo a passo (em texto) o que acontece nas 4 camadas TCP/IP quando voc&ecirc; envia uma mensagem pelo WhatsApp Web. Identifique: qual protocolo de aplica&ccedil;&atilde;o &eacute; usado? Qual protocolo de transporte e por qu&ecirc;? Como o IP roteia a mensagem at&eacute; os servidores do WhatsApp? O que acontece na camada de acesso &agrave; rede se voc&ecirc; estiver no Wi-Fi?</div>
+                    <div class="step-label">
+                        <span style="display:inline-block;background:#d1fae5;color:#065f46;border-radius:20px;padding:1px 10px;font-size:0.78em;margin-right:6px;font-weight:700;">INTERNET</span>
+                        Endere&ccedil;amento IP e ICMP
+                    </div>
+                    <div class="step-desc">
+                        Filtre apenas pacotes IP:
+                        <code style="display:block;background:#0f172a;color:#a5f3fc;padding:10px 16px;border-radius:8px;font-size:0.95em;margin:8px 0;letter-spacing:0.5px;">ip</code>
+                        Expanda <strong>Internet Protocol Version 4</strong>. Observe:
+                        <ul style="margin:8px 0 4px 18px;padding:0;display:flex;flex-direction:column;gap:4px;">
+                            <li>IP de origem e destino &mdash; reconhece o IP do seu computador?</li>
+                            <li>Campo <em>TTL</em> (Time to Live) &mdash; qual valor aparece?</li>
+                            <li>Campo <em>Protocol</em>: <code>6</code> = TCP &nbsp;|&nbsp; <code>17</code> = UDP &nbsp;|&nbsp; <code>1</code> = ICMP</li>
+                        </ul>
+                        Abra o terminal, execute <code>ping google.com</code> durante a captura e filtre:
+                        <code style="display:block;background:#0f172a;color:#a5f3fc;padding:10px 16px;border-radius:8px;font-size:0.95em;margin:8px 0;letter-spacing:0.5px;">icmp</code>
+                        <strong>Responda:</strong> (a) Qual IP do Google apareceu? (b) Consegue ver o par <em>Echo Request</em> / <em>Echo Reply</em>? (c) O TTL da resposta &eacute; o mesmo da ida?
+                    </div>
                 </div>
             </div>
+
+            <!-- CAMADA 3: TRANSPORTE -->
             <div class="prat-step">
-                <div class="step-num">4</div>
+                <div class="step-num" style="background:#0891b2;">3</div>
                 <div class="step-body">
-                    <div class="step-label">Comparar OSI e TCP/IP</div>
-                    <div class="step-desc">Monte uma tabela com as 7 camadas OSI e ao lado indique a camada TCP/IP correspondente e os principais protocolos de cada n&iacute;vel. Em seguida, responda: por que a internet adotou o TCP/IP em vez do OSI? Quais vantagens pr&aacute;ticas o TCP/IP trouxe?</div>
+                    <div class="step-label">
+                        <span style="display:inline-block;background:#cffafe;color:#164e63;border-radius:20px;padding:1px 10px;font-size:0.78em;margin-right:6px;font-weight:700;">TRANSPORTE</span>
+                        TCP e UDP
+                    </div>
+                    <div class="step-desc">
+                        Filtre conex&otilde;es TCP:
+                        <code style="display:block;background:#0f172a;color:#a5f3fc;padding:10px 16px;border-radius:8px;font-size:0.95em;margin:8px 0;letter-spacing:0.5px;">tcp</code>
+                        Expanda <strong>Transmission Control Protocol</strong>. Observe:
+                        <ul style="margin:8px 0 4px 18px;padding:0;display:flex;flex-direction:column;gap:4px;">
+                            <li>Porta de origem (alta, acima de 1024) e destino (<code>80</code> = HTTP, <code>443</code> = HTTPS)</li>
+                            <li>Flags: <em>SYN</em>, <em>ACK</em>, <em>FIN</em> &mdash; consegue ver o handshake de 3 vias?</li>
+                            <li>Sequence Number e Acknowledgment Number</li>
+                        </ul>
+                        <em>Dica: clique com bot&atilde;o direito em um pacote SYN &rarr; Follow &rarr; TCP Stream para ver a conversa completa.</em>
+                        <br><br>
+                        Agora filtre UDP:
+                        <code style="display:block;background:#0f172a;color:#a5f3fc;padding:10px 16px;border-radius:8px;font-size:0.95em;margin:8px 0;letter-spacing:0.5px;">udp</code>
+                        <strong>Responda:</strong> (a) Qual porta aparece nos pacotes UDP? (b) O cabe&ccedil;alho UDP tem Sequence Number ou ACK? O que isso diz sobre o protocolo?
+                    </div>
                 </div>
             </div>
+
+            <!-- CAMADA 4: APLICAÇÃO -->
+            <div class="prat-step">
+                <div class="step-num" style="background:#7c3aed;">4</div>
+                <div class="step-body">
+                    <div class="step-label">
+                        <span style="display:inline-block;background:#ede9fe;color:#5b21b6;border-radius:20px;padding:1px 10px;font-size:0.78em;margin-right:6px;font-weight:700;">APLICA&Ccedil;&Atilde;O</span>
+                        HTTP e DNS
+                    </div>
+                    <div class="step-desc">
+                        Filtre requisi&ccedil;&otilde;es HTTP:
+                        <code style="display:block;background:#0f172a;color:#a5f3fc;padding:10px 16px;border-radius:8px;font-size:0.95em;margin:8px 0;letter-spacing:0.5px;">http</code>
+                        Clique em um pacote <em>GET</em> e expanda <strong>Hypertext Transfer Protocol</strong>. Observe:
+                        <ul style="margin:8px 0 4px 18px;padding:0;display:flex;flex-direction:column;gap:4px;">
+                            <li>M&eacute;todo HTTP: <em>GET</em>, <em>POST</em>&hellip;</li>
+                            <li>Campo <em>Host</em>: qual site foi acessado?</li>
+                            <li>C&oacute;digo de resposta: <code>200 OK</code>, <code>301</code>, <code>404</code>&hellip;</li>
+                        </ul>
+                        Agora filtre DNS:
+                        <code style="display:block;background:#0f172a;color:#a5f3fc;padding:10px 16px;border-radius:8px;font-size:0.95em;margin:8px 0;letter-spacing:0.5px;">dns</code>
+                        <strong>Responda:</strong> (a) Qual nome de dom&iacute;nio foi consultado? (b) Qual IP o servidor DNS retornou? (c) DNS usou TCP ou UDP? Por qu&ecirc;?
+                    </div>
+                </div>
+            </div>
+
+            <!-- DESAFIO FINAL -->
             <div class="prat-step">
                 <div class="step-num">5</div>
                 <div class="step-body">
-                    <div class="step-label">&#x1F465; Trabalho em grupo &mdash; Simula&ccedil;&atilde;o de Provedor de Internet</div>
-                    <div class="step-desc"><strong>(Aprendizagem Baseada em Problemas &mdash; grupos de 3&ndash;4 alunos)</strong> Cada grupo representa um n&oacute; da internet: Usu&aacute;rio, Roteador do ISP, Servidor DNS e Servidor Web. O grupo deve simular, em voz alta e com cartazes, o que cada n&oacute; faz quando o usu&aacute;rio acessa <code>https://escola.edu.br</code>: (a) o usu&aacute;rio envia pedido DNS; (b) o DNS responde com o IP; (c) o usu&aacute;rio estabelece TCP com o servidor; (d) o roteador encaminha os pacotes IP; (e) o servidor responde com o HTML. <em>Debatam: o que aconteceria se o servidor DNS estivesse fora do ar? E se o roteador do ISP cair?</em></div>
+                    <div class="step-label">&#x1F3C6; Desafio final &mdash; Rastreie um pacote pelas 4 camadas</div>
+                    <div class="step-desc">
+                        Aplique o filtro abaixo para encontrar uma requisi&ccedil;&atilde;o HTTP completa:
+                        <code style="display:block;background:#0f172a;color:#a5f3fc;padding:10px 16px;border-radius:8px;font-size:0.95em;margin:8px 0;letter-spacing:0.5px;">http.request.method == "GET"</code>
+                        Clique no pacote e expanda cada camada no painel inferior. Preencha a tabela:
+
+                        <table style="width:100%;border-collapse:collapse;margin-top:14px;font-size:0.85em;">
+                            <thead>
+                                <tr style="background:#f1f5f9;">
+                                    <th style="padding:8px 10px;text-align:left;border:1px solid #e2e8f0;color:#475569;">Camada TCP/IP</th>
+                                    <th style="padding:8px 10px;text-align:left;border:1px solid #e2e8f0;color:#475569;">Se&ccedil;&atilde;o no Wireshark</th>
+                                    <th style="padding:8px 10px;text-align:left;border:1px solid #e2e8f0;color:#475569;">O que voc&ecirc; encontrou?</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td style="padding:8px 10px;border:1px solid #e2e8f0;"><span style="color:#dc2626;font-weight:700;">Acesso &agrave; Rede</span></td>
+                                    <td style="padding:8px 10px;border:1px solid #e2e8f0;"><code>Ethernet II</code></td>
+                                    <td style="padding:8px 10px;border:1px solid #e2e8f0;color:#94a3b8;font-style:italic;">MAC origem / MAC destino</td>
+                                </tr>
+                                <tr style="background:#f8fafc;">
+                                    <td style="padding:8px 10px;border:1px solid #e2e8f0;"><span style="color:#059669;font-weight:700;">Internet</span></td>
+                                    <td style="padding:8px 10px;border:1px solid #e2e8f0;"><code>IPv4</code></td>
+                                    <td style="padding:8px 10px;border:1px solid #e2e8f0;color:#94a3b8;font-style:italic;">IP origem / IP destino / TTL</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding:8px 10px;border:1px solid #e2e8f0;"><span style="color:#0891b2;font-weight:700;">Transporte</span></td>
+                                    <td style="padding:8px 10px;border:1px solid #e2e8f0;"><code>TCP</code></td>
+                                    <td style="padding:8px 10px;border:1px solid #e2e8f0;color:#94a3b8;font-style:italic;">Porta origem / destino / flags</td>
+                                </tr>
+                                <tr style="background:#f8fafc;">
+                                    <td style="padding:8px 10px;border:1px solid #e2e8f0;"><span style="color:#7c3aed;font-weight:700;">Aplica&ccedil;&atilde;o</span></td>
+                                    <td style="padding:8px 10px;border:1px solid #e2e8f0;"><code>HTTP</code></td>
+                                    <td style="padding:8px 10px;border:1px solid #e2e8f0;color:#94a3b8;font-style:italic;">M&eacute;todo / Host / Status</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
-            <div class="prat-step">
-                <div class="step-num">6</div>
-                <div class="step-body">
-                    <div class="step-label">&#x1F9E9; Computa&ccedil;&atilde;o desplugada &mdash; Handshake humano</div>
-                    <div class="step-desc"><strong>(Metodologia ativa &mdash; sem computador)</strong> Simule o <em>TCP three-way handshake</em> com a turma: tr&ecirc;s alunos representam os pacotes SYN, SYN-ACK e ACK. Cada um escreve em um papel o nome do pacote, IP de origem, IP de destino e n&uacute;mero de sequ&ecirc;ncia (inventado). O &ldquo;cliente&rdquo; entrega o SYN ao &ldquo;servidor&rdquo;, que devolve o SYN-ACK, e o cliente finaliza com o ACK. Depois, simule uma perda: o SYN-ACK se perde &mdash; o que o cliente deve fazer? <em>Reflit am: por que o UDP n&atilde;o faz esse processo? Em quais situa&ccedil;&otilde;es isso &eacute; uma vantagem? A atividade &eacute; adapt&aacute;vel: alunos podem ditar os valores em vez de escrever.</em></div>
-                </div>
-            </div>
+
         </div>
 
         <div class="prat-observe">
-            <strong>&#x1F4CC; Para refletir:</strong> toda vez que voc&ecirc; usa a internet, o TCP/IP est&aacute; operando em milissegundos, camada por camada, em cada dispositivo no caminho. Entender esse processo n&atilde;o &eacute; apenas acad&ecirc;mico &mdash; &eacute; a base para configurar firewalls, diagnosticar falhas de rede, entender seguran&ccedil;a e projetar sistemas distribu&iacute;dos. Profissionais de redes pensam em termos de camadas o tempo todo.
+            <strong>&#x1F4CC; Para refletir:</strong> no Wireshark, cada pacote exibe exatamente o que a aula ensina na teoria &mdash; as camadas empilhadas uma dentro da outra. O que aparece como <em>Ethernet II &rarr; IPv4 &rarr; TCP &rarr; HTTP</em> &eacute; o encapsulamento acontecendo em tempo real, capturado da sua pr&oacute;pria placa de rede.
         </div>
 
         <div class="ex-actions">
-            <button class="btn-print" onclick="printPractical('prat-rc04', 'Aula 4 \u2014 Arquitetura TCP/IP')">&#x1F5A8;&#xFE0F; Imprimir roteiro</button>
+            <button class="btn-print" onclick="printPractical('prat-wireshark-rc04', 'Aula 4 \u2014 Wireshark por Camada')">&#x1F5A8;&#xFE0F; Imprimir roteiro</button>
+        </div>
+    </div>
+
+    <!-- ATIVIDADE PRÁTICA -->
+    <div class="content-card exercise-card" id="prat-rc04">
+        <h2>&#x1F9E9; Atividade Pr&aacute;tica &mdash; Viagem de um Pacote</h2>
+        <p class="prat-intro">Compreender, de forma pr&aacute;tica, o funcionamento das 4 camadas do modelo TCP/IP por meio do processo de encapsulamento e desencapsulamento.</p>
+
+        <div class="prat-meta">
+            <span class="prat-tag">&#x1F465; Grupos de 3&ndash;4 alunos</span>
+            <span class="prat-tag">&#x1F3C6; Metodologia ativa</span>
+            <span class="prat-tag">&#x1F5A8;&#xFE0F; Imprim&iacute;vel</span>
+        </div>
+
+        <div class="prat-steps">
+
+            <!-- IDENTIDADE DO GRUPO -->
+            <div class="prat-step">
+                <div class="step-num" style="background:#1a73e8; font-size:0.75em;">ID</div>
+                <div class="step-body">
+                    <div class="step-label">&#x1F194; Identidade do Grupo &mdash; Personaliza&ccedil;&atilde;o</div>
+                    <div class="step-desc">
+                        Cada grupo cria sua pr&oacute;pria &ldquo;identidade de rede&rdquo; antes de come&ccedil;ar:
+                        <div style="display:flex;flex-direction:column;gap:10px;margin-top:12px;">
+                            <div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;">
+                                <span style="font-weight:600;white-space:nowrap;color:#1a73e8;">&#x1F539; Nome do grupo:</span>
+                                <span style="flex:1;min-width:180px;border-bottom:1.5px solid #94a3b8;height:1.4em;display:inline-block;">&nbsp;</span>
+                            </div>
+                            <div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;">
+                                <span style="font-weight:600;white-space:nowrap;color:#1a73e8;">&#x1F4F1; Nome da aplica&ccedil;&atilde;o <em style="font-weight:400;">(ex: ChatIFRN, ZapIF)</em>:</span>
+                                <span style="flex:1;min-width:160px;border-bottom:1.5px solid #94a3b8;height:1.4em;display:inline-block;">&nbsp;</span>
+                            </div>
+                            <div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;">
+                                <span style="font-weight:600;white-space:nowrap;color:#1a73e8;">&#x1F4AC; Mensagem personalizada <em style="font-weight:400;">(n&atilde;o usar &ldquo;Oi&rdquo;)</em>:</span>
+                                <span style="flex:1;min-width:200px;border-bottom:1.5px solid #94a3b8;height:1.4em;display:inline-block;">&nbsp;</span>
+                            </div>
+                            <div>
+                                <span style="font-weight:600;color:#1a73e8;">&#x1F4C2; Tipo de dado:&nbsp;</span>
+                                <span style="margin-right:14px;">&#x2610; Texto</span>
+                                <span style="margin-right:14px;">&#x2610; &Aacute;udio</span>
+                                <span style="margin-right:14px;">&#x2610; Imagem</span>
+                                <span>&#x2610; V&iacute;deo</span>
+                            </div>
+                            <div>
+                                <span style="font-weight:600;color:#1a73e8;">&#x1F5FA;&#xFE0F; Cen&aacute;rio:&nbsp;</span>
+                                <span style="margin-right:14px;">&#x2610; Rede dom&eacute;stica</span>
+                                <span style="margin-right:14px;">&#x2610; Escola (IFRN)</span>
+                                <span style="margin-right:14px;">&#x2610; Internet (acesso externo)</span>
+                                <span>&#x2610; Outro: <span style="display:inline-block;min-width:100px;border-bottom:1.5px solid #94a3b8;">&nbsp;</span></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- INTEGRANTES -->
+            <div class="prat-step">
+                <div class="step-num" style="background:#1a73e8;">&#x1F465;</div>
+                <div class="step-body">
+                    <div class="step-label">Integrantes do grupo</div>
+                    <div class="step-desc">
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px 24px;margin-top:8px;">
+                            <div style="display:flex;align-items:baseline;gap:6px;">
+                                <span style="font-weight:600;white-space:nowrap;">&#x2022; Nome 1:</span>
+                                <span style="flex:1;border-bottom:1.5px solid #94a3b8;height:1.4em;display:inline-block;">&nbsp;</span>
+                            </div>
+                            <div style="display:flex;align-items:baseline;gap:6px;">
+                                <span style="font-weight:600;white-space:nowrap;">&#x2022; Nome 2:</span>
+                                <span style="flex:1;border-bottom:1.5px solid #94a3b8;height:1.4em;display:inline-block;">&nbsp;</span>
+                            </div>
+                            <div style="display:flex;align-items:baseline;gap:6px;">
+                                <span style="font-weight:600;white-space:nowrap;">&#x2022; Nome 3:</span>
+                                <span style="flex:1;border-bottom:1.5px solid #94a3b8;height:1.4em;display:inline-block;">&nbsp;</span>
+                            </div>
+                            <div style="display:flex;align-items:baseline;gap:6px;">
+                                <span style="font-weight:600;white-space:nowrap;">&#x2022; Nome 4:</span>
+                                <span style="flex:1;border-bottom:1.5px solid #94a3b8;height:1.4em;display:inline-block;">&nbsp;</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PARTE 1: ENCAPSULAMENTO -->
+            <div class="prat-step">
+                <div class="step-num" style="background:#0d47a1;">1</div>
+                <div class="step-body">
+                    <div class="step-label">&#x2B07;&#xFE0F; Parte 1 &mdash; Encapsulamento</div>
+                    <div class="step-desc">
+                        Preencha as informa&ccedil;&otilde;es conforme a mensagem <strong>desce</strong> pelas camadas:
+
+                        <!-- CAMADA APLICAÇÃO -->
+                        <div style="margin-top:14px;border-left:4px solid #7c3aed;border-radius:0 8px 8px 0;background:#faf5ff;padding:12px 14px;">
+                            <div style="font-weight:700;color:#5b21b6;margin-bottom:8px;">
+                                <span style="background:#7c3aed;color:white;border-radius:4px;padding:1px 8px;font-size:0.82em;margin-right:6px;">APLICA&Ccedil;&Atilde;O</span>
+                                Camada de Aplica&ccedil;&atilde;o
+                            </div>
+                            <div style="display:flex;flex-direction:column;gap:8px;">
+                                <div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;">
+                                    <span style="font-weight:600;white-space:nowrap;">Mensagem original:</span>
+                                    <span style="flex:1;min-width:200px;border-bottom:1.5px solid #c4b5fd;height:1.4em;display:inline-block;">&nbsp;</span>
+                                </div>
+                                <div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;">
+                                    <span style="font-weight:600;white-space:nowrap;">Aplica&ccedil;&atilde;o utilizada:</span>
+                                    <span style="flex:1;min-width:160px;border-bottom:1.5px solid #c4b5fd;height:1.4em;display:inline-block;">&nbsp;</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- CAMADA TRANSPORTE -->
+                        <div style="margin-top:10px;border-left:4px solid #0891b2;border-radius:0 8px 8px 0;background:#f0f9ff;padding:12px 14px;">
+                            <div style="font-weight:700;color:#164e63;margin-bottom:8px;">
+                                <span style="background:#0891b2;color:white;border-radius:4px;padding:1px 8px;font-size:0.82em;margin-right:6px;">TRANSPORTE</span>
+                                Camada de Transporte
+                            </div>
+                            <div style="display:flex;flex-direction:column;gap:8px;">
+                                <div>
+                                    <span style="font-weight:600;">Protocolo escolhido:&nbsp;</span>
+                                    <span style="margin-right:16px;">&#x2610; TCP</span>
+                                    <span>&#x2610; UDP</span>
+                                </div>
+                                <div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;">
+                                    <span style="font-weight:600;white-space:nowrap;">Justifique a escolha:</span>
+                                    <span style="flex:1;min-width:180px;border-bottom:1.5px solid #7dd3fc;height:1.4em;display:inline-block;">&nbsp;</span>
+                                </div>
+                                <div style="display:flex;gap:24px;flex-wrap:wrap;">
+                                    <div style="display:flex;align-items:baseline;gap:6px;">
+                                        <span style="font-weight:600;white-space:nowrap;">Porta de origem:</span>
+                                        <span style="min-width:100px;border-bottom:1.5px solid #7dd3fc;height:1.4em;display:inline-block;">&nbsp;</span>
+                                    </div>
+                                    <div style="display:flex;align-items:baseline;gap:6px;">
+                                        <span style="font-weight:600;white-space:nowrap;">Porta de destino:</span>
+                                        <span style="min-width:100px;border-bottom:1.5px solid #7dd3fc;height:1.4em;display:inline-block;">&nbsp;</span>
+                                    </div>
+                                </div>
+                                <div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;">
+                                    <span style="font-weight:600;white-space:nowrap;">&#x1F449; Dados ap&oacute;s essa camada:</span>
+                                    <span style="flex:1;min-width:200px;border-bottom:1.5px solid #7dd3fc;height:1.4em;display:inline-block;">&nbsp;</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- CAMADA INTERNET -->
+                        <div style="margin-top:10px;border-left:4px solid #059669;border-radius:0 8px 8px 0;background:#f0fdf4;padding:12px 14px;">
+                            <div style="font-weight:700;color:#065f46;margin-bottom:8px;">
+                                <span style="background:#059669;color:white;border-radius:4px;padding:1px 8px;font-size:0.82em;margin-right:6px;">INTERNET</span>
+                                Camada Internet
+                            </div>
+                            <div style="display:flex;flex-direction:column;gap:8px;">
+                                <div style="display:flex;gap:24px;flex-wrap:wrap;">
+                                    <div style="display:flex;align-items:baseline;gap:6px;">
+                                        <span style="font-weight:600;white-space:nowrap;">IP de origem:</span>
+                                        <span style="min-width:110px;border-bottom:1.5px solid #6ee7b7;height:1.4em;display:inline-block;">&nbsp;</span>
+                                    </div>
+                                    <div style="display:flex;align-items:baseline;gap:6px;">
+                                        <span style="font-weight:600;white-space:nowrap;">IP de destino:</span>
+                                        <span style="min-width:110px;border-bottom:1.5px solid #6ee7b7;height:1.4em;display:inline-block;">&nbsp;</span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <span style="font-weight:600;">O destino est&aacute;:&nbsp;</span>
+                                    <span style="margin-right:16px;">&#x2610; Mesma rede</span>
+                                    <span>&#x2610; Outra rede</span>
+                                </div>
+                                <div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;">
+                                    <span style="font-weight:600;white-space:nowrap;">&#x1F449; Dados ap&oacute;s essa camada:</span>
+                                    <span style="flex:1;min-width:200px;border-bottom:1.5px solid #6ee7b7;height:1.4em;display:inline-block;">&nbsp;</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- CAMADA ACESSO À REDE -->
+                        <div style="margin-top:10px;border-left:4px solid #dc2626;border-radius:0 8px 8px 0;background:#fef2f2;padding:12px 14px;">
+                            <div style="font-weight:700;color:#991b1b;margin-bottom:8px;">
+                                <span style="background:#dc2626;color:white;border-radius:4px;padding:1px 8px;font-size:0.82em;margin-right:6px;">ACESSO &Agrave; REDE</span>
+                                Camada de Acesso &agrave; Rede
+                            </div>
+                            <div style="display:flex;flex-direction:column;gap:8px;">
+                                <div style="display:flex;gap:24px;flex-wrap:wrap;">
+                                    <div style="display:flex;align-items:baseline;gap:6px;">
+                                        <span style="font-weight:600;white-space:nowrap;">MAC de origem:</span>
+                                        <span style="min-width:130px;border-bottom:1.5px solid #fca5a5;height:1.4em;display:inline-block;">&nbsp;</span>
+                                    </div>
+                                    <div style="display:flex;align-items:baseline;gap:6px;">
+                                        <span style="font-weight:600;white-space:nowrap;">MAC de destino:</span>
+                                        <span style="min-width:130px;border-bottom:1.5px solid #fca5a5;height:1.4em;display:inline-block;">&nbsp;</span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <span style="font-weight:600;">Meio f&iacute;sico:&nbsp;</span>
+                                    <span style="margin-right:14px;">&#x2610; Wi-Fi</span>
+                                    <span style="margin-right:14px;">&#x2610; Cabo</span>
+                                    <span>&#x2610; Outro: <span style="display:inline-block;min-width:80px;border-bottom:1.5px solid #fca5a5;">&nbsp;</span></span>
+                                </div>
+                                <div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;">
+                                    <span style="font-weight:600;white-space:nowrap;">&#x1F449; Dados finais (quadro/frame):</span>
+                                    <span style="flex:1;min-width:180px;border-bottom:1.5px solid #fca5a5;height:1.4em;display:inline-block;">&nbsp;</span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- PARTE 2: DESENCAPSULAMENTO -->
+            <div class="prat-step">
+                <div class="step-num" style="background:#0d47a1;">2</div>
+                <div class="step-body">
+                    <div class="step-label">&#x1F504; Parte 2 &mdash; Desencapsulamento</div>
+                    <div class="step-desc">
+                        Outro grupo ir&aacute; receber seus dados e desencapsular camada por camada.
+                        <div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;margin:10px 0 14px;">
+                            <span style="font-weight:600;">Nome do grupo receptor:</span>
+                            <span style="flex:1;min-width:160px;border-bottom:1.5px solid #94a3b8;height:1.4em;display:inline-block;">&nbsp;</span>
+                        </div>
+
+                        <table style="width:100%;border-collapse:collapse;font-size:0.88em;">
+                            <thead>
+                                <tr style="background:#f1f5f9;">
+                                    <th style="padding:8px 10px;text-align:left;border:1px solid #e2e8f0;color:#475569;width:30%;">Camada (de baixo para cima)</th>
+                                    <th style="padding:8px 10px;text-align:left;border:1px solid #e2e8f0;color:#475569;">O que foi removido?</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr style="background:#fef2f2;">
+                                    <td style="padding:10px;border:1px solid #e2e8f0;font-weight:700;color:#dc2626;">&#x1F535; Acesso &agrave; Rede</td>
+                                    <td style="padding:10px;border:1px solid #e2e8f0;"><span style="display:block;border-bottom:1px solid #fca5a5;height:1.6em;">&nbsp;</span></td>
+                                </tr>
+                                <tr style="background:#f0fdf4;">
+                                    <td style="padding:10px;border:1px solid #e2e8f0;font-weight:700;color:#059669;">&#x1F7E2; Internet</td>
+                                    <td style="padding:10px;border:1px solid #e2e8f0;"><span style="display:block;border-bottom:1px solid #6ee7b7;height:1.6em;">&nbsp;</span></td>
+                                </tr>
+                                <tr style="background:#f0f9ff;">
+                                    <td style="padding:10px;border:1px solid #e2e8f0;font-weight:700;color:#0891b2;">&#x1F535; Transporte</td>
+                                    <td style="padding:10px;border:1px solid #e2e8f0;"><span style="display:block;border-bottom:1px solid #7dd3fc;height:1.6em;">&nbsp;</span></td>
+                                </tr>
+                                <tr style="background:#faf5ff;">
+                                    <td style="padding:10px;border:1px solid #e2e8f0;font-weight:700;color:#7c3aed;">&#x1F7E3; Aplica&ccedil;&atilde;o</td>
+                                    <td style="padding:10px;border:1px solid #e2e8f0;"><span style="display:block;border-bottom:1px solid #c4b5fd;height:1.6em;">&nbsp;</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div style="display:flex;flex-direction:column;gap:8px;margin-top:12px;">
+                            <div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;">
+                                <span style="font-weight:600;white-space:nowrap;">&#x1F449; Mensagem final recebida:</span>
+                                <span style="flex:1;min-width:200px;border-bottom:1.5px solid #94a3b8;height:1.4em;display:inline-block;">&nbsp;</span>
+                            </div>
+                            <div>
+                                <span style="font-weight:600;">A mensagem chegou correta?&nbsp;</span>
+                                <span style="margin-right:16px;">&#x2610; Sim</span>
+                                <span>&#x2610; N&atilde;o</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- EVENTO DE REDE -->
+            <div class="prat-step">
+                <div class="step-num">&#x1F3B2;</div>
+                <div class="step-body">
+                    <div class="step-label">&#x1F3B2; Evento de Rede &mdash; definido pelo professor</div>
+                    <div class="step-desc">
+                        O professor sortear&aacute; um evento que afeta o envio do seu grupo.
+                        <div style="display:flex;flex-direction:column;gap:10px;margin-top:10px;">
+                            <div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;">
+                                <span style="font-weight:600;white-space:nowrap;">&#x1F449; Evento aplicado ao grupo:</span>
+                                <span style="flex:1;min-width:200px;border-bottom:1.5px solid #94a3b8;height:1.4em;display:inline-block;">&nbsp;</span>
+                            </div>
+                            <div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;">
+                                <span style="font-weight:600;white-space:nowrap;">Impacto no envio:</span>
+                                <span style="flex:1;min-width:200px;border-bottom:1.5px solid #94a3b8;height:1.4em;display:inline-block;">&nbsp;</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- REFLEXÃO FINAL -->
+            <div class="prat-step">
+                <div class="step-num">3</div>
+                <div class="step-body">
+                    <div class="step-label">&#x1F4DD; Reflex&atilde;o Final</div>
+                    <div class="step-desc">
+                        <div style="display:flex;flex-direction:column;gap:14px;margin-top:4px;">
+                            <div>
+                                <div style="font-weight:600;margin-bottom:4px;">1. Por que o protocolo escolhido (TCP/UDP) fez diferen&ccedil;a?</div>
+                                <span style="display:block;border-bottom:1px solid #e2e8f0;height:1.8em;">&nbsp;</span>
+                                <span style="display:block;border-bottom:1px solid #e2e8f0;height:1.8em;margin-top:4px;">&nbsp;</span>
+                            </div>
+                            <div>
+                                <div style="font-weight:600;margin-bottom:4px;">2. O que mudaria se o destino estivesse em outra rede?</div>
+                                <span style="display:block;border-bottom:1px solid #e2e8f0;height:1.8em;">&nbsp;</span>
+                                <span style="display:block;border-bottom:1px solid #e2e8f0;height:1.8em;margin-top:4px;">&nbsp;</span>
+                            </div>
+                            <div>
+                                <div style="font-weight:600;margin-bottom:4px;">3. Qual camada foi mais importante no seu cen&aacute;rio?</div>
+                                <span style="display:block;border-bottom:1px solid #e2e8f0;height:1.8em;">&nbsp;</span>
+                                <span style="display:block;border-bottom:1px solid #e2e8f0;height:1.8em;margin-top:4px;">&nbsp;</span>
+                            </div>
+                            <div>
+                                <div style="font-weight:600;margin-bottom:4px;">4. Onde ocorreu (ou poderia ocorrer) falha na comunica&ccedil;&atilde;o?</div>
+                                <span style="display:block;border-bottom:1px solid #e2e8f0;height:1.8em;">&nbsp;</span>
+                                <span style="display:block;border-bottom:1px solid #e2e8f0;height:1.8em;margin-top:4px;">&nbsp;</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CONCLUSÃO -->
+            <div class="prat-step">
+                <div class="step-num">&#x1F3C1;</div>
+                <div class="step-body">
+                    <div class="step-label">&#x1F3C1; Conclus&atilde;o do grupo</div>
+                    <div class="step-desc">
+                        Explique, com suas palavras, como os dados viajaram da origem at&eacute; o destino:
+                        <div style="margin-top:8px;">
+                            <span style="display:block;border-bottom:1px solid #e2e8f0;height:1.8em;margin-top:6px;">&nbsp;</span>
+                            <span style="display:block;border-bottom:1px solid #e2e8f0;height:1.8em;margin-top:6px;">&nbsp;</span>
+                            <span style="display:block;border-bottom:1px solid #e2e8f0;height:1.8em;margin-top:6px;">&nbsp;</span>
+                            <span style="display:block;border-bottom:1px solid #e2e8f0;height:1.8em;margin-top:6px;">&nbsp;</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="prat-observe">
+            <strong>&#x1F4CC; Para refletir:</strong> o encapsulamento n&atilde;o &eacute; teoria &mdash; acontece em milissegundos toda vez que voc&ecirc; envia uma mensagem. Cada cabe&ccedil;alho adicionado numa camada &eacute; retirado na camada correspondente do outro lado. Entender esse processo &eacute; a base para configurar firewalls, diagnosticar falhas de rede e projetar sistemas seguros.
+        </div>
+
+        <div class="ex-actions">
+            <button class="btn-print" onclick="printPractical('prat-rc04', 'Aula 4 \u2014 Viagem de um Pacote')">&#x1F5A8;&#xFE0F; Imprimir roteiro</button>
         </div>
     </div>
 
