@@ -678,7 +678,16 @@
     <!-- CARD 5 — Encapsulamento -->
     <div class="content-card">
         <h2>&#x1F4E6; Encapsulamento no TCP/IP</h2>
-        <p>Assim como no OSI, cada camada TCP/IP <strong>encapsula</strong> os dados recebidos adicionando seu pr&oacute;prio cabe&ccedil;alho. No receptor, o processo inverso (desencapsulamento) ocorre camada por camada.</p>
+        <ul>
+            <li>Cada camada adiciona seu pr&oacute;prio <strong>cabe&ccedil;alho</strong> aos dados recebidos</li>
+            <li>No receptor, o processo inverso: <strong>desencapsulamento</strong> camada por camada</li>
+            <li>Cada cabe&ccedil;alho carrega as informa&ccedil;&otilde;es que a camada correspondente precisa:
+                <ul>
+                    <li><strong>IP</strong>: endere&ccedil;os de origem e destino</li>
+                    <li><strong>TCP</strong>: portas e n&uacute;meros de sequ&ecirc;ncia</li>
+                </ul>
+            </li>
+        </ul>
 
         <div class="encap-diagram" id="encapDiagram">
             <!-- Passo 0: sempre visível -->
