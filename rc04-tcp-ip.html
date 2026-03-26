@@ -425,10 +425,21 @@
         <p>Esta camada usa <strong>portas</strong> para identificar qual aplica&ccedil;&atilde;o recebe os dados (HTTP = 80, HTTPS = 443, SSH = 22, DNS = 53).</p>
 
         <h3>Camada 2 &mdash; Internet</h3>
-        <p>Cuida do <strong>endere&ccedil;amento l&oacute;gico e roteamento</strong> entre redes. O protocolo central &eacute; o <strong>IP</strong>, que atribui endere&ccedil;os &uacute;nicos a cada dispositivo e decide o melhor caminho para o pacote chegar ao destino &mdash; mesmo que precise atravessar dezenas de roteadores em pa&iacute;ses diferentes. PDU: <strong>pacote</strong>. O ICMP (&ldquo;ping&rdquo;) e o ARP (resolu&ccedil;&atilde;o de endere&ccedil;os) tamb&eacute;m atuam aqui.</p>
+        <ul>
+            <li>Cuida do <strong>endere&ccedil;amento l&oacute;gico</strong> e <strong>roteamento</strong> entre redes</li>
+            <li>Protocolo central: <strong>IP</strong> &mdash; atribui endere&ccedil;os e define o caminho do pacote</li>
+            <li>Funciona mesmo atravessando dezenas de roteadores em pa&iacute;ses diferentes</li>
+            <li>Tamb&eacute;m atuam aqui: <strong>ICMP</strong> (ping) e <strong>ARP</strong> (resolu&ccedil;&atilde;o de endere&ccedil;os)</li>
+            <li>PDU: <strong>pacote</strong></li>
+        </ul>
 
         <h3>Camada 1 &mdash; Acesso &agrave; Rede</h3>
-        <p>Engloba tudo que tem a ver com o <strong>meio f&iacute;sico e o enlace local</strong>: placas de rede, drivers, cabos, r&aacute;dio Wi-Fi, fibra &oacute;ptica e os protocolos de acesso ao meio (Ethernet, 802.11). Corresponde &agrave;s camadas F&iacute;sica e Enlace do OSI. PDU: <strong>quadro (frame)</strong> no n&iacute;vel de enlace e <strong>bits</strong> no n&iacute;vel f&iacute;sico.</p>
+        <ul>
+            <li>Engloba meio f&iacute;sico e enlace local: placas de rede, cabos, Wi-Fi, fibra</li>
+            <li>Protocolos de acesso ao meio: <strong>Ethernet</strong>, <strong>802.11</strong></li>
+            <li>Equivale &agrave;s camadas F&iacute;sica + Enlace do OSI</li>
+            <li>PDU: <strong>quadro</strong> (frame) no enlace / <strong>bits</strong> no f&iacute;sico</li>
+        </ul>
 
         <div class="alert-box">
             <p>&#x26A0;&#xFE0F; <strong>Aten&ccedil;&atilde;o:</strong> alguns livros e cursos chamam a camada de Acesso &agrave; Rede de &ldquo;Enlace&rdquo; ou &ldquo;Interface de Rede&rdquo;. Outros dividem o modelo TCP/IP em 5 camadas, separando Enlace e F&iacute;sica. As varia&ccedil;&otilde;es existem &mdash; o importante &eacute; entender a fun&ccedil;&atilde;o de cada n&iacute;vel.</p>
