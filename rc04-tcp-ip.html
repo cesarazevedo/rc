@@ -1125,6 +1125,171 @@
         </div>
     </div>
 
+    <!-- ATIVIDADE PRÁTICA 2: WIRESHARK -->
+    <div class="content-card exercise-card" id="prat-rc04-wireshark">
+        <h2>&#x1F988; Pr&aacute;tica Wireshark &mdash; Um protocolo por camada</h2>
+        <p class="prat-intro">Capturar um pacote DHCP e identificar um protocolo de cada camada do modelo TCP/IP observando o tr&aacute;fego real de rede.</p>
+
+        <div class="prat-meta">
+            <span class="prat-tag">&#x23F1;&#xFE0F; 20&ndash;30 min</span>
+            <span class="prat-tag">&#x1F91D; Individual ou dupla</span>
+            <span class="prat-tag">&#x1F5A8;&#xFE0F; Imprim&iacute;vel</span>
+        </div>
+
+        <div class="prat-steps">
+
+            <!-- PASSO A PASSO -->
+            <div class="prat-step">
+                <div class="step-num" style="background:#0277bd; font-size:0.75em;">&#x2699;&#xFE0F;</div>
+                <div class="step-body">
+                    <div class="step-label">&#x1F4CB; Passo a passo</div>
+                    <div class="step-desc">
+                        <ol style="margin:8px 0 0 18px;padding:0;display:flex;flex-direction:column;gap:8px;">
+                            <li>Abra o <strong>Wireshark</strong> e selecione a interface ativa</li>
+                            <li>Inicie a captura</li>
+                            <li>No terminal, force a renova&ccedil;&atilde;o do IP:
+                                <div style="margin-top:10px;display:flex;flex-direction:column;gap:6px;">
+                                    <div style="background:#1e293b;color:#e2e8f0;border-radius:6px;padding:8px 14px;font-family:monospace;font-size:0.88em;">
+                                        <span style="color:#94a3b8;font-size:0.82em;">Windows</span><br>
+                                        <span style="color:#7dd3fc;">ipconfig /release</span>&nbsp; e depois &nbsp;<span style="color:#7dd3fc;">ipconfig /renew</span>
+                                    </div>
+                                    <div style="background:#1e293b;color:#e2e8f0;border-radius:6px;padding:8px 14px;font-family:monospace;font-size:0.88em;">
+                                        <span style="color:#94a3b8;font-size:0.82em;">Linux</span><br>
+                                        <span style="color:#86efac;">sudo dhclient -r &amp;&amp; sudo dhclient</span>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>Filtre no Wireshark: <code style="background:#dbeafe;color:#1d4ed8;padding:1px 7px;border-radius:4px;font-size:0.9em;">dhcp</code></li>
+                            <li>Clique em um pacote. Voc&ecirc; ver&aacute; 5 linhas &mdash; mas uma delas <strong>n&atilde;o &eacute; camada</strong>. Qual &eacute;?
+                                <div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;margin-top:10px;">
+                                    <span style="font-weight:600;">A linha que n&atilde;o &eacute; camada:</span>
+                                    <span style="flex:1;min-width:180px;border-bottom:1.5px solid #94a3b8;height:1.4em;display:inline-block;">&nbsp;</span>
+                                </div>
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CAMADA 1 — ACESSO À REDE -->
+            <div class="prat-step">
+                <div class="step-num" style="background:#b45309;">1</div>
+                <div class="step-body">
+                    <div class="step-label">&#x1F4E1; Camada 1 &mdash; Acesso &agrave; Rede</div>
+                    <div class="step-desc">
+                        <div style="background:#fefce8;border-left:4px solid #ca8a04;border-radius:0 8px 8px 0;padding:10px 14px;margin-bottom:12px;font-size:0.9em;color:#78350f;">
+                            <strong>Dobra no Wireshark:</strong> <code style="background:#fef08a;color:#713f12;padding:1px 7px;border-radius:4px;">Ethernet II</code>
+                        </div>
+                        <div style="display:flex;flex-direction:column;gap:9px;">
+                            <div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;">
+                                <span style="font-weight:600;white-space:nowrap;">MAC de origem <em style="font-weight:400;">(Src)</em>:</span>
+                                <span style="flex:1;min-width:200px;border-bottom:1.5px solid #fbbf24;height:1.4em;display:inline-block;">&nbsp;</span>
+                            </div>
+                            <div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;">
+                                <span style="font-weight:600;white-space:nowrap;">MAC de destino <em style="font-weight:400;">(Dst)</em>:</span>
+                                <span style="flex:1;min-width:200px;border-bottom:1.5px solid #fbbf24;height:1.4em;display:inline-block;">&nbsp;</span>
+                            </div>
+                            <div style="margin-top:4px;background:#fffbeb;border-radius:6px;padding:10px 12px;">
+                                <span style="font-weight:600;color:#92400e;">&#x2753; Por que o destino &eacute; <code style="background:#fef08a;color:#713f12;padding:0 5px;border-radius:3px;">ff:ff:ff:ff:ff:ff</code>?</span>
+                                <div style="margin-top:8px;border-bottom:1.5px solid #fbbf24;min-height:1.4em;">&nbsp;</div>
+                                <div style="margin-top:6px;border-bottom:1.5px solid #fbbf24;min-height:1.4em;">&nbsp;</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CAMADA 2 — INTERNET -->
+            <div class="prat-step">
+                <div class="step-num" style="background:#065f46;">2</div>
+                <div class="step-body">
+                    <div class="step-label">&#x1F310; Camada 2 &mdash; Internet</div>
+                    <div class="step-desc">
+                        <div style="background:#f0fdf4;border-left:4px solid #16a34a;border-radius:0 8px 8px 0;padding:10px 14px;margin-bottom:12px;font-size:0.9em;color:#14532d;">
+                            <strong>Dobra no Wireshark:</strong> <code style="background:#bbf7d0;color:#166534;padding:1px 7px;border-radius:4px;">Internet Protocol Version 4</code>
+                        </div>
+                        <div style="display:flex;flex-direction:column;gap:9px;">
+                            <div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;">
+                                <span style="font-weight:600;white-space:nowrap;">IP de origem <em style="font-weight:400;">(Src)</em>:</span>
+                                <span style="flex:1;min-width:180px;border-bottom:1.5px solid #86efac;height:1.4em;display:inline-block;">&nbsp;</span>
+                            </div>
+                            <div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;">
+                                <span style="font-weight:600;white-space:nowrap;">IP de destino <em style="font-weight:400;">(Dst)</em>:</span>
+                                <span style="flex:1;min-width:180px;border-bottom:1.5px solid #86efac;height:1.4em;display:inline-block;">&nbsp;</span>
+                            </div>
+                            <div style="margin-top:4px;background:#f0fdf4;border-radius:6px;padding:10px 12px;">
+                                <span style="font-weight:600;color:#166534;">&#x2753; Por que a origem &eacute; <code style="background:#bbf7d0;color:#166534;padding:0 5px;border-radius:3px;">0.0.0.0</code>?</span>
+                                <div style="margin-top:8px;border-bottom:1.5px solid #86efac;min-height:1.4em;">&nbsp;</div>
+                                <div style="margin-top:6px;border-bottom:1.5px solid #86efac;min-height:1.4em;">&nbsp;</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CAMADA 3 — TRANSPORTE -->
+            <div class="prat-step">
+                <div class="step-num" style="background:#1a73e8;">3</div>
+                <div class="step-body">
+                    <div class="step-label">&#x1F500; Camada 3 &mdash; Transporte</div>
+                    <div class="step-desc">
+                        <div style="background:#eff6ff;border-left:4px solid #2563eb;border-radius:0 8px 8px 0;padding:10px 14px;margin-bottom:12px;font-size:0.9em;color:#1e3a8a;">
+                            <strong>Dobra no Wireshark:</strong> <code style="background:#bfdbfe;color:#1e40af;padding:1px 7px;border-radius:4px;">User Datagram Protocol</code>
+                        </div>
+                        <div style="display:flex;flex-direction:column;gap:9px;">
+                            <div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;">
+                                <span style="font-weight:600;white-space:nowrap;">Porta de origem <em style="font-weight:400;">(Src Port)</em>:</span>
+                                <span style="flex:1;min-width:140px;border-bottom:1.5px solid #93c5fd;height:1.4em;display:inline-block;">&nbsp;</span>
+                            </div>
+                            <div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;">
+                                <span style="font-weight:600;white-space:nowrap;">Porta de destino <em style="font-weight:400;">(Dst Port)</em>:</span>
+                                <span style="flex:1;min-width:140px;border-bottom:1.5px solid #93c5fd;height:1.4em;display:inline-block;">&nbsp;</span>
+                            </div>
+                            <div style="margin-top:4px;background:#eff6ff;border-radius:6px;padding:10px 12px;">
+                                <span style="font-weight:600;color:#1e40af;">&#x2753; O protocolo &eacute; TCP ou UDP? Por qu&ecirc; faz sentido para o DHCP?</span>
+                                <div style="margin-top:8px;border-bottom:1.5px solid #93c5fd;min-height:1.4em;">&nbsp;</div>
+                                <div style="margin-top:6px;border-bottom:1.5px solid #93c5fd;min-height:1.4em;">&nbsp;</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CAMADA 4 — APLICAÇÃO -->
+            <div class="prat-step">
+                <div class="step-num" style="background:#6d28d9;">4</div>
+                <div class="step-body">
+                    <div class="step-label">&#x1F4E6; Camada 4 &mdash; Aplica&ccedil;&atilde;o</div>
+                    <div class="step-desc">
+                        <div style="background:#faf5ff;border-left:4px solid #7c3aed;border-radius:0 8px 8px 0;padding:10px 14px;margin-bottom:12px;font-size:0.9em;color:#4c1d95;">
+                            <strong>Dobra no Wireshark:</strong> <code style="background:#e9d5ff;color:#5b21b6;padding:1px 7px;border-radius:4px;">Dynamic Host Configuration Protocol</code>
+                        </div>
+                        <div style="display:flex;flex-direction:column;gap:9px;">
+                            <div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;">
+                                <span style="font-weight:600;white-space:nowrap;">Tipo de mensagem:</span>
+                                <span style="flex:1;min-width:180px;border-bottom:1.5px solid #c4b5fd;height:1.4em;display:inline-block;">&nbsp;</span>
+                            </div>
+                            <div style="margin-top:4px;background:#faf5ff;border-radius:6px;padding:10px 12px;">
+                                <span style="font-weight:600;color:#5b21b6;">&#x2753; O que o cliente est&aacute; pedindo nessa mensagem?</span>
+                                <div style="margin-top:8px;border-bottom:1.5px solid #c4b5fd;min-height:1.4em;">&nbsp;</div>
+                                <div style="margin-top:6px;border-bottom:1.5px solid #c4b5fd;min-height:1.4em;">&nbsp;</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="prat-observe">
+            <strong>&#x1F4CC; Para refletir:</strong> o Wireshark permite ver em tempo real o que acontece em cada camada do TCP/IP. Cada &ldquo;dobra&rdquo; no painel inferior &eacute; uma camada do modelo: da Ethernet (Acesso &agrave; Rede) ao DHCP (Aplica&ccedil;&atilde;o). Esse olhar direto sobre o tr&aacute;fego real &eacute; a base do diagn&oacute;stico de redes e da an&aacute;lise de seguran&ccedil;a.
+        </div>
+
+        <div class="ex-actions">
+            <button class="btn-print" onclick="printPractical('prat-rc04-wireshark', 'Aula 4 \u2014 Wireshark: Um protocolo por camada')">&#x1F5A8;&#xFE0F; Imprimir roteiro</button>
+        </div>
+    </div>
+
     <!-- MÚLTIPLA ESCOLHA -->
     <div class="content-card exercise-card">
         <h2>&#x2753; Verifique seu Conhecimento</h2>
