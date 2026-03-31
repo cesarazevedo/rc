@@ -8,11 +8,90 @@
     <link rel="stylesheet" href="exercise.css">
     <link rel="stylesheet" href="lesson.css">
     <style>
-        :root {
-            --primary:   #1a73e8;
-            --secondary: #0d47a1;
-            --bg-light:  #f4f7fe;
-            --text-dark: #2d3748;
+        :root { --primary:#1a73e8; --secondary:#0d47a1; --bg-light:#f4f7fe; --text-dark:#2d3748; }
+
+        /* ── HERO STATS ── */
+        .hero-stats { display:flex; flex-wrap:wrap; gap:10px; margin-top:18px; }
+        .hero-stat { background:rgba(26,115,232,.1); border:1px solid rgba(26,115,232,.22); border-radius:10px; padding:8px 16px; text-align:center; }
+        .hero-stat-val { display:block; font-size:1.15em; font-weight:800; color:var(--primary); }
+        .hero-stat-lbl { display:block; font-size:.63em; color:#718096; font-weight:700; text-transform:uppercase; letter-spacing:.05em; margin-top:2px; }
+
+        /* ── TRAIT GRID ── */
+        .trait-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(155px,1fr)); gap:10px; margin:16px 0; }
+        .trait-card { border-radius:12px; padding:14px 16px; border-top:3px solid transparent; }
+        .tc-red    { background:#fef2f2; border-top-color:#ef4444; }
+        .tc-amber  { background:#fffbeb; border-top-color:#f59e0b; }
+        .tc-blue   { background:#eff6ff; border-top-color:#3b82f6; }
+        .tc-purple { background:#fdf4ff; border-top-color:#a855f7; }
+        .tc-green  { background:#f0fdf4; border-top-color:#10b981; }
+        .trait-prop { font-size:.68em; font-weight:800; text-transform:uppercase; letter-spacing:.06em; margin-bottom:5px; }
+        .tc-red    .trait-prop { color:#dc2626; }
+        .tc-amber  .trait-prop { color:#d97706; }
+        .tc-blue   .trait-prop { color:#2563eb; }
+        .tc-purple .trait-prop { color:#9333ea; }
+        .tc-green  .trait-prop { color:#16a34a; }
+        .trait-val  { font-size:.88em; font-weight:700; color:#1e293b; margin-bottom:4px; }
+        .trait-impl { font-size:.77em; color:#64748b; line-height:1.4; }
+
+        /* ── IPV4 EXPLORER ── */
+        .ipv4-explorer { background:#0f172a; border-radius:16px; padding:22px 22px 18px; margin:20px 0; }
+        .ipv4-ex-bar { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
+        .ipv4-ex-hint { color:#64748b; font-size:.74em; font-style:italic; }
+        .ipv4-tour-btn { background:#1e40af; color:#fff; border:none; border-radius:8px; padding:6px 16px; font-size:.8em; font-weight:700; cursor:pointer; font-family:inherit; transition:background .2s; }
+        .ipv4-tour-btn:hover { background:#2563eb; }
+        .ipv4-bit-ruler { display:flex; justify-content:space-between; padding:0 2px; margin-bottom:6px; }
+        .ipv4-bit-ruler span { color:#334155; font-size:.62em; font-family:monospace; }
+        .ipv4-diagram { display:flex; flex-direction:column; gap:3px; }
+        .ipv4-row { display:flex; gap:3px; }
+        .ipv4-field { display:flex; align-items:center; justify-content:center; padding:12px 3px; border-radius:7px; font-size:.7em; font-weight:800; color:#fff; cursor:pointer; text-align:center; line-height:1.3; user-select:none; border:2px solid transparent; transition:transform .15s, box-shadow .15s, filter .15s; }
+        .ipv4-field:hover { transform:translateY(-3px); box-shadow:0 5px 14px rgba(0,0,0,.45); filter:brightness(1.18); }
+        .ipv4-field.active { border-color:rgba(255,255,255,.7); transform:translateY(-4px); box-shadow:0 6px 18px rgba(0,0,0,.5); filter:brightness(1.25); }
+        .ipv4-field.tour-hl { animation:tourPulse .45s ease forwards; }
+        @keyframes tourPulse { 0%{filter:brightness(1);transform:translateY(0)} 40%{filter:brightness(1.5);transform:translateY(-5px)} 100%{filter:brightness(1.25);transform:translateY(-4px)} }
+        .ipv4-detail-panel { margin-top:14px; min-height:72px; }
+        .ipv4-detail-empty { text-align:center; color:#334155; font-size:.82em; padding:22px 0; }
+        .ipv4-detail-card { background:#1e293b; border-radius:12px; padding:18px 22px; border-left:4px solid var(--fc,#1a73e8); animation:slideDown .22s ease; }
+        @keyframes slideDown { from{opacity:0;transform:translateY(-8px)} to{opacity:1;transform:translateY(0)} }
+        .detail-name  { font-size:1.05em; font-weight:800; color:var(--fc,#60a5fa); margin-bottom:6px; }
+        .detail-meta  { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:10px; }
+        .detail-badge { font-size:.72em; font-weight:700; padding:2px 10px; border-radius:20px; background:rgba(255,255,255,.07); color:#94a3b8; }
+        .detail-desc  { font-size:.87em; color:#cbd5e1; line-height:1.65; margin-bottom:10px; }
+        .detail-ex    { background:rgba(0,0,0,.3); border-radius:8px; padding:7px 13px; font-family:monospace; font-size:.82em; color:#7dd3fc; }
+        .detail-ex-lbl{ font-family:inherit; color:#475569; margin-right:5px; }
+        .detail-note  { margin-top:8px; font-size:.79em; color:#64748b; font-style:italic; }
+
+        /* ── TTL ANIMATION ── */
+        .ttl-anim-wrap { background:#0f172a; border-radius:14px; padding:20px 22px; margin:20px 0; }
+        .ttl-anim-bar { display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; }
+        .ttl-anim-title { color:#94a3b8; font-size:.76em; font-weight:700; text-transform:uppercase; letter-spacing:.06em; }
+        .ttl-play-btn { background:#0e7490; color:#fff; border:none; border-radius:8px; padding:6px 18px; font-size:.82em; font-weight:700; cursor:pointer; font-family:inherit; transition:background .2s; }
+        .ttl-play-btn:hover { background:#0891b2; }
+        .ttl-play-btn:disabled { opacity:.4; cursor:not-allowed; }
+        .ttl-scene { display:flex; align-items:flex-start; justify-content:space-between; padding-bottom:4px; }
+        .ttl-node-col { display:flex; flex-direction:column; align-items:center; gap:5px; flex:1; min-width:0; }
+        .ttl-node-icon { width:46px; height:46px; border-radius:50%; background:#1e293b; border:2px solid #334155; display:flex; align-items:center; justify-content:center; font-size:1.25em; transition:all .3s; }
+        .ttl-node-icon.active { border-color:#3b82f6; background:#1e3a5f; box-shadow:0 0 14px rgba(59,130,246,.4); }
+        .ttl-node-icon.ok     { border-color:#10b981; background:#052e16; box-shadow:0 0 12px rgba(16,185,129,.35); }
+        .ttl-node-icon.dead   { border-color:#ef4444; background:#450a0a; animation:shake .35s ease; }
+        @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-4px)} 75%{transform:translateX(4px)} }
+        .ttl-pkt-badge { font-size:.68em; font-weight:800; padding:2px 8px; border-radius:12px; background:#3b82f6; color:#fff; border:1.5px solid #60a5fa; min-width:52px; text-align:center; transition:background .3s, border-color .3s; display:none; }
+        .ttl-pkt-badge.ok   { background:#10b981; border-color:#34d399; }
+        .ttl-pkt-badge.dead { background:#ef4444; border-color:#f87171; animation:shake .3s; }
+        .ttl-node-lbl { font-size:.64em; color:#64748b; font-weight:600; text-align:center; }
+        .ttl-arr-col { display:flex; align-items:center; padding-top:20px; flex:0.4; min-width:0; }
+        .ttl-arr { flex:1; height:2px; background:#334155; position:relative; }
+        .ttl-arr::after { content:''; position:absolute; right:-1px; top:-4px; border:5px solid transparent; border-left-color:#334155; }
+        .ttl-log-wrap { border-top:1px solid #1e293b; margin-top:14px; padding-top:10px; max-height:120px; overflow-y:auto; display:flex; flex-direction:column; gap:2px; }
+        .ttl-log-line { font-size:.78em; font-family:monospace; padding:2px 0; animation:fadeIn .3s; }
+        .ttl-log-info { color:#94a3b8; } .ttl-log-hop  { color:#7dd3fc; } .ttl-log-ok   { color:#4ade80; } .ttl-log-warn { color:#fbbf24; } .ttl-log-dead { color:#f87171; }
+        @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+
+        @media(max-width:600px) {
+            .trait-grid { grid-template-columns:1fr 1fr; }
+            .ipv4-field { font-size:.56em; padding:9px 2px; }
+            .ttl-node-icon { width:36px; height:36px; font-size:1em; }
+            .ttl-node-lbl { font-size:.58em; }
+            .hero-stats { gap:7px; }
         }
     </style>
 </head>
@@ -29,6 +108,13 @@
     <div class="lesson-hero">
         <h1>&#x1F4E6; Protocolo IPv4</h1>
         <p class="subtitle">Aula 9 &mdash; Estrutura do pacote IPv4, campos do cabe&ccedil;alho, TTL e fragmenta&ccedil;&atilde;o: como a camada de internet entrega dados entre redes distintas sem garantia de ordem ou entrega</p>
+        <div class="hero-stats">
+            <div class="hero-stat"><span class="hero-stat-val">20</span><span class="hero-stat-lbl">bytes mínimos</span></div>
+            <div class="hero-stat"><span class="hero-stat-val">60</span><span class="hero-stat-lbl">bytes máximos</span></div>
+            <div class="hero-stat"><span class="hero-stat-val">13</span><span class="hero-stat-lbl">campos no header</span></div>
+            <div class="hero-stat"><span class="hero-stat-val">~4,3 bi</span><span class="hero-stat-lbl">endereços possíveis</span></div>
+            <div class="hero-stat"><span class="hero-stat-val">RFC 791</span><span class="hero-stat-lbl">publicado em 1981</span></div>
+        </div>
     </div>
 
     <!-- CARD 1 — Visão Geral do IPv4 -->
@@ -64,42 +150,33 @@
             </div>
         </div>
 
-        <table>
-            <thead>
-                <tr>
-                    <th>Caracter&iacute;stica</th>
-                    <th>IPv4</th>
-                    <th>Implicac&atilde;o pr&aacute;tica</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td><strong>Conex&atilde;o</strong></td>
-                    <td>Sem conex&atilde;o (connectionless)</td>
-                    <td>Pacotes do mesmo fluxo podem seguir caminhos diferentes</td>
-                </tr>
-                <tr>
-                    <td><strong>Confiabilidade</strong></td>
-                    <td>Best effort (sem garantia)</td>
-                    <td>Perda de pacotes deve ser tratada pelo TCP ou pela aplica&ccedil;&atilde;o</td>
-                </tr>
-                <tr>
-                    <td><strong>Ordem</strong></td>
-                    <td>N&atilde;o garante ordem</td>
-                    <td>Pacote 3 pode chegar antes do pacote 1; TCP os reordena</td>
-                </tr>
-                <tr>
-                    <td><strong>Duplica&ccedil;&atilde;o</strong></td>
-                    <td>Pode ocorrer</td>
-                    <td>O mesmo pacote pode ser entregue duas vezes em casos de retransmiss&atilde;o de roteadores</td>
-                </tr>
-                <tr>
-                    <td><strong>Endere&ccedil;o</strong></td>
-                    <td>32 bits (IPv4) &mdash; esgotado</td>
-                    <td>NAT e IPv6 surgiram como solu&ccedil;&otilde;es para a escassez</td>
-                </tr>
-            </tbody>
-        </table>
+        <div class="trait-grid">
+            <div class="trait-card tc-red">
+                <div class="trait-prop">Conexão</div>
+                <div class="trait-val">Sem conexão (connectionless)</div>
+                <div class="trait-impl">Pacotes do mesmo fluxo podem seguir caminhos diferentes na rede</div>
+            </div>
+            <div class="trait-card tc-amber">
+                <div class="trait-prop">Confiabilidade</div>
+                <div class="trait-val">Best effort — sem garantia</div>
+                <div class="trait-impl">Perda de pacotes deve ser tratada pelo TCP ou pela aplicação</div>
+            </div>
+            <div class="trait-card tc-blue">
+                <div class="trait-prop">Ordem</div>
+                <div class="trait-val">Não garantida</div>
+                <div class="trait-impl">Pacote 3 pode chegar antes do pacote 1; TCP os reordena</div>
+            </div>
+            <div class="trait-card tc-purple">
+                <div class="trait-prop">Duplicação</div>
+                <div class="trait-val">Pode ocorrer</div>
+                <div class="trait-impl">O mesmo pacote pode ser entregue mais de uma vez</div>
+            </div>
+            <div class="trait-card tc-green">
+                <div class="trait-prop">Endereçamento</div>
+                <div class="trait-val">32 bits — esgotado</div>
+                <div class="trait-impl">NAT e IPv6 surgiram como soluções para a escassez</div>
+            </div>
+        </div>
     </div>
 
     <!-- CARD 2 — Estrutura do pacote IPv4 -->
@@ -107,122 +184,22 @@
         <h2>&#x1F9E9; Estrutura do Pacote IPv4</h2>
         <p>Um pacote IPv4 &eacute; composto por um <strong>cabe&ccedil;alho</strong> (m&iacute;nimo de 20 bytes, m&aacute;ximo de 60 bytes) seguido pelo <strong>payload</strong> (dados da camada superior). O cabe&ccedil;alho cont&eacute;m todos os metadados que os roteadores precisam para encaminhar o pacote corretamente.</p>
 
-        <div class="terminal-block">
-            <div class="terminal-header">Estrutura do cabeçalho IPv4 (RFC 791) — 20 bytes mínimos</div>
-<pre>
-  Bit:  0       4       8               16              24      31
-        ┌───────┬───────┬───────────────┬───────────────────────┐
-        │Versão │  IHL  │  DSCP / ECN   │      Comprimento Total │
-        │  (4)  │  (4)  │    (8 bits)   │        (16 bits)       │
-        ├───────────────┴───────────────┼──────┬─────────────────┤
-        │     Identificação (16 bits)   │Flags │  Desl. Fragm.   │
-        │                               │ (3)  │   (13 bits)     │
-        ├───────────────────────────────┼──────┴─────────────────┤
-        │    TTL (8 bits)               │  Protocolo (8 bits)    │
-        ├───────────────────────────────┴────────────────────────┤
-        │              Checksum do Cabeçalho (16 bits)           │
-        ├────────────────────────────────────────────────────────┤
-        │              Endereço IP de Origem (32 bits)           │
-        ├────────────────────────────────────────────────────────┤
-        │              Endereço IP de Destino (32 bits)          │
-        ├────────────────────────────────────────────────────────┤
-        │          Opções (variável, 0–40 bytes) + Padding       │
-        └────────────────────────────────────────────────────────┘
-        └─────────────── 20 bytes mínimos ───────────────────────┘
-</pre>
+        <h3>Campos do cabe&ccedil;alho &mdash; explorador interativo</h3>
+        <div class="ipv4-explorer">
+            <div class="ipv4-ex-bar">
+                <span class="ipv4-ex-hint">🖱️ Clique em qualquer campo para ver detalhes &mdash; ou use o tour automático</span>
+                <button class="ipv4-tour-btn" id="tourBtn">▶ Tour automático</button>
+            </div>
+            <div class="ipv4-bit-ruler">
+                <span>0</span><span>4</span><span>8</span><span>16</span><span>24</span><span>31</span>
+            </div>
+            <div class="ipv4-diagram" id="ipv4Diagram">
+                <!-- construído pelo JavaScript -->
+            </div>
+            <div class="ipv4-detail-panel" id="detailPanel">
+                <div class="ipv4-detail-empty">👆 Selecione um campo no diagrama acima</div>
+            </div>
         </div>
-
-        <h3>Campos do cabe&ccedil;alho em detalhe</h3>
-        <table>
-            <thead>
-                <tr>
-                    <th>Campo</th>
-                    <th>Tamanho</th>
-                    <th>Fun&ccedil;&atilde;o</th>
-                    <th>Valor t&iacute;pico / Exemplo</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td><strong>Vers&atilde;o</strong></td>
-                    <td>4 bits</td>
-                    <td>Indica a vers&atilde;o do protocolo IP</td>
-                    <td>4 (IPv4) ou 6 (IPv6)</td>
-                </tr>
-                <tr>
-                    <td><strong>IHL</strong></td>
-                    <td>4 bits</td>
-                    <td>Comprimento do cabe&ccedil;alho em palavras de 32 bits</td>
-                    <td>5 = 20 bytes (sem op&ccedil;&otilde;es)</td>
-                </tr>
-                <tr>
-                    <td><strong>DSCP / ECN</strong></td>
-                    <td>8 bits</td>
-                    <td>Qualidade de servi&ccedil;o (QoS) e notifica&ccedil;&atilde;o de congestionamento</td>
-                    <td>0 (tr&aacute;fego comum); 46 (VoIP, EF)</td>
-                </tr>
-                <tr>
-                    <td><strong>Comprimento Total</strong></td>
-                    <td>16 bits</td>
-                    <td>Tamanho total do pacote (cabe&ccedil;alho + dados) em bytes</td>
-                    <td>M&aacute;x 65.535 bytes; tipicamente &lt; 1500 (Ethernet)</td>
-                </tr>
-                <tr>
-                    <td><strong>Identifica&ccedil;&atilde;o</strong></td>
-                    <td>16 bits</td>
-                    <td>ID &uacute;nico do pacote; usado para reagrupar fragmentos</td>
-                    <td>N&uacute;mero incremental por fluxo</td>
-                </tr>
-                <tr>
-                    <td><strong>Flags</strong></td>
-                    <td>3 bits</td>
-                    <td>Controle de fragmenta&ccedil;&atilde;o: Reserved, DF (Don&rsquo;t Fragment), MF (More Fragments)</td>
-                    <td>DF=1 proibe fragmentar; MF=1 = h&aacute; mais fragmentos</td>
-                </tr>
-                <tr>
-                    <td><strong>Deslocamento do Fragmento</strong></td>
-                    <td>13 bits</td>
-                    <td>Posi&ccedil;&atilde;o deste fragmento em rela&ccedil;&atilde;o ao pacote original</td>
-                    <td>0 para o 1&ordm; fragmento; unidade = 8 bytes</td>
-                </tr>
-                <tr>
-                    <td><strong>TTL</strong></td>
-                    <td>8 bits</td>
-                    <td>Limita o n&uacute;mero de saltos; cada roteador decrementa em 1</td>
-                    <td>64 (Linux), 128 (Windows), 255 (Cisco)</td>
-                </tr>
-                <tr>
-                    <td><strong>Protocolo</strong></td>
-                    <td>8 bits</td>
-                    <td>Indica o protocolo encapsulado no payload</td>
-                    <td>6=TCP; 17=UDP; 1=ICMP; 89=OSPF</td>
-                </tr>
-                <tr>
-                    <td><strong>Checksum do Cabe&ccedil;alho</strong></td>
-                    <td>16 bits</td>
-                    <td>Verifica integridade do cabe&ccedil;alho (recalculado a cada salto)</td>
-                    <td>Recalculado por cada roteador (TTL muda)</td>
-                </tr>
-                <tr>
-                    <td><strong>IP de Origem</strong></td>
-                    <td>32 bits</td>
-                    <td>Endere&ccedil;o IPv4 do remetente</td>
-                    <td>192.168.1.10</td>
-                </tr>
-                <tr>
-                    <td><strong>IP de Destino</strong></td>
-                    <td>32 bits</td>
-                    <td>Endere&ccedil;o IPv4 do destinat&aacute;rio final (n&atilde;o muda no caminho)</td>
-                    <td>8.8.8.8</td>
-                </tr>
-                <tr>
-                    <td><strong>Op&ccedil;&otilde;es</strong></td>
-                    <td>0&ndash;40 bytes</td>
-                    <td>Funcionalidades extras opcionais: roteamento na fonte, timestamp, seguran&ccedil;a</td>
-                    <td>Raramente usadas; aumentam overhead</td>
-                </tr>
-            </tbody>
-        </table>
 
         <div class="alert-box">
             <p>&#x26A0;&#xFE0F; <strong>Por que o checksum &eacute; recalculado a cada salto?</strong> O campo TTL &eacute; decrementado em 1 por cada roteador. Como o cabe&ccedil;alho muda (TTL mudou), o checksum tamb&eacute;m deve ser recalculado antes de reencaminhar o pacote. O IPv6 eliminou o checksum no cabe&ccedil;alho para reduzir esse overhead.</p>
@@ -238,31 +215,13 @@
             <p>&#x1F3AF; <strong>Objetivo do TTL:</strong> evitar que pacotes fiquem circulando indefinidamente na rede em caso de loops de roteamento. Sem o TTL, um loop entre dois roteadores poderia fazer um pacote circular para sempre, consumindo banda e recursos.</p>
         </div>
 
-        <div class="terminal-block">
-            <div class="terminal-header">Funcionamento do TTL — exemplo passo a passo</div>
-<pre>
-  PC-A envia pacote com TTL=64 para servidor em 200.100.50.10
-
-  PC-A (TTL=64)
-     │
-     ▼
-  Roteador R1 ── recebe com TTL=64, decrementa: TTL=63, reencaminha
-     │
-     ▼
-  Roteador R2 ── recebe com TTL=63, decrementa: TTL=62, reencaminha
-     │
-     ▼
-  Roteador R3 ── recebe com TTL=62, decrementa: TTL=61, reencaminha
-     │
-     ▼
-  Servidor ── recebe com TTL=61  ← o TTL final revela ~3 saltos
-  (TTL inicial 64 − TTL final 61 = 3 hops)
-
-  ── Cenário com loop ──────────────────────────────────────────
-  R4 (TTL=2) → R5 (TTL=1) → R4 decrementa para 0:
-  "TTL=0: pacote DESCARTADO"
-  R4 envia ICMP Time Exceeded (tipo 11) para PC-A com sua origem
-</pre>
+        <div class="ttl-anim-wrap">
+            <div class="ttl-anim-bar">
+                <span class="ttl-anim-title">&#x1F3AC; Simulação interativa — TTL hop a hop</span>
+                <button class="ttl-play-btn" id="ttlPlayBtn">&#x25B6; Iniciar animação</button>
+            </div>
+            <div class="ttl-scene" id="ttlScene"></div>
+            <div class="ttl-log-wrap"><div class="ttl-log" id="ttlLog"></div></div>
         </div>
 
         <h3>Valores padr&atilde;o de TTL por sistema operacional</h3>
@@ -679,5 +638,301 @@
 <script src="exercise-drag.js"></script>
 <script src="exercise-print.js"></script>
 <script src="exercise-mc.js"></script>
+<script>
+/* ══════════════════════════════════════════════
+   IPv4 HEADER EXPLORER
+══════════════════════════════════════════════ */
+const FIELDS = [
+  { id:'ver',  label:'Versão',         bits:4,  color:'#6366f1', row:0,
+    desc:'Identifica a versão do protocolo IP. Valor <strong>4</strong> para IPv4, <strong>6</strong> para IPv6.',
+    detail:'4 bits · Sempre = 4 em pacotes IPv4. O roteador verifica este campo primeiro para saber como processar o restante do cabeçalho.' },
+  { id:'ihl',  label:'IHL',            bits:4,  color:'#8b5cf6', row:0,
+    desc:'<em>Internet Header Length</em> — tamanho do cabeçalho em palavras de 32 bits.',
+    detail:'4 bits · Mínimo = 5 (20 bytes). Máximo = 15 (60 bytes). Se IHL > 5, há opções presentes.' },
+  { id:'dscp', label:'DSCP / ECN',     bits:8,  color:'#a855f7', row:0,
+    desc:'<em>Differentiated Services Code Point</em> — define prioridade e qualidade de serviço (QoS).',
+    detail:'8 bits · Os 6 bits superiores = DSCP (ex: VoIP usa EF = 46). Os 2 bits inferiores = ECN (notificação de congestionamento).' },
+  { id:'len',  label:'Comprimento Total', bits:16, color:'#ec4899', row:0,
+    desc:'Tamanho total do pacote IP (cabeçalho + dados) em bytes.',
+    detail:'16 bits · Máximo teórico = 65 535 bytes. Na prática limitado pelo MTU da rede (Ethernet: 1 500 bytes).' },
+
+  { id:'id',   label:'Identificação',  bits:16, color:'#f59e0b', row:1,
+    desc:'Número único que identifica o datagrama original — usado para remontar fragmentos.',
+    detail:'16 bits · Todos os fragmentos de um mesmo pacote compartilham o mesmo ID. O destino usa ID + endereço de origem para reagrupar.' },
+  { id:'flg',  label:'Flags',          bits:3,  color:'#f97316', row:1,
+    desc:'3 bits de controle de fragmentação: <em>Reserved</em>, <em>Don\'t Fragment (DF)</em>, <em>More Fragments (MF)</em>.',
+    detail:'Bit DF=1: não fragmentar (usada pelo Path MTU Discovery). Bit MF=1: há mais fragmentos após este. Último fragmento: MF=0.' },
+  { id:'off',  label:'Deslocamento',   bits:13, color:'#ef4444', row:1,
+    desc:'<em>Fragment Offset</em> — posição deste fragmento dentro do datagrama original, em unidades de 8 bytes.',
+    detail:'13 bits · Permite offsets de 0 a 65 528 bytes. Primeiro fragmento = 0. Necessário para remontar na ordem correta.' },
+
+  { id:'ttl',  label:'TTL',            bits:8,  color:'#10b981', row:2,
+    desc:'<em>Time to Live</em> — número máximo de saltos (hops) que o pacote pode percorrer antes de ser descartado.',
+    detail:'8 bits · Decrementado em 1 por cada roteador. Se chegar a 0, o roteador descarta e envia ICMP "Time Exceeded". Linux padrão: 64. Windows: 128.' },
+  { id:'pro',  label:'Protocolo',      bits:8,  color:'#06b6d4', row:2,
+    desc:'Identifica o protocolo de camada superior encapsulado no campo de dados.',
+    detail:'8 bits · Valores comuns: 1 = ICMP, 6 = TCP, 17 = UDP, 89 = OSPF. Definido na RFC 790 e gerenciado pela IANA.' },
+  { id:'chk',  label:'Checksum',       bits:16, color:'#3b82f6', row:2,
+    desc:'Soma de verificação para detectar erros no cabeçalho (apenas cabeçalho, não nos dados).',
+    detail:'16 bits · Recalculado em cada roteador (pois TTL muda). O IPv6 eliminou este campo delegando ao protocolo de transporte.' },
+
+  { id:'src',  label:'Endereço de Origem', bits:32, color:'#22c55e', row:3,
+    desc:'Endereço IPv4 de 32 bits do host que originou o pacote.',
+    detail:'32 bits · Pode ser falsificado (<em>IP spoofing</em>) — mecanismos como BCP 38 e uRPF ajudam a mitigar. Ex: 192.168.1.10' },
+  { id:'dst',  label:'Endereço de Destino', bits:32, color:'#84cc16', row:4,
+    desc:'Endereço IPv4 de 32 bits do host de destino (unicast, multicast ou broadcast).',
+    detail:'32 bits · Roteadores tomam decisões de encaminhamento com base neste campo consultando a tabela de roteamento.' },
+  { id:'opt',  label:'Opções (se IHL > 5)', bits:32, color:'#64748b', row:5,
+    desc:'Campo opcional para funcionalidades extras: roteamento de fonte, timestamps, segurança.',
+    detail:'0–40 bytes (múltiplo de 32 bits, com padding). Raramente usado modernamente. Pode incluir: Record Route, Strict Source Route, Internet Timestamp.' },
+];
+
+const ROWS = [[0,1,2,3],[4,5,6],[7,8,9],[10],[11],[12]];
+
+function buildExplorer() {
+  const diagram = document.getElementById('ipv4Diagram');
+  if (!diagram) return;
+  diagram.innerHTML = '';
+  ROWS.forEach(rowIdx => {
+    const row = document.createElement('div');
+    row.className = 'ipv4-row';
+    row.style.cssText = 'display:flex;gap:3px;margin-bottom:3px;';
+    rowIdx.forEach(i => {
+      const f = FIELDS[i];
+      const el = document.createElement('div');
+      el.className = 'ipv4-field';
+      el.style.cssText = `flex-grow:${f.bits};background:${f.color};`;
+      el.dataset.idx = i;
+      el.innerHTML = `<span style="text-align:center;line-height:1.2;">${f.label}<br><span style="font-size:.6em;opacity:.75">${f.bits}b</span></span>`;
+      el.addEventListener('click', () => showField(i));
+      row.appendChild(el);
+    });
+    diagram.appendChild(row);
+  });
+}
+
+function showField(idx) {
+  const f = FIELDS[idx];
+  document.querySelectorAll('.ipv4-field').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.ipv4-field').forEach(el => {
+    if (parseInt(el.dataset.idx) === idx) el.classList.add('active');
+  });
+  const panel = document.getElementById('detailPanel');
+  panel.innerHTML = `
+    <div class="ipv4-detail-card" style="--fc:${f.color}">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+        <span style="background:${f.color};color:#fff;border-radius:8px;padding:4px 12px;font-weight:800;font-size:.85em;">${f.label}</span>
+        <span style="color:#94a3b8;font-size:.8em;">${f.bits} bit${f.bits>1?'s':''}</span>
+      </div>
+      <p style="color:#e2e8f0;margin:0 0 8px;font-size:.9em;">${f.desc}</p>
+      <div class="detail-note">${f.detail}</div>
+    </div>`;
+}
+
+let tourTimer = null, tourIdx = 0, tourRunning = false;
+function toggleTour() {
+  const btn = document.getElementById('tourBtn');
+  if (tourRunning) {
+    clearTimeout(tourTimer);
+    tourRunning = false;
+    btn.textContent = '▶ Tour automático';
+    return;
+  }
+  tourRunning = true;
+  btn.textContent = '⏹ Parar tour';
+  tourIdx = 0;
+  function step() {
+    if (!tourRunning) return;
+    if (tourIdx >= FIELDS.length) {
+      tourRunning = false;
+      btn.textContent = '▶ Tour automático';
+      return;
+    }
+    showField(tourIdx++);
+    tourTimer = setTimeout(step, 2200);
+  }
+  step();
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  buildExplorer();
+  const tourBtn = document.getElementById('tourBtn');
+  if (tourBtn) tourBtn.addEventListener('click', toggleTour);
+});
+
+/* ══════════════════════════════════════════════
+   TTL HOP-BY-HOP ANIMATION
+══════════════════════════════════════════════ */
+const TTL_NODES = [
+  { id:'pc',  label:'PC-A',      icon:'💻', ttl: null },
+  { id:'r1',  label:'Roteador 1',icon:'🔀', ttl: 64   },
+  { id:'r2',  label:'Roteador 2',icon:'🔀', ttl: 63   },
+  { id:'r3',  label:'Roteador 3',icon:'🔀', ttl: 62   },
+  { id:'srv', label:'Servidor',  icon:'🖥️', ttl: 61   },
+];
+
+const TTL_LOOP = [
+  { id:'pc2', label:'PC-B',      icon:'💻', ttl: null },
+  { id:'ra',  label:'Roteador A',icon:'🔀', ttl: 2    },
+  { id:'rb',  label:'Roteador B',icon:'🔀', ttl: 1    },
+  { id:'dead',label:'Roteador A',icon:'🔀', ttl: 0    },
+];
+
+function buildScene() {
+  const scene = document.getElementById('ttlScene');
+  if (!scene) return;
+  scene.innerHTML = '';
+
+  // Normal path
+  const pathWrap = document.createElement('div');
+  pathWrap.style.cssText = 'display:flex;align-items:center;gap:4px;flex-wrap:wrap;justify-content:center;margin-bottom:14px;';
+  TTL_NODES.forEach((n, i) => {
+    const node = document.createElement('div');
+    node.id = 'ttl-node-' + n.id;
+    node.style.cssText = 'display:flex;flex-direction:column;align-items:center;gap:4px;';
+    node.innerHTML = `
+      <div class="ttl-node-icon" id="ttl-icon-${n.id}" style="display:flex;align-items:center;justify-content:center;font-size:1.4em;">${n.icon}</div>
+      <span style="color:#94a3b8;font-size:.68em;font-weight:700;">${n.label}</span>
+      <span class="ttl-pkt-badge" id="ttl-badge-${n.id}" style="padding:2px 8px;">TTL=?</span>`;
+    pathWrap.appendChild(node);
+    if (i < TTL_NODES.length - 1) {
+      const arr = document.createElement('div');
+      arr.style.cssText = 'color:#334155;font-size:1.3em;padding-bottom:18px;';
+      arr.textContent = '→';
+      pathWrap.appendChild(arr);
+    }
+  });
+  scene.appendChild(pathWrap);
+
+  // Loop scenario label
+  const loopLabel = document.createElement('div');
+  loopLabel.id = 'loop-label';
+  loopLabel.style.cssText = 'display:none;color:#f87171;font-size:.76em;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin:10px 0 6px;text-align:center;';
+  loopLabel.textContent = '⚠ Cenário de loop — TTL protege a rede';
+  scene.appendChild(loopLabel);
+
+  // Loop path
+  const loopWrap = document.createElement('div');
+  loopWrap.id = 'loop-path';
+  loopWrap.style.cssText = 'display:none;align-items:center;gap:4px;flex-wrap:wrap;justify-content:center;';
+  TTL_LOOP.forEach((n, i) => {
+    const node = document.createElement('div');
+    node.style.cssText = 'display:flex;flex-direction:column;align-items:center;gap:4px;';
+    node.innerHTML = `
+      <div class="ttl-node-icon" id="ttl-icon-${n.id}" style="display:flex;align-items:center;justify-content:center;font-size:1.4em;">${n.icon}</div>
+      <span style="color:#94a3b8;font-size:.68em;font-weight:700;">${n.label}</span>
+      <span class="ttl-pkt-badge" id="ttl-badge-${n.id}" style="padding:2px 8px;">TTL=?</span>`;
+    loopWrap.appendChild(node);
+    if (i < TTL_LOOP.length - 1) {
+      const arr = document.createElement('div');
+      arr.style.cssText = 'color:#334155;font-size:1.3em;padding-bottom:18px;';
+      arr.textContent = i === TTL_LOOP.length - 2 ? '💀' : '→';
+      loopWrap.appendChild(arr);
+    }
+  });
+  scene.appendChild(loopWrap);
+}
+
+function log(msg, color) {
+  const logEl = document.getElementById('ttlLog');
+  if (!logEl) return;
+  const line = document.createElement('div');
+  line.style.cssText = `color:${color||'#94a3b8'};font-size:.78em;padding:2px 0;border-bottom:1px solid #1e293b;`;
+  line.innerHTML = msg;
+  logEl.appendChild(line);
+  logEl.scrollTop = logEl.scrollHeight;
+}
+
+function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+async function runTTLAnim() {
+  const btn = document.getElementById('ttlPlayBtn');
+  btn.disabled = true;
+  btn.textContent = '⏳ Simulando...';
+  const logEl = document.getElementById('ttlLog');
+  if (logEl) logEl.innerHTML = '';
+
+  // Reset all icons
+  document.querySelectorAll('.ttl-node-icon').forEach(el => {
+    el.classList.remove('active','dead');
+  });
+  document.querySelectorAll('.ttl-pkt-badge').forEach(el => {
+    el.style.display = 'none';
+  });
+
+  log('📦 PC-A cria pacote com <strong>TTL=64</strong> e envia para 200.100.50.10', '#38bdf8');
+  await delay(700);
+
+  // Animate normal path
+  for (let i = 0; i < TTL_NODES.length; i++) {
+    const n = TTL_NODES[i];
+    const icon = document.getElementById('ttl-icon-' + n.id);
+    const badge = document.getElementById('ttl-badge-' + n.id);
+    if (icon) { icon.classList.add('active'); }
+    if (badge && n.ttl !== null) {
+      badge.style.display = 'inline-block';
+      badge.textContent = 'TTL=' + n.ttl;
+      badge.style.background = n.ttl <= 2 ? '#dc2626' : '#0e7490';
+    }
+    if (i === 0) {
+      log('💻 <strong>PC-A</strong> envia pacote com TTL=64', '#a3e635');
+    } else if (n.id === 'srv') {
+      log(`🖥️ <strong>Servidor</strong> recebe pacote com TTL=${n.ttl} — entregue! (${64 - n.ttl} hops percorridos)`, '#4ade80');
+    } else {
+      const prev = TTL_NODES[i-1].ttl ?? 64;
+      log(`🔀 <strong>${n.label}</strong> recebe TTL=${prev}, decrementa → TTL=${n.ttl}, reencaminha`, '#94a3b8');
+    }
+    await delay(900);
+    if (i > 0 && i < TTL_NODES.length - 1) {
+      const prevIcon = document.getElementById('ttl-icon-' + TTL_NODES[i-1].id);
+      if (prevIcon) prevIcon.classList.remove('active');
+    }
+  }
+
+  await delay(800);
+  log('─────────────────────────────────────────', '#1e293b');
+  log('⚠️ Agora simulando <strong>cenário de loop</strong>...', '#fbbf24');
+  await delay(600);
+
+  // Show loop section
+  const loopLabel = document.getElementById('loop-label');
+  const loopPath = document.getElementById('loop-path');
+  if (loopLabel) loopLabel.style.display = 'block';
+  if (loopPath) loopPath.style.display = 'flex';
+
+  for (let i = 0; i < TTL_LOOP.length; i++) {
+    const n = TTL_LOOP[i];
+    const icon = document.getElementById('ttl-icon-' + n.id);
+    const badge = document.getElementById('ttl-badge-' + n.id);
+    if (badge) {
+      badge.style.display = 'inline-block';
+      badge.textContent = 'TTL=' + n.ttl;
+      badge.style.background = n.ttl === 0 ? '#dc2626' : '#0e7490';
+    }
+    if (n.ttl === 0) {
+      if (icon) { icon.classList.remove('active'); icon.classList.add('dead'); }
+      log('💀 <strong>Roteador A</strong> recebe TTL=1, decrementa → TTL=0 → <strong>PACOTE DESCARTADO!</strong>', '#f87171');
+      log('📨 ICMP "Time Exceeded" (tipo 11) enviado de volta ao PC-B', '#fb923c');
+    } else {
+      if (icon) icon.classList.add('active');
+      if (i === 0) log('💻 <strong>PC-B</strong> envia pacote com TTL=2 (loop de roteamento!)', '#fbbf24');
+      else log(`🔀 <strong>${n.label}</strong> recebe TTL=${n.ttl + 1}, decrementa → TTL=${n.ttl}, reencaminha`, '#94a3b8');
+    }
+    await delay(900);
+    if (i > 0 && icon && n.ttl !== 0) icon.classList.remove('active');
+  }
+
+  await delay(500);
+  btn.disabled = false;
+  btn.textContent = '🔁 Reiniciar';
+  btn.onclick = () => { buildScene(); buildExplorer(); runTTLAnim(); };
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  buildScene();
+  const playBtn = document.getElementById('ttlPlayBtn');
+  if (playBtn) playBtn.addEventListener('click', runTTLAnim);
+});
+</script>
 </body>
 </html>
