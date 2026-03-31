@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aula 9 &mdash; Protocolo IPv4</title>
+    <link rel="stylesheet" href="slide-mode.css">
+    <link rel="stylesheet" href="exercise.css">
+    <link rel="stylesheet" href="lesson.css">
+    <style>
+        :root {
+            --primary:   #1a73e8;
+            --secondary: #0d47a1;
+            --bg-light:  #f4f7fe;
+            --text-dark: #2d3748;
+        }
+    </style>
+</head>
+<body>
+
+<div class="top-bar">
+    <a href="index.html" class="back-btn">&#x2B05; Voltar ao Dashboard</a>
+    <span class="page-badge">2&ordm; Bimestre &mdash; Camada de Internet</span>
+    <button class="slide-toggle" id="slideToggleBtn">&#x1F4FA; Modo Slide</button>
+</div>
+
+<div class="content-wrapper">
+
+    <div class="lesson-hero">
+        <h1>&#x1F4E6; Protocolo IPv4</h1>
+        <p class="subtitle">Aula 9 &mdash; Estrutura do pacote IPv4, campos do cabe&ccedil;alho, TTL e fragmenta&ccedil;&atilde;o: como a camada de internet entrega dados entre redes distintas sem garantia de ordem ou entrega</p>
+    </div>
+
+    <!-- CARD 1 — Visão Geral do IPv4 -->
+    <div class="content-card">
+        <h2>&#x1F310; O que &eacute; o IPv4?</h2>
+        <p>O <strong>IPv4 &mdash; Internet Protocol version 4 (RFC 791, 1981)</strong> &eacute; o protocolo respons&aacute;vel pelo <strong>endere&ccedil;amento l&oacute;gico e roteamento</strong> de pacotes na camada de Internet da pilha TCP/IP. &Eacute; ele quem permite que dados trafeguem entre redes diferentes &mdash; do seu computador em casa at&eacute; um servidor no outro lado do planeta.</p>
+
+        <div class="highlight-box">
+            <p>&#x1F4AC; <strong>Analogia:</strong> o IPv4 &eacute; como o sistema de endere&ccedil;os postais do mundo. Cada dispositivo tem um endere&ccedil;o &uacute;nico (o IP), e o pacote &eacute; como uma carta: o roteador &eacute; a ag&ecirc;ncia dos correios que l&ecirc; o CEP de destino e decide para qual pr&oacute;xima ag&ecirc;ncia encaminhar.</p>
+        </div>
+
+        <h3>Caracter&iacute;sticas fundamentais</h3>
+        <div class="cmd-grid">
+            <div class="cmd-card">
+                <span class="cmd">N&atilde;o orientado a conex&atilde;o</span>
+                <strong>Connectionless</strong>
+                <span>Cada pacote &eacute; tratado de forma independente. N&atilde;o h&aacute; handshake nem estado de sess&atilde;o na camada IP &mdash; isso &eacute; responsabilidade do TCP, na camada superior</span>
+            </div>
+            <div class="cmd-card">
+                <span class="cmd">Best Effort</span>
+                <strong>Sem garantia de entrega</strong>
+                <span>O IPv4 faz o m&aacute;ximo esfor&ccedil;o para entregar o pacote, mas n&atilde;o garante: o pacote pode se perder, ser duplicado ou chegar fora de ordem</span>
+            </div>
+            <div class="cmd-card">
+                <span class="cmd">Endere&ccedil;amento de 32 bits</span>
+                <strong>~4,3 bilh&otilde;es de endere&ccedil;os</strong>
+                <span>O espa&ccedil;o de endere&ccedil;amento IPv4 &eacute; 2&sup3;&sup2; = 4.294.967.296. Com o crescimento da internet, esse espa&ccedil;o foi esgotado &mdash; da&iacute; a necessidade do IPv6</span>
+            </div>
+            <div class="cmd-card">
+                <span class="cmd">Roteamento hop-a-hop</span>
+                <strong>Cada salto decide o pr&oacute;ximo</strong>
+                <span>N&atilde;o existe um caminho pr&eacute;-definido: cada roteador no percurso consulta sua tabela e decide de forma independente para onde enviar o pacote</span>
+            </div>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Caracter&iacute;stica</th>
+                    <th>IPv4</th>
+                    <th>Implicac&atilde;o pr&aacute;tica</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Conex&atilde;o</strong></td>
+                    <td>Sem conex&atilde;o (connectionless)</td>
+                    <td>Pacotes do mesmo fluxo podem seguir caminhos diferentes</td>
+                </tr>
+                <tr>
+                    <td><strong>Confiabilidade</strong></td>
+                    <td>Best effort (sem garantia)</td>
+                    <td>Perda de pacotes deve ser tratada pelo TCP ou pela aplica&ccedil;&atilde;o</td>
+                </tr>
+                <tr>
+                    <td><strong>Ordem</strong></td>
+                    <td>N&atilde;o garante ordem</td>
+                    <td>Pacote 3 pode chegar antes do pacote 1; TCP os reordena</td>
+                </tr>
+                <tr>
+                    <td><strong>Duplica&ccedil;&atilde;o</strong></td>
+                    <td>Pode ocorrer</td>
+                    <td>O mesmo pacote pode ser entregue duas vezes em casos de retransmiss&atilde;o de roteadores</td>
+                </tr>
+                <tr>
+                    <td><strong>Endere&ccedil;o</strong></td>
+                    <td>32 bits (IPv4) &mdash; esgotado</td>
+                    <td>NAT e IPv6 surgiram como solu&ccedil;&otilde;es para a escassez</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- CARD 2 — Estrutura do pacote IPv4 -->
+    <div class="content-card">
+        <h2>&#x1F9E9; Estrutura do Pacote IPv4</h2>
+        <p>Um pacote IPv4 &eacute; composto por um <strong>cabe&ccedil;alho</strong> (m&iacute;nimo de 20 bytes, m&aacute;ximo de 60 bytes) seguido pelo <strong>payload</strong> (dados da camada superior). O cabe&ccedil;alho cont&eacute;m todos os metadados que os roteadores precisam para encaminhar o pacote corretamente.</p>
+
+        <div class="terminal-block">
+            <div class="terminal-header">Estrutura do cabeçalho IPv4 (RFC 791) — 20 bytes mínimos</div>
+<pre>
+  Bit:  0       4       8               16              24      31
+        ┌───────┬───────┬───────────────┬───────────────────────┐
+        │Versão │  IHL  │  DSCP / ECN   │      Comprimento Total │
+        │  (4)  │  (4)  │    (8 bits)   │        (16 bits)       │
+        ├───────────────┴───────────────┼──────┬─────────────────┤
+        │     Identificação (16 bits)   │Flags │  Desl. Fragm.   │
+        │                               │ (3)  │   (13 bits)     │
+        ├───────────────────────────────┼──────┴─────────────────┤
+        │    TTL (8 bits)               │  Protocolo (8 bits)    │
+        ├───────────────────────────────┴────────────────────────┤
+        │              Checksum do Cabeçalho (16 bits)           │
+        ├────────────────────────────────────────────────────────┤
+        │              Endereço IP de Origem (32 bits)           │
+        ├────────────────────────────────────────────────────────┤
+        │              Endereço IP de Destino (32 bits)          │
+        ├────────────────────────────────────────────────────────┤
+        │          Opções (variável, 0–40 bytes) + Padding       │
+        └────────────────────────────────────────────────────────┘
+        └─────────────── 20 bytes mínimos ───────────────────────┘
+</pre>
+        </div>
+
+        <h3>Campos do cabe&ccedil;alho em detalhe</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Campo</th>
+                    <th>Tamanho</th>
+                    <th>Fun&ccedil;&atilde;o</th>
+                    <th>Valor t&iacute;pico / Exemplo</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Vers&atilde;o</strong></td>
+                    <td>4 bits</td>
+                    <td>Indica a vers&atilde;o do protocolo IP</td>
+                    <td>4 (IPv4) ou 6 (IPv6)</td>
+                </tr>
+                <tr>
+                    <td><strong>IHL</strong></td>
+                    <td>4 bits</td>
+                    <td>Comprimento do cabe&ccedil;alho em palavras de 32 bits</td>
+                    <td>5 = 20 bytes (sem op&ccedil;&otilde;es)</td>
+                </tr>
+                <tr>
+                    <td><strong>DSCP / ECN</strong></td>
+                    <td>8 bits</td>
+                    <td>Qualidade de servi&ccedil;o (QoS) e notifica&ccedil;&atilde;o de congestionamento</td>
+                    <td>0 (tr&aacute;fego comum); 46 (VoIP, EF)</td>
+                </tr>
+                <tr>
+                    <td><strong>Comprimento Total</strong></td>
+                    <td>16 bits</td>
+                    <td>Tamanho total do pacote (cabe&ccedil;alho + dados) em bytes</td>
+                    <td>M&aacute;x 65.535 bytes; tipicamente &lt; 1500 (Ethernet)</td>
+                </tr>
+                <tr>
+                    <td><strong>Identifica&ccedil;&atilde;o</strong></td>
+                    <td>16 bits</td>
+                    <td>ID &uacute;nico do pacote; usado para reagrupar fragmentos</td>
+                    <td>N&uacute;mero incremental por fluxo</td>
+                </tr>
+                <tr>
+                    <td><strong>Flags</strong></td>
+                    <td>3 bits</td>
+                    <td>Controle de fragmenta&ccedil;&atilde;o: Reserved, DF (Don&rsquo;t Fragment), MF (More Fragments)</td>
+                    <td>DF=1 proibe fragmentar; MF=1 = h&aacute; mais fragmentos</td>
+                </tr>
+                <tr>
+                    <td><strong>Deslocamento do Fragmento</strong></td>
+                    <td>13 bits</td>
+                    <td>Posi&ccedil;&atilde;o deste fragmento em rela&ccedil;&atilde;o ao pacote original</td>
+                    <td>0 para o 1&ordm; fragmento; unidade = 8 bytes</td>
+                </tr>
+                <tr>
+                    <td><strong>TTL</strong></td>
+                    <td>8 bits</td>
+                    <td>Limita o n&uacute;mero de saltos; cada roteador decrementa em 1</td>
+                    <td>64 (Linux), 128 (Windows), 255 (Cisco)</td>
+                </tr>
+                <tr>
+                    <td><strong>Protocolo</strong></td>
+                    <td>8 bits</td>
+                    <td>Indica o protocolo encapsulado no payload</td>
+                    <td>6=TCP; 17=UDP; 1=ICMP; 89=OSPF</td>
+                </tr>
+                <tr>
+                    <td><strong>Checksum do Cabe&ccedil;alho</strong></td>
+                    <td>16 bits</td>
+                    <td>Verifica integridade do cabe&ccedil;alho (recalculado a cada salto)</td>
+                    <td>Recalculado por cada roteador (TTL muda)</td>
+                </tr>
+                <tr>
+                    <td><strong>IP de Origem</strong></td>
+                    <td>32 bits</td>
+                    <td>Endere&ccedil;o IPv4 do remetente</td>
+                    <td>192.168.1.10</td>
+                </tr>
+                <tr>
+                    <td><strong>IP de Destino</strong></td>
+                    <td>32 bits</td>
+                    <td>Endere&ccedil;o IPv4 do destinat&aacute;rio final (n&atilde;o muda no caminho)</td>
+                    <td>8.8.8.8</td>
+                </tr>
+                <tr>
+                    <td><strong>Op&ccedil;&otilde;es</strong></td>
+                    <td>0&ndash;40 bytes</td>
+                    <td>Funcionalidades extras opcionais: roteamento na fonte, timestamp, seguran&ccedil;a</td>
+                    <td>Raramente usadas; aumentam overhead</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="alert-box">
+            <p>&#x26A0;&#xFE0F; <strong>Por que o checksum &eacute; recalculado a cada salto?</strong> O campo TTL &eacute; decrementado em 1 por cada roteador. Como o cabe&ccedil;alho muda (TTL mudou), o checksum tamb&eacute;m deve ser recalculado antes de reencaminhar o pacote. O IPv6 eliminou o checksum no cabe&ccedil;alho para reduzir esse overhead.</p>
+        </div>
+    </div>
+
+    <!-- CARD 3 — TTL -->
+    <div class="content-card">
+        <h2>&#x23F3; TTL &mdash; Time to Live</h2>
+        <p>O <strong>TTL (Time to Live)</strong> &eacute; um dos campos mais importantes do cabe&ccedil;alho IPv4. Apesar do nome sugerir tempo, na pr&aacute;tica funciona como um <strong>contador de saltos (hops)</strong>: cada roteador que processa o pacote decrementa o TTL em 1. Quando o TTL chega a 0, o pacote &eacute; descartado e o roteador envia uma mensagem ICMP &ldquo;Time Exceeded&rdquo; de volta ao remetente.</p>
+
+        <div class="highlight-box">
+            <p>&#x1F3AF; <strong>Objetivo do TTL:</strong> evitar que pacotes fiquem circulando indefinidamente na rede em caso de loops de roteamento. Sem o TTL, um loop entre dois roteadores poderia fazer um pacote circular para sempre, consumindo banda e recursos.</p>
+        </div>
+
+        <div class="terminal-block">
+            <div class="terminal-header">Funcionamento do TTL — exemplo passo a passo</div>
+<pre>
+  PC-A envia pacote com TTL=64 para servidor em 200.100.50.10
+
+  PC-A (TTL=64)
+     │
+     ▼
+  Roteador R1 ── recebe com TTL=64, decrementa: TTL=63, reencaminha
+     │
+     ▼
+  Roteador R2 ── recebe com TTL=63, decrementa: TTL=62, reencaminha
+     │
+     ▼
+  Roteador R3 ── recebe com TTL=62, decrementa: TTL=61, reencaminha
+     │
+     ▼
+  Servidor ── recebe com TTL=61  ← o TTL final revela ~3 saltos
+  (TTL inicial 64 − TTL final 61 = 3 hops)
+
+  ── Cenário com loop ──────────────────────────────────────────
+  R4 (TTL=2) → R5 (TTL=1) → R4 decrementa para 0:
+  "TTL=0: pacote DESCARTADO"
+  R4 envia ICMP Time Exceeded (tipo 11) para PC-A com sua origem
+</pre>
+        </div>
+
+        <h3>Valores padr&atilde;o de TTL por sistema operacional</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Sistema Operacional</th>
+                    <th>TTL padr&atilde;o</th>
+                    <th>Observa&ccedil;&atilde;o</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Linux / Android</strong></td>
+                    <td>64</td>
+                    <td>Configurado em <code>/proc/sys/net/ipv4/ip_default_ttl</code></td>
+                </tr>
+                <tr>
+                    <td><strong>Windows (todas vers&otilde;es)</strong></td>
+                    <td>128</td>
+                    <td>Chave: <code>HKLM\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters\DefaultTTL</code></td>
+                </tr>
+                <tr>
+                    <td><strong>macOS / iOS / FreeBSD</strong></td>
+                    <td>64</td>
+                    <td>Mesmo valor do Linux; alterado via <code>sysctl net.inet.ip.ttl</code></td>
+                </tr>
+                <tr>
+                    <td><strong>Cisco IOS (roteadores)</strong></td>
+                    <td>255</td>
+                    <td>Usado em tr&aacute;fego gerado pelo pr&oacute;prio roteador (ex: OSPF Hello)</td>
+                </tr>
+                <tr>
+                    <td><strong>Solaris / AIX</strong></td>
+                    <td>255</td>
+                    <td>TTL m&aacute;ximo; sinal de sistema legado ou equipamento de rede</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="tip-box">
+            <p>&#x1F50D; <strong>Fingerprinting de SO:</strong> o TTL recebido permite estimar o sistema operacional do remetente. Se um ping responde com TTL=118, provavelmente partiu de um Windows (128) e passou por 10 saltos. Se TTL=55, provavelmente Linux (64) com 9 saltos. Ferramentas como Nmap usam isso para identificar sistemas remotos.</p>
+        </div>
+
+        <h3>TTL e a ferramenta traceroute</h3>
+        <p>O <strong>traceroute</strong> (Linux/Mac) e o <strong>tracert</strong> (Windows) exploram o mecanismo de TTL para mapear o caminho at&eacute; um destino. A t&eacute;cnica consiste em enviar pacotes com TTL=1, 2, 3, ... e coletar as mensagens ICMP &ldquo;Time Exceeded&rdquo; geradas por cada roteador.</p>
+
+        <div class="terminal-block">
+            <div class="terminal-header">traceroute — mecânica de funcionamento</div>
+<pre>
+  $ traceroute 8.8.8.8
+
+  1. Envia 3 pacotes com TTL=1
+     → R1 decrementa para 0, descarta e envia ICMP Time Exceeded
+     → Traceroute registra: IP de R1 e tempo de resposta
+
+  2. Envia 3 pacotes com TTL=2
+     → R1 decrementa para 1, encaminha; R2 decrementa para 0
+     → R2 descarta e envia ICMP Time Exceeded
+     → Traceroute registra: IP de R2 e tempo de resposta
+
+  ... e assim por diante até o destino responder ...
+
+  Saída típica:
+  traceroute to 8.8.8.8 (8.8.8.8), 30 hops max
+   1  192.168.1.1      1.2 ms   1.0 ms   1.1 ms   ← gateway local
+   2  10.0.0.1         8.3 ms   8.1 ms   8.4 ms   ← ISP primeiro roteador
+   3  189.62.14.1     12.7 ms  12.5 ms  12.6 ms
+   4  72.14.215.165   25.8 ms  25.7 ms  25.9 ms   ← rede Google
+   5  8.8.8.8         26.1 ms  26.3 ms  26.0 ms   ← destino atingido
+
+   *  *  *  ← roteador não respondeu ao ICMP (firewall)
+</pre>
+        </div>
+    </div>
+
+    <!-- CARD 4 — Fragmentação -->
+    <div class="content-card">
+        <h2>&#x2702;&#xFE0F; Fragmenta&ccedil;&atilde;o de Pacotes</h2>
+        <p>Diferentes tecnologias de rede suportam tamanhos m&aacute;ximos de quadro diferentes &mdash; o <strong>MTU (Maximum Transmission Unit)</strong>. Quando um pacote IPv4 &eacute; maior que o MTU do pr&oacute;ximo enlace, o roteador pode <strong>fragmentar o pacote</strong> em pedaços menores. O host de destino &eacute; respons&aacute;vel por <strong>remontar</strong> os fragmentos na ordem correta.</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Tecnologia</th>
+                    <th>MTU (bytes)</th>
+                    <th>Observa&ccedil;&atilde;o</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Ethernet (padr&atilde;o)</strong></td>
+                    <td>1.500</td>
+                    <td>MTU mais comum na internet; payload do quadro Ethernet</td>
+                </tr>
+                <tr>
+                    <td><strong>Ethernet Jumbo Frames</strong></td>
+                    <td>9.000</td>
+                    <td>Usado em redes de datacenter de alto desempenho</td>
+                </tr>
+                <tr>
+                    <td><strong>PPPoE (ADSL)</strong></td>
+                    <td>1.492</td>
+                    <td>8 bytes do cabe&ccedil;alho PPPoE reduzem o MTU efetivo</td>
+                </tr>
+                <tr>
+                    <td><strong>Wi-Fi (802.11)</strong></td>
+                    <td>2.304</td>
+                    <td>MTU da camada f&iacute;sica; normalmente usa MTU Ethernet (1500)</td>
+                </tr>
+                <tr>
+                    <td><strong>VPN / Tunnel</strong></td>
+                    <td>~1.400&ndash;1.460</td>
+                    <td>Encapsulamento adicional reduz o MTU efetivo dispon&iacute;vel</td>
+                </tr>
+                <tr>
+                    <td><strong>Loopback</strong></td>
+                    <td>65.536</td>
+                    <td>Interface virtual local; sem fragmenta&ccedil;&atilde;o pr&aacute;tica</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="terminal-block">
+            <div class="terminal-header">Fragmentação em ação — pacote de 4000 bytes no MTU 1500</div>
+<pre>
+  Pacote original:
+    IP: src=192.168.1.10  dst=200.100.50.10
+    ID=5432   DF=0   MF=0   Offset=0   Total=4000 bytes
+    Payload = 3980 bytes (4000 − 20 bytes do cabeçalho)
+
+  Chegou a um roteador com MTU=1500. Roteador fragmenta:
+
+  ── Fragmento 1 ────────────────────────────────────────────
+    ID=5432   DF=0   MF=1   Offset=0      Total=1500 bytes
+    Payload = 1480 bytes  (1500 − 20)
+
+  ── Fragmento 2 ────────────────────────────────────────────
+    ID=5432   DF=0   MF=1   Offset=185    Total=1500 bytes
+    Payload = 1480 bytes
+    (Offset = 1480 ÷ 8 = 185 → unidade do campo é 8 bytes)
+
+  ── Fragmento 3 ────────────────────────────────────────────
+    ID=5432   DF=0   MF=0   Offset=370    Total=1040 bytes
+    Payload = 1020 bytes (3980 − 1480 − 1480)
+    MF=0 indica que é o último fragmento
+
+  Destino: quando receber todos os fragmentos com o mesmo ID=5432,
+  remonta o pacote original de 4000 bytes.
+</pre>
+        </div>
+
+        <h3>Bit DF &mdash; Don&rsquo;t Fragment</h3>
+        <p>Quando o bit <strong>DF (Don&rsquo;t Fragment) = 1</strong>, o pacote <strong>n&atilde;o pode ser fragmentado</strong>. Se chegar a um enlace com MTU menor, o roteador descarta o pacote e envia uma mensagem ICMP <em>&ldquo;Destination Unreachable: Fragmentation Needed&rdquo;</em> (Tipo 3, C&oacute;digo 4) ao remetente, informando o MTU do enlace bloqueante.</p>
+
+        <div class="tip-box">
+            <p>&#x1F6E0; <strong>PMTUD &mdash; Path MTU Discovery:</strong> o TCP moderno usa o bit DF e as mensagens ICMP &ldquo;Fragmentation Needed&rdquo; para descobrir automaticamente o menor MTU no caminho at&eacute; o destino e ajustar o MSS (Maximum Segment Size). Isso evita fragmenta&ccedil;&atilde;o en route e melhora a efici&ecirc;ncia. Se firewalls bloquearem as mensagens ICMP necess&aacute;rias, conexões TCP podem travar &mdash; o famoso &ldquo;black hole PMTUD&rdquo;.</p>
+        </div>
+
+        <div class="alert-box">
+            <p>&#x26A0;&#xFE0F; <strong>Fragmenta&ccedil;&atilde;o tem custos:</strong> (1) overhead: cada fragmento carrega um cabe&ccedil;alho IP completo de 20 bytes; (2) se um fragmento se perder, o pacote inteiro deve ser retransmitido; (3) firewalls stateless podem ter dificuldade para inspecionar pacotes fragmentados. Por isso, o IPv6 <em>n&atilde;o permite fragmenta&ccedil;&atilde;o en route</em> &mdash; apenas na origem.</p>
+        </div>
+    </div>
+
+    <!-- CARD 5 — Protocolo encapsulado e caminho completo -->
+    <div class="content-card">
+        <h2>&#x1F4CB; O Campo Protocolo e o Encapsulamento</h2>
+        <p>O campo <strong>Protocolo</strong> (8 bits) informa ao host de destino qual protocolo est&aacute; encapsulado no payload do pacote IP. Isso permite que a pilha TCP/IP fa&ccedil;a a demultiplexa&ccedil;&atilde;o correta, entregando os dados ao m&oacute;dulo certo.</p>
+
+        <div class="cmd-grid">
+            <div class="cmd-card">
+                <span class="cmd">1 &mdash; ICMP</span>
+                <strong>Diagn&oacute;stico</strong>
+                <span>ping, traceroute, mensagens de erro de rede (Destination Unreachable, Time Exceeded)</span>
+            </div>
+            <div class="cmd-card">
+                <span class="cmd">6 &mdash; TCP</span>
+                <strong>Transporte confi&aacute;vel</strong>
+                <span>HTTP, HTTPS, SSH, SMTP, FTP &mdash; qualquer protocolo que exija entrega garantida e em ordem</span>
+            </div>
+            <div class="cmd-card">
+                <span class="cmd">17 &mdash; UDP</span>
+                <strong>Transporte r&aacute;pido</strong>
+                <span>DNS, DHCP, VoIP, streaming, jogos online &mdash; baixa lat&ecirc;ncia em detrimento de confiabilidade</span>
+            </div>
+            <div class="cmd-card">
+                <span class="cmd">89 &mdash; OSPF</span>
+                <strong>Roteamento din&acirc;mico</strong>
+                <span>Pacotes OSPF v&atilde;o diretamente sobre IP, sem TCP ou UDP; TTL=1 para mensagens Hello multicast</span>
+            </div>
+            <div class="cmd-card">
+                <span class="cmd">47 &mdash; GRE</span>
+                <strong>T&uacute;nel</strong>
+                <span>Generic Routing Encapsulation: encapsula pacotes IP dentro de outros pacotes IP (VPN simples)</span>
+            </div>
+            <div class="cmd-card">
+                <span class="cmd">50 &mdash; ESP</span>
+                <strong>IPSec</strong>
+                <span>Encapsulating Security Payload: criptografia e autentica&ccedil;&atilde;o do payload para VPNs IPSec</span>
+            </div>
+        </div>
+
+        <div class="terminal-block">
+            <div class="terminal-header">Encapsulamento — visão em camadas de um pacote HTTP</div>
+<pre>
+  ┌──────────────────────────────────────────────────────────┐
+  │  Camada Aplicação:  GET /index.html HTTP/1.1             │  HTTP
+  ├──────────────────────────────────────────────────────────┤
+  │  Camada Transporte: [TCP Header: src=52341 dst=80 seq=…] │  TCP (protocolo=6)
+  ├──────────────────────────────────────────────────────────┤
+  │  Camada Internet:   [IPv4: src=192.168.1.5 dst=93.184.216.34 TTL=64] │  IPv4
+  ├──────────────────────────────────────────────────────────┤
+  │  Enlace de Dados:   [Ethernet: src=AA:BB:… dst=GW:MAC…]  │  Ethernet
+  └──────────────────────────────────────────────────────────┘
+
+  Cada camada adiciona seu próprio cabeçalho (encapsulamento).
+  No destino, cada camada remove seu cabeçalho (desencapsulamento).
+
+  Tamanho total no fio:
+  14 (Ethernet) + 20 (IPv4) + 20 (TCP) + dados HTTP = overhead mínimo 54 bytes
+</pre>
+        </div>
+    </div>
+
+    <!-- CARD 6 — Ferramentas de análise -->
+    <div class="content-card">
+        <h2>&#x1F6E0;&#xFE0F; Analisando Pacotes IPv4 na Pr&aacute;tica</h2>
+        <p>O conhecimento do cabe&ccedil;alho IPv4 &eacute; essencial para interpretar capturas de pacotes. Ferramentas como o <strong>Wireshark</strong> e o <strong>tcpdump</strong> permitem inspecionar cada campo em tempo real.</p>
+
+        <div class="terminal-block">
+            <div class="terminal-header">tcpdump — filtros úteis para análise IPv4</div>
+<pre>
+  # Capturar todo tráfego IPv4 na interface eth0
+  tcpdump -i eth0 ip
+
+  # Filtrar por IP de origem
+  tcpdump -i eth0 src host 192.168.1.10
+
+  # Filtrar por IP de destino
+  tcpdump -i eth0 dst host 8.8.8.8
+
+  # Ver apenas pacotes fragmentados (MF=1 ou offset>0)
+  tcpdump -i eth0 "ip[6] & 0x20 != 0 or ip[6:2] & 0x1fff != 0"
+
+  # Ver o TTL de cada pacote na saída
+  tcpdump -i eth0 -v ip
+  # A flag -v mostra: ttl, tos, id, flags, len, proto
+
+  # Salvar captura para análise no Wireshark
+  tcpdump -i eth0 -w captura.pcap
+</pre>
+        </div>
+
+        <div class="terminal-block">
+            <div class="terminal-header">ping com TTL — diagnóstico prático</div>
+<pre>
+  # Windows — ping mostrando TTL recebido
+  C:\> ping 8.8.8.8
+  Resposta de 8.8.8.8: bytes=32 tempo=26ms TTL=118
+  ──────────────────────────────────────────────────────────
+  TTL recebido = 118 → Windows usa TTL=128 → 128 − 118 = 10 saltos
+
+  # Linux — ping com TTL customizado
+  $ ping -t 5 8.8.8.8        # Envia com TTL=5 (chegará ao 5º roteador)
+  From 72.14.215.165: icmp_seq=1 Time to live exceeded
+
+  # Descobrir MTU do caminho com ping
+  # Linux: envia pacote sem fragmentação (-M do) de tamanho específico
+  $ ping -M do -s 1472 192.168.1.1
+  # Se retornar "Frag needed": MTU < 1472+28=1500 → fragmentação seria necessária
+  # Se responder: MTU ≥ 1500 → sem fragmentação necessária
+</pre>
+        </div>
+
+        <div class="alert-box">
+            <p>&#x26A0;&#xFE0F; <strong>ICMP bloqueado por firewall:</strong> muitos roteadores e firewalls bloqueiam mensagens ICMP por &ldquo;seguran&ccedil;a&rdquo;. Isso causa o sintoma <code>* * *</code> no traceroute e pode quebrar o PMTUD. A pr&aacute;tica &eacute; permitir seletivamente: ICMP Echo (ping) pode ser opcional, mas &ldquo;Destination Unreachable&rdquo; e &ldquo;Time Exceeded&rdquo; devem ser permitidos para que o roteamento funcione corretamente.</p>
+        </div>
+    </div>
+
+    <!-- ATIVIDADE PRÁTICA -->
+    <div class="content-card exercise-card" id="prat-rc09">
+        <h2>&#x1F4DD; Atividade Pr&aacute;tica</h2>
+        <p class="prat-intro">Analisar, interpretar e calcular campos do cabe&ccedil;alho IPv4 para consolidar o entendimento do protocolo.</p>
+
+        <div class="prat-steps">
+            <div class="prat-step">
+                <div class="step-num">1</div>
+                <div class="step-body">
+                    <div class="step-label">Interpretar um cabe&ccedil;alho IPv4 real</div>
+                    <div class="step-desc">Considere o seguinte dump hexadecimal de um cabe&ccedil;alho IPv4:<br><br>
+                    <code>45 00 00 3C 1A 2B 40 00 40 06 B2 EC C0 A8 01 0A 4A 7D 6E 22</code><br><br>
+                    Identifique e explique cada campo: (a) qual a vers&atilde;o e o tamanho do cabe&ccedil;alho? (b) qual o comprimento total do pacote? (c) o bit DF est&aacute; ativo? Como voc&ecirc; sabe? (d) qual o TTL e o protocolo encapsulado? (e) quais s&atilde;o os IPs de origem e destino? (f) quantos saltos este pacote provavelmente j&aacute; percorreu desde o remetente?
+                    </div>
+                </div>
+            </div>
+            <div class="prat-step">
+                <div class="step-num">2</div>
+                <div class="step-body">
+                    <div class="step-label">Calcular fragmenta&ccedil;&atilde;o manualmente</div>
+                    <div class="step-desc">Um host envia um datagrama IPv4 de <strong>5.020 bytes totais</strong> (incluindo cabe&ccedil;alho de 20 bytes) para um destino que exige passar por um enlace com <strong>MTU = 1.500 bytes</strong>. O roteador deve fragmentar o pacote. Calcule: (a) quantos fragmentos ser&atilde;o gerados? (b) para cada fragmento, determine: tamanho total, tamanho do payload, valor do campo Offset (em unidades de 8 bytes), bit MF; (c) se o terceiro fragmento se perder durante a transmiss&atilde;o, o que acontece com os demais? Por qu&ecirc;?</div>
+                </div>
+            </div>
+            <div class="prat-step">
+                <div class="step-num">3</div>
+                <div class="step-body">
+                    <div class="step-label">Mapear o caminho com traceroute / tracert</div>
+                    <div class="step-desc">Execute <code>traceroute 8.8.8.8</code> (Linux/Mac) ou <code>tracert 8.8.8.8</code> (Windows) no laborat&oacute;rio ou em sua m&aacute;quina. (a) Quantos saltos at&eacute; o destino? (b) Identifique os IPs privados (seu gateway e o ISP) e os IPs p&uacute;blicos; (c) Algum roteador n&atilde;o respondeu (<code>* * *</code>)? Em qual posi&ccedil;&atilde;o? O que isso indica? (d) Com base no TTL da resposta do 8.8.8.8 (use <code>ping 8.8.8.8 -v</code>), qual TTL inicial provavelmente usam os servidores do Google?</div>
+                </div>
+            </div>
+            <div class="prat-step">
+                <div class="step-num">4</div>
+                <div class="step-body">
+                    <div class="step-label">Descobrir o MTU do caminho (PMTUD manual)</div>
+                    <div class="step-desc">No Linux, use <code>ping -M do -s &lt;tamanho&gt; &lt;destino&gt;</code> para enviar pacotes com DF=1 e tamanhos variados. No Windows, use <code>ping -f -l &lt;tamanho&gt; &lt;destino&gt;</code>. (a) Comece com 1472 bytes (1472 + 28 bytes de cabe&ccedil;alhos = 1500). Se receber resposta, o MTU do caminho &eacute; &ge; 1500; se receber &ldquo;Frag needed&rdquo;, reduza o tamanho; (b) Fa&ccedil;a busca bin&aacute;ria para descobrir o MTU exato at&eacute; o gateway local e at&eacute; um destino na internet; (c) Se o MTU for diferente de 1500, explique o que pode estar causando isso (PPPoE, VPN, t&uacute;nel).</div>
+                </div>
+            </div>
+            <div class="prat-step">
+                <div class="step-num">5</div>
+                <div class="step-body">
+                    <div class="step-label">&#x1F465; Trabalho em grupo &mdash; Simula&ccedil;&atilde;o do roteamento IPv4</div>
+                    <div class="step-desc"><strong>(Aprendizagem Baseada em Equipes &mdash; grupos de 4&ndash;5 alunos)</strong> Monte uma topologia no papel com 5 roteadores e 3 redes distintas. Cada grupo recebe um &ldquo;pacote&rdquo; (cart&atilde;o com IP de origem, destino, TTL inicial e tamanho). Simulem: (a) o caminho hop-a-hop decrementando o TTL; (b) o comportamento quando o TTL chega a 0 no meio do caminho; (c) a fragmenta&ccedil;&atilde;o quando o pacote passa por um enlace com MTU menor; (d) o que acontece quando o bit DF est&aacute; ativo e a fragmenta&ccedil;&atilde;o seria necess&aacute;ria. <em>Apresentem os resultados ao restante da turma e comparem os caminhos.</em></div>
+                </div>
+            </div>
+            <div class="prat-step">
+                <div class="step-num">6</div>
+                <div class="step-body">
+                    <div class="step-label">&#x1F9E9; Computa&ccedil;&atilde;o desplugada &mdash; Montando o cabe&ccedil;alho IPv4</div>
+                    <div class="step-desc"><strong>(Sem computador &mdash; metodologia ativa)</strong> Cada aluno recebe uma folha impressa com o diagrama do cabe&ccedil;alho IPv4 em branco. O professor dita um cen&aacute;rio: &ldquo;PC-A (10.0.0.5) envia um arquivo de 3000 bytes para servidor (172.16.0.100), TTL=64, protocolo TCP, sem fragmentar.&rdquo; Os alunos preenchem cada campo do cabe&ccedil;alho. Em seguida, compare com o vizinho: as respostas batem? Discutam as diferen&ccedil;as. <em>Varia&ccedil;&atilde;o: o professor anuncia que um enlace tem MTU=1400 &mdash; refazer os c&aacute;lculos de fragmenta&ccedil;&atilde;o.</em></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="prat-observe">
+            <strong>&#x1F4CC; Para refletir:</strong> o IPv4 foi projetado em 1981 com endere&ccedil;amento de 32 bits, suficiente para uma rede acad&ecirc;mica de poucos milh&otilde;es de dispositivos. Ningu&eacute;m imaginou que 40 anos depois haveria bilh&otilde;es de smartphones, sensores IoT e servidores. Entender o IPv4 &mdash; suas limita&ccedil;&otilde;es de endere&ccedil;amento, a aus&ecirc;ncia de QoS nativo e a fragmenta&ccedil;&atilde;o ineficiente &mdash; &eacute; fundamental para compreender <em>por que</em> o IPv6 foi projetado da forma que foi.
+        </div>
+
+        <div class="ex-actions">
+            <button class="btn-print" onclick="printPractical('prat-rc09', 'Aula 9 \u2014 Protocolo IPv4')">&#x1F5A8;&#xFE0F; Imprimir roteiro</button>
+        </div>
+    </div>
+
+    <!-- MÚLTIPLA ESCOLHA -->
+    <div class="content-card exercise-card">
+        <h2>&#x2753; Verifique seu Conhecimento</h2>
+
+        <div class="mc-question" data-correct="b">
+            <p class="mc-q-text">Um pacote IPv4 chega a um roteador com TTL=1. O que o roteador faz?</p>
+            <div class="mc-options">
+                <div class="mc-option" data-option="a"><span class="mc-letter">A</span><span>Encaminha o pacote normalmente, pois TTL=1 ainda &eacute; v&aacute;lido</span></div>
+                <div class="mc-option" data-option="b"><span class="mc-letter">B</span><span>Decrementa o TTL para 0, descarta o pacote e envia ICMP Time Exceeded ao remetente</span></div>
+                <div class="mc-option" data-option="c"><span class="mc-letter">C</span><span>Reenvia o pacote ao host de origem solicitando um novo TTL</span></div>
+                <div class="mc-option" data-option="d"><span class="mc-letter">D</span><span>Incrementa o TTL para 2 e tenta encontrar um caminho alternativo</span></div>
+            </div>
+            <div class="mc-explanation">&#x2713; O roteador decrementa o TTL antes de decidir encaminhar. Com TTL=1, após decrementar o TTL fica 0; o pacote &eacute; descartado e o roteador gera uma mensagem ICMP tipo 11 (Time Exceeded) para o IP de origem. Esse mecanismo &eacute; a base do funcionamento do traceroute.</div>
+        </div>
+        <hr class="mc-sep">
+
+        <div class="mc-question" data-correct="c">
+            <p class="mc-q-text">Um pacote IPv4 possui os seguintes campos: Identifica&ccedil;&atilde;o=9999, Flags: DF=0, MF=1, Offset=185. O que isso indica?</p>
+            <div class="mc-options">
+                <div class="mc-option" data-option="a"><span class="mc-letter">A</span><span>É o primeiro e &uacute;nico fragmento do pacote original</span></div>
+                <div class="mc-option" data-option="b"><span class="mc-letter">B</span><span>É o &uacute;ltimo fragmento; n&atilde;o h&aacute; mais fragmentos ap&oacute;s ele</span></div>
+                <div class="mc-option" data-option="c"><span class="mc-letter">C</span><span>É um fragmento intermedi&aacute;rio (n&atilde;o &eacute; o primeiro nem o &uacute;ltimo), e seus dados come&ccedil;am no byte 1480 do pacote original</span></div>
+                <div class="mc-option" data-option="d"><span class="mc-letter">D</span><span>O pacote n&atilde;o pode ser fragmentado pois DF=0</span></div>
+            </div>
+            <div class="mc-explanation">&#x2713; MF=1 significa que ainda h&aacute; mais fragmentos ap&oacute;s este (n&atilde;o &eacute; o &uacute;ltimo). Offset=185 significa que os dados deste fragmento come&ccedil;am na posi&ccedil;&atilde;o 185 × 8 = 1480 bytes do payload original. DF=0 apenas diz que fragmenta&ccedil;&atilde;o &eacute; permitida (mas n&atilde;o significa que &eacute; o primeiro). O primeiro fragmento teria Offset=0.</div>
+        </div>
+        <hr class="mc-sep">
+
+        <div class="mc-question" data-correct="d">
+            <p class="mc-q-text">Por que o roteador IPv4 precisa recalcular o checksum do cabe&ccedil;alho a cada salto?</p>
+            <div class="mc-options">
+                <div class="mc-option" data-option="a"><span class="mc-letter">A</span><span>Porque o IP de destino muda a cada salto</span></div>
+                <div class="mc-option" data-option="b"><span class="mc-letter">B</span><span>Porque o roteador pode alterar as op&ccedil;&otilde;es do cabe&ccedil;alho em tr&acirc;nsito</span></div>
+                <div class="mc-option" data-option="c"><span class="mc-letter">C</span><span>Porque o tamanho do cabe&ccedil;alho aumenta a cada salto</span></div>
+                <div class="mc-option" data-option="d"><span class="mc-letter">D</span><span>Porque o TTL &eacute; decrementado em cada salto, alterando o cabe&ccedil;alho; como o checksum cobre o cabe&ccedil;alho, ele deve ser recalculado ap&oacute;s qualquer modifica&ccedil;&atilde;o</span></div>
+            </div>
+            <div class="mc-explanation">&#x2713; O checksum do cabe&ccedil;alho IPv4 &eacute; calculado sobre todos os campos do cabe&ccedil;alho. Como o TTL &eacute; decrementado em 1 em cada roteador, o cabe&ccedil;alho muda &mdash; e qualquer mudan&ccedil;a invalida o checksum anterior. Isso &eacute; um dos motivos pelos quais o IPv6 eliminou o checksum de cabe&ccedil;alho: o overhead de recalcular a cada salto era considerado desnecess&aacute;rio com as redes modernas mais confi&aacute;veis.</div>
+        </div>
+        <hr class="mc-sep">
+
+        <div class="mc-question" data-correct="a">
+            <p class="mc-q-text">Um host envia um ping com DF=1 (Don&rsquo;t Fragment) e o pacote precisa passar por um enlace com MTU menor que o tamanho do pacote. O que acontece?</p>
+            <div class="mc-options">
+                <div class="mc-option" data-option="a"><span class="mc-letter">A</span><span>O roteador descarta o pacote e envia ICMP &ldquo;Destination Unreachable: Fragmentation Needed&rdquo; ao remetente com o MTU do enlace bloqueante</span></div>
+                <div class="mc-option" data-option="b"><span class="mc-letter">B</span><span>O roteador fragmenta o pacote mesmo com DF=1, pois a entrega tem prioridade</span></div>
+                <div class="mc-option" data-option="c"><span class="mc-letter">C</span><span>O pacote fica em fila no roteador at&eacute; que o MTU do enlace aumente</span></div>
+                <div class="mc-option" data-option="d"><span class="mc-letter">D</span><span>O roteador negocia um MTU maior com o pr&oacute;ximo enlace antes de encaminhar</span></div>
+            </div>
+            <div class="mc-explanation">&#x2713; Com DF=1, fragmenta&ccedil;&atilde;o &eacute; proibida. Se o pacote &eacute; grande demais para o pr&oacute;ximo enlace, o roteador deve descartar e notificar o remetente via ICMP tipo 3, c&oacute;digo 4 (Fragmentation Needed and DF Set), incluindo o MTU do enlace. O remetente pode ent&atilde;o ajustar o tamanho dos pacotes. Esse &eacute; o mecanismo do PMTUD (Path MTU Discovery).</div>
+        </div>
+        <hr class="mc-sep">
+
+        <div class="mc-question" data-correct="c">
+            <p class="mc-q-text">Ao executar <code>traceroute 8.8.8.8</code>, a linha exibe <code>* * *</code> para o 4&ordm; salto. Qual a interpreta&ccedil;&atilde;o mais prov&aacute;vel?</p>
+            <div class="mc-options">
+                <div class="mc-option" data-option="a"><span class="mc-letter">A</span><span>O destino 8.8.8.8 foi alcan&ccedil;ado com sucesso no 4&ordm; salto</span></div>
+                <div class="mc-option" data-option="b"><span class="mc-letter">B</span><span>O roteador no 4&ordm; salto est&aacute; desligado e a rota foi interrompida permanentemente</span></div>
+                <div class="mc-option" data-option="c"><span class="mc-letter">C</span><span>O roteador no 4&ordm; salto recebeu o pacote mas n&atilde;o respondeu ao ICMP (bloqueado por firewall), embora continue encaminhando tr&aacute;fego normalmente</span></div>
+                <div class="mc-option" data-option="d"><span class="mc-letter">D</span><span>O traceroute sofreu um erro e n&atilde;o deve ser confiado ap&oacute;s esse ponto</span></div>
+            </div>
+            <div class="mc-explanation">&#x2713; <code>* * *</code> significa que o probe com TTL correspondente foi enviado, mas nenhuma resposta ICMP chegou dentro do timeout. A causa mais comum &eacute; que o roteador no 4&ordm; salto tem uma regra de firewall bloqueando respostas ICMP (Time Exceeded). Isso n&atilde;o significa que a rota est&aacute; quebrada &mdash; o traceroute geralmente continua nos pr&oacute;ximos saltos e atinge o destino normalmente.</div>
+        </div>
+    </div>
+
+    <div class="nav-footer">
+        <a href="rc08-mac-arp.html" class="nav-link">&#x2B05; Anterior: Endere&ccedil;amento MAC e ARP</a>
+        <a href="rc10-enderecamento.html" class="nav-link">Pr&oacute;xima: Endere&ccedil;amento IPv4 e Sub-redes &#x27A1;</a>
+    </div>
+
+</div>
+
+<script src="slide-mode.js"></script>
+<script src="exercise-drag.js"></script>
+<script src="exercise-print.js"></script>
+<script src="exercise-mc.js"></script>
+</body>
+</html>
