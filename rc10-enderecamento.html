@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aula 10 &mdash; Endereçamento IPv4 e Sub-redes</title>
+    <link rel="stylesheet" href="slide-mode.css">
+    <link rel="stylesheet" href="exercise.css">
+    <link rel="stylesheet" href="lesson.css">
+    <style>
+        :root { --primary:#0f9d58; --secondary:#0a6e3d; --bg-light:#f0fdf4; --text-dark:#2d3748; }
+
+        /* ── HERO STATS ── */
+        .hero-stats { display:flex; flex-wrap:wrap; gap:10px; margin-top:18px; }
+        .hero-stat { background:rgba(15,157,88,.1); border:1px solid rgba(15,157,88,.22); border-radius:10px; padding:8px 16px; text-align:center; }
+        .hero-stat-val { display:block; font-size:1.15em; font-weight:800; color:var(--primary); }
+        .hero-stat-lbl { display:block; font-size:.63em; color:#718096; font-weight:700; text-transform:uppercase; letter-spacing:.05em; margin-top:2px; }
+
+        /* ── TRAIT GRID ── */
+        .trait-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:10px; margin:16px 0; }
+        .trait-card { border-radius:12px; padding:14px 16px; border-top:3px solid transparent; }
+        .tc-red    { background:#fef2f2; border-top-color:#ef4444; }
+        .tc-amber  { background:#fffbeb; border-top-color:#f59e0b; }
+        .tc-blue   { background:#eff6ff; border-top-color:#3b82f6; }
+        .tc-purple { background:#fdf4ff; border-top-color:#a855f7; }
+        .tc-green  { background:#f0fdf4; border-top-color:#10b981; }
+        .tc-slate  { background:#f8fafc; border-top-color:#64748b; }
+        .trait-prop { font-size:.68em; font-weight:800; text-transform:uppercase; letter-spacing:.06em; margin-bottom:5px; }
+        .tc-red    .trait-prop { color:#dc2626; }
+        .tc-amber  .trait-prop { color:#d97706; }
+        .tc-blue   .trait-prop { color:#2563eb; }
+        .tc-purple .trait-prop { color:#9333ea; }
+        .tc-green  .trait-prop { color:#16a34a; }
+        .tc-slate  .trait-prop { color:#475569; }
+        .trait-val  { font-size:.88em; font-weight:700; color:#1e293b; margin-bottom:4px; }
+        .trait-impl { font-size:.77em; color:#64748b; line-height:1.4; }
+
+        /* ── IP BINARY VISUALIZER ── */
+        .ip-viz { background:#0f172a; border-radius:16px; padding:22px; margin:20px 0; }
+        .ip-viz-title { color:#94a3b8; font-size:.74em; font-weight:700; text-transform:uppercase; letter-spacing:.06em; margin-bottom:16px; }
+        .ip-octets { display:flex; gap:6px; flex-wrap:wrap; justify-content:center; margin-bottom:16px; }
+        .ip-octet-block { display:flex; flex-direction:column; align-items:center; gap:5px; }
+        .ip-octet-dec { color:#f1f5f9; font-size:1.1em; font-weight:800; font-family:monospace; }
+        .ip-octet-bits { display:flex; gap:2px; }
+        .ip-bit { width:22px; height:28px; border-radius:5px; display:flex; align-items:center; justify-content:center; font-size:.78em; font-weight:800; font-family:monospace; transition:background .35s, color .35s; }
+        .ip-bit-net  { background:#1d4ed8; color:#bfdbfe; }
+        .ip-bit-host { background:#1e293b; color:#64748b; }
+        .ip-bit-zero { background:#0f172a; color:#334155; }
+        .ip-octet-sep { color:#334155; font-size:1.3em; font-weight:300; padding:0 1px; align-self:center; padding-bottom:6px; }
+        .ip-legend { display:flex; gap:16px; justify-content:center; margin-bottom:14px; }
+        .ip-legend-item { display:flex; align-items:center; gap:5px; font-size:.73em; color:#94a3b8; }
+        .ip-legend-box { width:14px; height:14px; border-radius:3px; }
+
+        /* ── SUBNET SLICER ── */
+        .slicer-wrap { background:#0f172a; border-radius:16px; padding:22px; margin:20px 0; }
+        .slicer-bar { display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin-bottom:18px; }
+        .slicer-bar label { color:#94a3b8; font-size:.78em; font-weight:700; }
+        .slicer-bar select, .slicer-bar input { background:#1e293b; color:#f1f5f9; border:1px solid #334155; border-radius:8px; padding:6px 12px; font-size:.83em; font-family:inherit; outline:none; }
+        .slicer-bar select:focus, .slicer-bar input:focus { border-color:#0f9d58; }
+        .slicer-btn { background:#0f9d58; color:#fff; border:none; border-radius:8px; padding:7px 20px; font-size:.83em; font-weight:700; cursor:pointer; font-family:inherit; transition:background .2s; }
+        .slicer-btn:hover { background:#16a34a; }
+        .slicer-result { display:flex; flex-direction:column; gap:6px; }
+        .snet-row { background:#1e293b; border-radius:10px; padding:10px 16px; display:flex; flex-wrap:wrap; gap:8px; align-items:center; animation:fadeInUp .3s ease both; }
+        .snet-id   { font-weight:800; font-family:monospace; font-size:.85em; color:#34d399; min-width:140px; }
+        .snet-tag  { font-size:.72em; padding:2px 8px; border-radius:12px; font-weight:700; }
+        .snet-tag-net  { background:rgba(29,78,216,.3); color:#93c5fd; }
+        .snet-tag-bc   { background:rgba(239,68,68,.25); color:#fca5a5; }
+        .snet-tag-host { background:rgba(15,157,88,.25); color:#6ee7b7; }
+        .snet-bar { flex:1; min-width:160px; height:12px; background:#0f172a; border-radius:6px; overflow:hidden; position:relative; }
+        .snet-bar-fill { height:100%; border-radius:6px; background:linear-gradient(90deg,#0f9d58,#34d399); transition:width .5s ease; }
+        @keyframes fadeInUp { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+
+        /* ── PRIVATE ADDR TABLE ── */
+        .priv-table { width:100%; border-collapse:collapse; font-size:.88em; }
+        .priv-table th { background:#f1f5f9; padding:10px 12px; text-align:left; font-size:.75em; text-transform:uppercase; letter-spacing:.06em; color:#64748b; }
+        .priv-table td { padding:10px 12px; border-bottom:1px solid #f1f5f9; }
+        .priv-table tr:last-child td { border-bottom:none; }
+        .priv-range { font-family:monospace; font-weight:700; color:#1a73e8; }
+        .priv-cidr  { font-family:monospace; font-size:.85em; color:#64748b; }
+
+        /* ── CIDR SLIDER ── */
+        .cidr-explorer { background:#0f172a; border-radius:16px; padding:22px; margin:20px 0; }
+        .cidr-slider-wrap { display:flex; align-items:center; gap:14px; margin:14px 0; flex-wrap:wrap; }
+        .cidr-slider { -webkit-appearance:none; appearance:none; height:6px; border-radius:3px; background:#334155; outline:none; flex:1; min-width:120px; cursor:pointer; }
+        .cidr-slider::-webkit-slider-thumb { -webkit-appearance:none; width:20px; height:20px; border-radius:50%; background:#0f9d58; cursor:pointer; border:2px solid #34d399; }
+        .cidr-val-badge { background:#0f9d58; color:#fff; font-weight:800; font-size:1em; padding:4px 14px; border-radius:8px; font-family:monospace; min-width:42px; text-align:center; }
+        .cidr-info-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(130px,1fr)); gap:8px; margin-top:14px; }
+        .cidr-info-card { background:#1e293b; border-radius:10px; padding:10px 14px; }
+        .cidr-info-lbl { font-size:.65em; color:#64748b; text-transform:uppercase; font-weight:700; margin-bottom:4px; }
+        .cidr-info-val { font-size:.92em; font-weight:800; color:#f1f5f9; font-family:monospace; }
+
+        @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+        @keyframes slideDown { from{opacity:0;transform:translateY(-8px)} to{opacity:1;transform:translateY(0)} }
+
+        @media(max-width:600px) {
+            .trait-grid { grid-template-columns:1fr 1fr; }
+            .ip-bit { width:18px; height:24px; font-size:.66em; }
+            .slicer-bar { flex-direction:column; align-items:flex-start; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="top-bar">
+    <a href="index.html" class="back-btn">&#x2B05; Voltar ao Dashboard</a>
+    <span class="page-badge">2&ordm; Bimestre &mdash; Camada de Internet</span>
+    <button class="slide-toggle" id="slideToggleBtn">&#x1F4FA; Modo Slide</button>
+</div>
+
+<div class="content-wrapper">
+
+    <div class="lesson-hero">
+        <h1>&#x1F522; Endere&ccedil;amento IPv4 e Sub-redes</h1>
+        <p class="subtitle">Aula 10 &mdash; Classes de endere&ccedil;os, m&aacute;scara de sub-rede, CIDR e subnetting: como dividir e organizar o espa&ccedil;o de endere&ccedil;os IP de forma eficiente</p>
+        <div class="hero-stats">
+            <div class="hero-stat"><span class="hero-stat-val">32</span><span class="hero-stat-lbl">bits por endereço</span></div>
+            <div class="hero-stat"><span class="hero-stat-val">2³²</span><span class="hero-stat-lbl">~4,29 bi endereços</span></div>
+            <div class="hero-stat"><span class="hero-stat-val">3</span><span class="hero-stat-lbl">classes principais</span></div>
+            <div class="hero-stat"><span class="hero-stat-val">/0–/32</span><span class="hero-stat-lbl">prefixos CIDR</span></div>
+            <div class="hero-stat"><span class="hero-stat-val">RFC 1918</span><span class="hero-stat-lbl">endereços privados</span></div>
+        </div>
+    </div>
+
+    <!-- CARD 1 — Classes de Endereços -->
+    <div class="content-card">
+        <h2>&#x1F3F7;&#xFE0F; Classes de Endere&ccedil;os IPv4</h2>
+        <p>Antes do CIDR, o espa&ccedil;o IPv4 era dividido em <strong>classes fixas</strong> (Classful Addressing). Cada faixa de endere&ccedil;o pertencia a uma classe que determinava automaticamente a m&aacute;scara e a quantidade de redes vs. hosts.</p>
+
+        <div class="trait-grid">
+            <div class="trait-card tc-blue">
+                <div class="trait-prop">Classe A</div>
+                <div class="trait-val">1.0.0.0 – 126.255.255.255</div>
+                <div class="trait-impl">Primeiro bit = 0. Máscara /8 (255.0.0.0). 126 redes × ~16 mi hosts. Empresas gigantes e ISPs.</div>
+            </div>
+            <div class="trait-card tc-green">
+                <div class="trait-prop">Classe B</div>
+                <div class="trait-val">128.0.0.0 – 191.255.255.255</div>
+                <div class="trait-impl">Dois primeiros bits = 10. Máscara /16 (255.255.0.0). 16.384 redes × 65.534 hosts.</div>
+            </div>
+            <div class="trait-card tc-amber">
+                <div class="trait-prop">Classe C</div>
+                <div class="trait-val">192.0.0.0 – 223.255.255.255</div>
+                <div class="trait-impl">Três primeiros bits = 110. Máscara /24 (255.255.255.0). ~2 mi redes × 254 hosts. Mais comum em redes locais.</div>
+            </div>
+            <div class="trait-card tc-purple">
+                <div class="trait-prop">Classe D</div>
+                <div class="trait-val">224.0.0.0 – 239.255.255.255</div>
+                <div class="trait-impl">Multicast. Não há hosts nem redes nessa faixa. Usada por protocolos como OSPF (224.0.0.5) e PIM.</div>
+            </div>
+            <div class="trait-card tc-slate">
+                <div class="trait-prop">Classe E</div>
+                <div class="trait-val">240.0.0.0 – 255.255.255.254</div>
+                <div class="trait-impl">Reservada para pesquisa experimental. Nunca alocada para uso geral na internet pública.</div>
+            </div>
+        </div>
+
+        <div class="alert-box">
+            <p>&#x26A0;&#xFE0F; <strong>Limite do Classful:</strong> uma organização que precisava de 300 hosts era obrigada a pedir uma rede Classe B (65.534 hosts), desperdiçando mais de 65.000 endereços. Este esgotamento acelerado levou à criação do CIDR em 1993.</p>
+        </div>
+
+        <h3>O endere&ccedil;o 127.x.x.x — loopback</h3>
+        <p>A faixa <code>127.0.0.0/8</code> &eacute; reservada para <strong>loopback</strong>: o tr&aacute;fego enviado para qualquer endere&ccedil;o nessa faixa retorna ao pr&oacute;prio host sem sair pela interface de rede. O endere&ccedil;o mais usado &eacute; <code>127.0.0.1</code> (alias <code>localhost</code>).</p>
+    </div>
+
+    <!-- CARD 2 — Máscara de Sub-rede -->
+    <div class="content-card">
+        <h2>&#x1F9E9; M&aacute;scara de Sub-rede</h2>
+        <p>A m&aacute;scara de sub-rede &eacute; um n&uacute;mero de 32 bits com os bits de <strong>rede</strong> valendo 1 e os bits de <strong>host</strong> valendo 0. Aplicando a opera&ccedil;&atilde;o AND bit a bit entre o endere&ccedil;o IP e a m&aacute;scara, obtemos o <strong>endere&ccedil;o de rede</strong>.</p>
+
+        <!-- IP Binary Visualizer -->
+        <div class="ip-viz">
+            <div class="ip-viz-title">&#x1F50D; Visualizador de bits — endere&ccedil;o, m&aacute;scara e opera&ccedil;&atilde;o AND</div>
+            <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:16px;">
+                <div style="display:flex;flex-direction:column;gap:4px;">
+                    <label style="color:#94a3b8;font-size:.72em;font-weight:700;">Endereço IP</label>
+                    <input id="vizIpInput" value="192.168.10.45" style="background:#1e293b;color:#f1f5f9;border:1px solid #334155;border-radius:8px;padding:6px 12px;font-size:.85em;font-family:monospace;width:160px;outline:none;">
+                </div>
+                <div style="display:flex;flex-direction:column;gap:4px;">
+                    <label style="color:#94a3b8;font-size:.72em;font-weight:700;">Máscara (CIDR)</label>
+                    <input id="vizCidrInput" type="number" min="1" max="30" value="24" style="background:#1e293b;color:#f1f5f9;border:1px solid #334155;border-radius:8px;padding:6px 12px;font-size:.85em;font-family:monospace;width:70px;outline:none;">
+                </div>
+                <button onclick="updateViz()" style="background:#0f9d58;color:#fff;border:none;border-radius:8px;padding:8px 18px;font-size:.83em;font-weight:700;cursor:pointer;font-family:inherit;margin-top:18px;">Visualizar</button>
+            </div>
+            <div id="vizDisplay"></div>
+            <div class="ip-legend">
+                <div class="ip-legend-item"><div class="ip-legend-box" style="background:#1d4ed8;"></div>Bits de Rede</div>
+                <div class="ip-legend-item"><div class="ip-legend-box" style="background:#1e293b;border:1px solid #334155;"></div>Bits de Host</div>
+            </div>
+            <div id="vizResult" style="margin-top:10px;"></div>
+        </div>
+
+        <h3>Endere&ccedil;os derivados de uma sub-rede</h3>
+        <p>Dada uma rede com endere&ccedil;o e m&aacute;scara, sempre podemos calcular 3 endere&ccedil;os especiais:</p>
+        <div class="flow-steps">
+            <div class="flow-step">
+                <span class="step-num">1</span>
+                <div><strong>Endere&ccedil;o de Rede</strong> — todos os bits de host = 0. N&atilde;o pode ser atribu&iacute;do a hosts. Ex: 192.168.1.<strong>0</strong></div>
+            </div>
+            <div class="flow-step">
+                <span class="step-num">2</span>
+                <div><strong>Endere&ccedil;o de Broadcast</strong> — todos os bits de host = 1. Pacotes enviados para este endere&ccedil;o chegam a <em>todos</em> os hosts da sub-rede. Ex: 192.168.1.<strong>255</strong></div>
+            </div>
+            <div class="flow-step">
+                <span class="step-num">3</span>
+                <div><strong>Hosts us&aacute;veis</strong> — todos os endere&ccedil;os entre rede+1 e broadcast−1. F&oacute;rmula: <strong>2^bits_host − 2</strong>. Para /24: 2⁸ − 2 = 254 hosts.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CARD 3 — CIDR -->
+    <div class="content-card">
+        <h2>&#x1F5FA;&#xFE0F; CIDR &mdash; Roteamento Interdom&iacute;nio Sem Classe</h2>
+        <p>O <strong>CIDR</strong> (Classless Inter-Domain Routing), definido nas RFCs 1518 e 1519 em 1993, aboliu as classes fixas e introduziu a <strong>nota&ccedil;&atilde;o de prefixo</strong> (<code>/n</code>), permitindo blocos de qualquer tamanho.</p>
+
+        <!-- CIDR Slider Explorer -->
+        <div class="cidr-explorer">
+            <div style="color:#94a3b8;font-size:.74em;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;">&#x1F3A2; Explorer de prefixo CIDR — arraste o slider</div>
+            <div class="cidr-slider-wrap">
+                <span style="color:#64748b;font-size:.78em;">/1</span>
+                <input type="range" class="cidr-slider" id="cidrSlider" min="1" max="30" value="24">
+                <span style="color:#64748b;font-size:.78em;">/30</span>
+                <div class="cidr-val-badge" id="cidrBadge">/24</div>
+            </div>
+            <div style="margin:6px 0 14px;">
+                <div id="cidrBitBar" style="display:flex;gap:2px;flex-wrap:wrap;"></div>
+            </div>
+            <div class="cidr-info-grid" id="cidrInfoGrid"></div>
+        </div>
+
+        <h3>Agrega&ccedil;&atilde;o de Rotas (Supernetting)</h3>
+        <p>O CIDR tamb&eacute;m permite <strong>agregar</strong> m&uacute;ltiplas redes menores em um &uacute;nico prefixo maior, reduzindo o tamanho das tabelas de roteamento. Exemplo:</p>
+        <div class="terminal-block">
+            <div class="terminal-header">Agregação de 4 redes /24 em um único prefixo /22</div>
+<pre>
+  192.168.0.0/24  ─┐
+  192.168.1.0/24  ─┤  podem ser anunciadas como  →  192.168.0.0/22
+  192.168.2.0/24  ─┤  (4 redes × 256 endereços = 1024 endereços)
+  192.168.3.0/24  ─┘
+
+  Prefixo /22 em binário:
+    192.168.00 | 000000.00000000
+                └── 22 bits fixos, 10 bits de host
+</pre>
+        </div>
+
+        <div class="tip-box">
+            <p>&#x1F4A1; <strong>Impacto do CIDR:</strong> antes do CIDR, a tabela de roteamento da internet tinha mais de 60.000 entradas em 1994. Com a agregação CIDR, o crescimento foi drasticamente reduzido — e routers mais eficientes puderam ser fabricados.</p>
+        </div>
+    </div>
+
+    <!-- CARD 4 — Subnetting -->
+    <div class="content-card">
+        <h2>&#x2702;&#xFE0F; Subnetting &mdash; Dividindo Redes</h2>
+        <p>O <strong>subnetting</strong> consiste em &ldquo;emprestar&rdquo; bits do campo de host para criar sub-redes menores dentro de um bloco maior. Cada bit emprestado <strong>dobra</strong> o n&uacute;mero de sub-redes e <strong>divide pela metade</strong> o tamanho de cada uma.</p>
+
+        <div class="highlight-box">
+            <p><strong>F&oacute;rmulas fundamentais:</strong></p>
+            <ul>
+                <li><strong>N&uacute;mero de sub-redes</strong> = 2^s &nbsp;(s = bits emprestados)</li>
+                <li><strong>Hosts por sub-rede</strong> = 2^h &minus; 2 &nbsp;(h = bits de host restantes)</li>
+                <li><strong>Bloco da sub-rede</strong> = 256 &minus; valor do octeto da m&aacute;scara</li>
+            </ul>
+        </div>
+
+        <!-- Subnet Slicer -->
+        <div class="slicer-wrap">
+            <div style="color:#94a3b8;font-size:.74em;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:14px;">&#x1F52A; Subnet Slicer &mdash; calculadora interativa</div>
+            <div class="slicer-bar">
+                <div style="display:flex;flex-direction:column;gap:4px;">
+                    <label>Rede base</label>
+                    <input id="slicerNet" value="192.168.10.0" style="width:150px;">
+                </div>
+                <div style="display:flex;flex-direction:column;gap:4px;">
+                    <label>Prefixo original</label>
+                    <select id="slicerBase">
+                        <option value="24" selected>/24 (Classe C)</option>
+                        <option value="16">/16 (Classe B)</option>
+                        <option value="8">/8 (Classe A)</option>
+                    </select>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:4px;">
+                    <label>Novo prefixo</label>
+                    <select id="slicerNew">
+                        <option value="25">/25 — 2 sub-redes</option>
+                        <option value="26" selected>/26 — 4 sub-redes</option>
+                        <option value="27">/27 — 8 sub-redes</option>
+                        <option value="28">/28 — 16 sub-redes</option>
+                        <option value="29">/29 — 32 sub-redes</option>
+                        <option value="30">/30 — 64 sub-redes</option>
+                    </select>
+                </div>
+                <button class="slicer-btn" onclick="runSlicer()">&#x1F52A; Fatiar rede</button>
+            </div>
+            <div class="slicer-result" id="slicerResult"></div>
+        </div>
+
+        <h3>Exemplo resolvido passo a passo</h3>
+        <p>Problema: dividir a rede <strong>192.168.5.0/24</strong> em sub-redes com no m&iacute;nimo <strong>50 hosts</strong> cada.</p>
+        <div class="flow-steps">
+            <div class="flow-step">
+                <span class="step-num">1</span>
+                <div><strong>Calcular bits de host necess&aacute;rios:</strong> precisamos de 50 hosts. 2⁶ = 64 − 2 = 62 hosts (suficiente). Portanto, reservamos 6 bits para hosts.</div>
+            </div>
+            <div class="flow-step">
+                <span class="step-num">2</span>
+                <div><strong>Determinar o prefixo:</strong> 32 − 6 = <strong>/26</strong>. A m&aacute;scara fica 255.255.255.<strong>192</strong> (11000000 em bin&aacute;rio).</div>
+            </div>
+            <div class="flow-step">
+                <span class="step-num">3</span>
+                <div><strong>Calcular o bloco:</strong> 256 − 192 = 64. As sub-redes s&atilde;o: .0, .64, .128, .192</div>
+            </div>
+            <div class="flow-step">
+                <span class="step-num">4</span>
+                <div><strong>Resultado:</strong> 4 sub-redes, cada uma com 62 hosts us&aacute;veis. Sub-rede 1: hosts de .1 a .62, broadcast .63.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CARD 5 — Endereços Especiais e Privados -->
+    <div class="content-card">
+        <h2>&#x1F512; Endere&ccedil;os Especiais e Privados</h2>
+        <p>Determinadas faixas de endere&ccedil;os IPv4 s&atilde;o <strong>reservadas</strong> por RFCs e n&atilde;o podem aparecer no roteamento da internet p&uacute;blica.</p>
+
+        <h3>Endere&ccedil;os Privados — RFC 1918</h3>
+        <p>O RFC 1918 definiu tr&ecirc;s blocos para uso em redes internas (<em>intranet</em>). Todo tr&aacute;fego com origem ou destino nessas faixas &eacute; <strong>descartado pelos roteadores da internet</strong>.</p>
+
+        <table class="priv-table">
+            <thead>
+                <tr>
+                    <th>Classe original</th>
+                    <th>Faixa privada</th>
+                    <th>Prefixo CIDR</th>
+                    <th>Total de endere&ccedil;os</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>A</td>
+                    <td><span class="priv-range">10.0.0.0 – 10.255.255.255</span></td>
+                    <td><span class="priv-cidr">10.0.0.0/8</span></td>
+                    <td>16.777.216</td>
+                </tr>
+                <tr>
+                    <td>B</td>
+                    <td><span class="priv-range">172.16.0.0 – 172.31.255.255</span></td>
+                    <td><span class="priv-cidr">172.16.0.0/12</span></td>
+                    <td>1.048.576</td>
+                </tr>
+                <tr>
+                    <td>C</td>
+                    <td><span class="priv-range">192.168.0.0 – 192.168.255.255</span></td>
+                    <td><span class="priv-cidr">192.168.0.0/16</span></td>
+                    <td>65.536</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>Outros endere&ccedil;os reservados</h3>
+        <div class="trait-grid" style="margin-top:12px;">
+            <div class="trait-card tc-blue">
+                <div class="trait-prop">Loopback</div>
+                <div class="trait-val">127.0.0.0/8</div>
+                <div class="trait-impl">Tráfego retorna ao próprio host. <code>127.0.0.1</code> = localhost. Nunca sai pela placa de rede.</div>
+            </div>
+            <div class="trait-card tc-amber">
+                <div class="trait-prop">Link-Local</div>
+                <div class="trait-val">169.254.0.0/16</div>
+                <div class="trait-impl">APIPA — atribuído automaticamente quando DHCP falha. Não é roteável. Windows e Linux usam essa faixa.</div>
+            </div>
+            <div class="trait-card tc-green">
+                <div class="trait-prop">Broadcast limitado</div>
+                <div class="trait-val">255.255.255.255</div>
+                <div class="trait-impl">Broadcast para toda a rede local, sem roteamento. Usado por DHCP Discover antes do cliente ter um IP.</div>
+            </div>
+            <div class="trait-card tc-purple">
+                <div class="trait-prop">Rede atual</div>
+                <div class="trait-val">0.0.0.0/8</div>
+                <div class="trait-impl">Representa "esta rede" ou "qualquer endereço". 0.0.0.0 = rota padrão em tabelas de roteamento.</div>
+            </div>
+            <div class="trait-card tc-red">
+                <div class="trait-prop">Documentação</div>
+                <div class="trait-val">192.0.2.0/24</div>
+                <div class="trait-impl">RFC 5737 reserva 192.0.2.0/24, 198.51.100.0/24 e 203.0.113.0/24 para exemplos e documentação técnica.</div>
+            </div>
+        </div>
+
+        <div class="tip-box">
+            <p>&#x1F310; <strong>NAT e endere&ccedil;os privados:</strong> como os endere&ccedil;os privados n&atilde;o s&atilde;o r&oacute;te&aacute;veis na internet, o <strong>NAT</strong> (Network Address Translation) traduz endere&ccedil;os privados para p&uacute;blicos ao sair para a internet &mdash; permitindo que milh&otilde;es de dispositivos compartilhem um &uacute;nico IP p&uacute;blico.</p>
+        </div>
+    </div>
+
+    <!-- CARD 6 — VLSM -->
+    <div class="content-card">
+        <h2>&#x1F4D0; VLSM &mdash; M&aacute;scaras de Comprimento Vari&aacute;vel</h2>
+        <p>O <strong>VLSM</strong> (Variable Length Subnet Masking) permite usar m&aacute;scaras de tamanhos diferentes dentro de uma mesma rede, otimizando o uso de endere&ccedil;os conforme a real necessidade de cada segmento.</p>
+
+        <div class="terminal-block">
+            <div class="terminal-header">VLSM — alocação eficiente para uma rede corporativa</div>
+<pre>
+  Rede disponível: 10.0.0.0/24 (254 hosts utilizáveis)
+
+  Requisitos:
+    Setor TI        → 60 hosts
+    Setor Vendas    → 30 hosts
+    Setor Diretoria → 10 hosts
+    Link WAN (P2P)  →  2 hosts
+
+  Alocação VLSM (do maior para o menor):
+  ┌─────────────────┬──────────────────┬────────┬────────────┐
+  │ Setor           │ Sub-rede         │ Prefixo│ Hosts util.│
+  ├─────────────────┼──────────────────┼────────┼────────────┤
+  │ TI              │ 10.0.0.0         │ /26    │ 62         │
+  │ Vendas          │ 10.0.0.64        │ /27    │ 30         │
+  │ Diretoria       │ 10.0.0.96        │ /28    │ 14         │
+  │ Link WAN        │ 10.0.0.112       │ /30    │  2         │
+  └─────────────────┴──────────────────┴────────┴────────────┘
+  Endereços usados: 128 de 254 — eficiência 50% (vs. 4 redes /26 = 100% desperdício)
+</pre>
+        </div>
+
+        <div class="highlight-box">
+            <p>&#x1F4CB; <strong>Regra de ouro do VLSM:</strong> sempre aloque sub-redes do <strong>maior para o menor</strong> e certifique-se que cada bloco está alinhado ao seu tamanho (endereço de rede divisível pelo tamanho do bloco). Ex: um bloco /27 (32 endereços) deve iniciar em múltiplos de 32: .0, .32, .64, .96...</p>
+        </div>
+
+        <h3>Ferramentas pr&aacute;ticas</h3>
+        <div class="cmd-grid">
+            <div class="cmd-card">
+                <div class="cmd-label">Linux — ipcalc</div>
+                <div class="cmd-code">ipcalc 192.168.1.0/26</div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-label">Linux — ip addr</div>
+                <div class="cmd-code">ip addr show eth0</div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-label">Windows — ipconfig</div>
+                <div class="cmd-code">ipconfig /all</div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-label">Windows — route</div>
+                <div class="cmd-code">route print</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ATIVIDADE PRÁTICA -->
+    <div class="content-card practical-activity">
+        <h2>&#x1F6E0;&#xFE0F; Atividade Pr&aacute;tica</h2>
+        <p>Resolva os exerc&iacute;cios de subnetting aplicando os conceitos da aula. Use papel e caneta ou o Subnet Slicer acima para verificar suas respostas.</p>
+
+        <div class="prat-steps">
+            <div class="prat-step">
+                <span class="prat-num">1</span>
+                <div>
+                    <strong>Classifica&ccedil;&atilde;o de Endere&ccedil;os</strong><br>
+                    Para cada endere&ccedil;o abaixo, identifique a classe e se &eacute; p&uacute;blico ou privado:
+                    <ul style="margin-top:8px;">
+                        <li><code>10.50.200.1</code></li>
+                        <li><code>172.25.0.1</code></li>
+                        <li><code>200.100.50.10</code></li>
+                        <li><code>192.168.0.254</code></li>
+                        <li><code>224.0.0.5</code></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="prat-step">
+                <span class="prat-num">2</span>
+                <div>
+                    <strong>C&aacute;lculo de Sub-rede</strong><br>
+                    Dado o endere&ccedil;o <code>172.16.45.130/20</code>, calcule:
+                    <ul style="margin-top:8px;">
+                        <li>A m&aacute;scara em decimal pontilhado</li>
+                        <li>O endere&ccedil;o de rede</li>
+                        <li>O endere&ccedil;o de broadcast</li>
+                        <li>O primeiro e o &uacute;ltimo host us&aacute;vel</li>
+                        <li>O total de hosts us&aacute;veis</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="prat-step">
+                <span class="prat-num">3</span>
+                <div>
+                    <strong>Design de Rede VLSM</strong><br>
+                    Voc&ecirc; recebeu o bloco <code>192.168.50.0/24</code>. Crie uma aloca&ccedil;&atilde;o VLSM para:
+                    <ul style="margin-top:8px;">
+                        <li>Laborat&oacute;rio: 100 hosts</li>
+                        <li>Administra&ccedil;&atilde;o: 40 hosts</li>
+                        <li>Wi-Fi: 20 hosts</li>
+                        <li>Servidores: 6 hosts</li>
+                        <li>Link de gerenciamento: 2 hosts</li>
+                    </ul>
+                    Para cada sub-rede, informe prefixo, endere&ccedil;o de rede, broadcast e faixa de hosts.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- QUESTÕES DE MÚLTIPLA ESCOLHA -->
+    <div class="content-card">
+        <h2>&#x2753; Quest&otilde;es de M&uacute;ltipla Escolha</h2>
+
+        <div class="mc-question" data-correct="B">
+            <p class="mc-enunciado"><strong>1.</strong> Um administrador precisa criar sub-redes com pelo menos 25 hosts cada, a partir da rede <code>10.0.0.0/24</code>. Qual &eacute; o prefixo correto?</p>
+            <ul class="mc-options">
+                <li data-option="A">/27 (30 hosts)</li>
+                <li data-option="B">/27 (30 hosts) — <em>aguardando seleção</em></li>
+                <li data-option="C">/28 (14 hosts)</li>
+                <li data-option="D">/25 (126 hosts)</li>
+            </ul>
+            <button class="btn-verificar">Verificar</button>
+            <div class="mc-feedback"></div>
+            <div class="mc-explicacao">2⁵ − 2 = 30 hosts. O prefixo <strong>/27</strong> oferece 30 hosts úteis por sub-rede — satisfaz o requisito de 25 hosts com o menor desperdício possível. O /28 tem apenas 14 hosts (insuficiente) e o /25 tem 126 (muito mais que o necessário).</div>
+        </div>
+
+        <div class="mc-question" data-correct="C">
+            <p class="mc-enunciado"><strong>2.</strong> Qual &eacute; o endere&ccedil;o de broadcast da rede <code>192.168.3.64/26</code>?</p>
+            <ul class="mc-options">
+                <li data-option="A">192.168.3.65</li>
+                <li data-option="B">192.168.3.126</li>
+                <li data-option="C">192.168.3.127</li>
+                <li data-option="D">192.168.3.255</li>
+            </ul>
+            <button class="btn-verificar">Verificar</button>
+            <div class="mc-feedback"></div>
+            <div class="mc-explicacao">Prefixo /26 → máscara 255.255.255.192. Bloco = 256−192 = 64. Sub-rede começa em .64, logo o broadcast é .64 + 64 − 1 = <strong>.127</strong>. Faixa de hosts: .65 a .126.</div>
+        </div>
+
+        <div class="mc-question" data-correct="A">
+            <p class="mc-enunciado"><strong>3.</strong> O endere&ccedil;o <code>172.25.100.1</code> pertence a qual classe e tipo?</p>
+            <ul class="mc-options">
+                <li data-option="A">Classe B — privado (RFC 1918)</li>
+                <li data-option="B">Classe B — público</li>
+                <li data-option="C">Classe C — privado</li>
+                <li data-option="D">Classe A — privado</li>
+            </ul>
+            <button class="btn-verificar">Verificar</button>
+            <div class="mc-feedback"></div>
+            <div class="mc-explicacao">Endereços entre 128 e 191 no primeiro octeto pertencem à <strong>Classe B</strong>. A faixa privada da Classe B é 172.<strong>16</strong>.0.0 a 172.<strong>31</strong>.255.255 (RFC 1918). Como 25 está entre 16 e 31, o endereço 172.25.100.1 é privado.</div>
+        </div>
+
+        <div class="mc-question" data-correct="D">
+            <p class="mc-enunciado"><strong>4.</strong> Quantas sub-redes s&atilde;o criadas ao aplicar o prefixo <code>/28</code> a uma rede <code>/24</code>?</p>
+            <ul class="mc-options">
+                <li data-option="A">4</li>
+                <li data-option="B">8</li>
+                <li data-option="C">12</li>
+                <li data-option="D">16</li>
+            </ul>
+            <button class="btn-verificar">Verificar</button>
+            <div class="mc-feedback"></div>
+            <div class="mc-explicacao">Bits emprestados = 28 − 24 = 4 bits. Número de sub-redes = 2⁴ = <strong>16</strong> sub-redes. Cada sub-rede tem 2⁴ − 2 = 14 hosts úteis. Tamanho de bloco = 256 ÷ 16 = 16 endereços por sub-rede.</div>
+        </div>
+
+        <div class="mc-question" data-correct="B">
+            <p class="mc-enunciado"><strong>5.</strong> Qual das afirma&ccedil;&otilde;es sobre o CIDR &eacute; <strong>incorreta</strong>?</p>
+            <ul class="mc-options">
+                <li data-option="A">Permite blocos de qualquer tamanho, independente de classes</li>
+                <li data-option="B">Foi criado para substituir o protocolo IPv6</li>
+                <li data-option="C">Permite agregar rotas, reduzindo o tamanho das tabelas de roteamento</li>
+                <li data-option="D">Usa notação /n para indicar o número de bits de rede</li>
+            </ul>
+            <button class="btn-verificar">Verificar</button>
+            <div class="mc-feedback"></div>
+            <div class="mc-explicacao">O CIDR (1993) foi criado para prolongar a vida útil do <strong>IPv4</strong>, permitindo uso mais eficiente do espaço de endereços. Ele <em>não</em> tem relação com IPv6 (que também surgiu no mesmo período, mas por razões diferentes). As demais afirmações são corretas.</div>
+        </div>
+    </div>
+
+</div><!-- .content-wrapper -->
+
+<nav class="nav-footer">
+    <a href="rc09-ipv4.html" class="nav-btn nav-prev">&#x2B05; Aula anterior<br><small>Protocolo IPv4</small></a>
+    <a href="index.html" class="nav-btn nav-home">&#x1F3E0; Dashboard</a>
+    <a href="rc11-ipv6.html" class="nav-btn nav-next">Pr&oacute;xima aula &#x27A1;<br><small>IPv6</small></a>
+</nav>
+
+<script src="slide-mode.js"></script>
+<script src="exercise-drag.js"></script>
+<script src="exercise-print.js"></script>
+<script src="exercise-mc.js"></script>
+<script>
+/* ══════════════════════════════════════════════
+   IP BINARY VISUALIZER
+══════════════════════════════════════════════ */
+function ipToNum(ip) {
+    return ip.split('.').reduce((acc, o) => (acc << 8) | parseInt(o), 0) >>> 0;
+}
+function numToIp(n) {
+    return [(n>>>24)&255,(n>>>16)&255,(n>>>8)&255,n&255].join('.');
+}
+function renderBits(num, netBits, container, showSep) {
+    const rows = showSep ? 4 : 1;
+    let html = '<div class="ip-octets">';
+    for (let oct = 0; oct < 4; oct++) {
+        html += '<div class="ip-octet-block">';
+        const byte = (num >>> (24 - oct*8)) & 0xFF;
+        html += `<div class="ip-octet-dec">${byte}</div>`;
+        html += '<div class="ip-octet-bits">';
+        for (let b = 7; b >= 0; b--) {
+            const bitPos = oct * 8 + (7 - b);
+            const val = (byte >> b) & 1;
+            const cls = bitPos < netBits ? 'ip-bit-net' : 'ip-bit-host';
+            html += `<div class="ip-bit ${val===0 && bitPos>=netBits ? 'ip-bit-zero' : cls}">${val}</div>`;
+        }
+        html += '</div></div>';
+        if (oct < 3) html += '<div class="ip-octet-sep">.</div>';
+    }
+    html += '</div>';
+    container.innerHTML = html;
+}
+
+function updateViz() {
+    const ipStr = document.getElementById('vizIpInput').value.trim();
+    const cidr = parseInt(document.getElementById('vizCidrInput').value);
+    const display = document.getElementById('vizDisplay');
+    const result = document.getElementById('vizResult');
+
+    const ipParts = ipStr.split('.').map(Number);
+    if (ipParts.length !== 4 || ipParts.some(x => isNaN(x) || x < 0 || x > 255)) {
+        result.innerHTML = '<span style="color:#f87171;font-size:.82em;">IP inválido</span>';
+        return;
+    }
+    if (isNaN(cidr) || cidr < 1 || cidr > 30) {
+        result.innerHTML = '<span style="color:#f87171;font-size:.82em;">CIDR inválido (1–30)</span>';
+        return;
+    }
+
+    const ipNum = ipToNum(ipStr);
+    const maskNum = cidr === 0 ? 0 : (0xFFFFFFFF << (32 - cidr)) >>> 0;
+    const netNum = (ipNum & maskNum) >>> 0;
+    const bcNum  = (netNum | (~maskNum >>> 0)) >>> 0;
+    const hosts  = Math.max(0, Math.pow(2, 32 - cidr) - 2);
+
+    let html = '';
+    const labels = ['Endereço IP', 'Máscara /' + cidr, 'AND →  Rede'];
+    const nums   = [ipNum, maskNum, netNum];
+    nums.forEach((n, i) => {
+        html += `<div style="margin-bottom:6px;"><div style="color:#475569;font-size:.67em;text-transform:uppercase;font-weight:700;margin-bottom:3px;">${labels[i]}</div><div id="viz-row-${i}"></div></div>`;
+    });
+    display.innerHTML = html;
+    nums.forEach((n, i) => {
+        const useCidr = i === 1 ? 32 : cidr;
+        renderBits(n, useCidr, document.getElementById('viz-row-' + i), false);
+    });
+
+    result.innerHTML = `
+        <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;">
+            <div style="background:#1e293b;border-radius:8px;padding:8px 14px;">
+                <div style="color:#64748b;font-size:.65em;font-weight:700;text-transform:uppercase;">Rede</div>
+                <div style="color:#34d399;font-family:monospace;font-weight:800;">${numToIp(netNum)}/${cidr}</div>
+            </div>
+            <div style="background:#1e293b;border-radius:8px;padding:8px 14px;">
+                <div style="color:#64748b;font-size:.65em;font-weight:700;text-transform:uppercase;">Broadcast</div>
+                <div style="color:#f87171;font-family:monospace;font-weight:800;">${numToIp(bcNum)}</div>
+            </div>
+            <div style="background:#1e293b;border-radius:8px;padding:8px 14px;">
+                <div style="color:#64748b;font-size:.65em;font-weight:700;text-transform:uppercase;">1º Host</div>
+                <div style="color:#7dd3fc;font-family:monospace;font-weight:800;">${numToIp(netNum + 1)}</div>
+            </div>
+            <div style="background:#1e293b;border-radius:8px;padding:8px 14px;">
+                <div style="color:#64748b;font-size:.65em;font-weight:700;text-transform:uppercase;">Último Host</div>
+                <div style="color:#7dd3fc;font-family:monospace;font-weight:800;">${numToIp(bcNum - 1)}</div>
+            </div>
+            <div style="background:#1e293b;border-radius:8px;padding:8px 14px;">
+                <div style="color:#64748b;font-size:.65em;font-weight:700;text-transform:uppercase;">Hosts úteis</div>
+                <div style="color:#fbbf24;font-family:monospace;font-weight:800;">${hosts.toLocaleString('pt-BR')}</div>
+            </div>
+        </div>`;
+}
+
+/* ══════════════════════════════════════════════
+   CIDR SLIDER EXPLORER
+══════════════════════════════════════════════ */
+function updateCidrExplorer(prefix) {
+    const badge = document.getElementById('cidrBadge');
+    const bitBar = document.getElementById('cidrBitBar');
+    const infoGrid = document.getElementById('cidrInfoGrid');
+    if (!badge) return;
+
+    badge.textContent = '/' + prefix;
+    const hostBits = 32 - prefix;
+    const totalAddr = Math.pow(2, hostBits);
+    const usableHosts = Math.max(0, totalAddr - 2);
+    const maskOctets = [];
+    let rem = prefix;
+    for (let i = 0; i < 4; i++) {
+        if (rem >= 8) { maskOctets.push(255); rem -= 8; }
+        else if (rem > 0) { maskOctets.push(256 - Math.pow(2, 8 - rem)); rem = 0; }
+        else maskOctets.push(0);
+    }
+
+    // Bit bar
+    let bits = '';
+    for (let i = 0; i < 32; i++) {
+        const isNet = i < prefix;
+        const isOctBound = i > 0 && i % 8 === 0;
+        bits += `<div style="width:18px;height:26px;border-radius:3px;background:${isNet?'#1d4ed8':'#1e293b'};border:1px solid ${isNet?'#3b82f6':'#334155'};display:inline-flex;align-items:center;justify-content:center;font-size:.58em;color:${isNet?'#bfdbfe':'#475569'};font-family:monospace;${isOctBound?'margin-left:6px;':''}">${isNet?'1':'0'}</div>`;
+    }
+    bitBar.innerHTML = bits;
+
+    infoGrid.innerHTML = `
+        <div class="cidr-info-card"><div class="cidr-info-lbl">Máscara decimal</div><div class="cidr-info-val">${maskOctets.join('.')}</div></div>
+        <div class="cidr-info-card"><div class="cidr-info-lbl">Bits de rede</div><div class="cidr-info-val">${prefix}</div></div>
+        <div class="cidr-info-card"><div class="cidr-info-lbl">Bits de host</div><div class="cidr-info-val">${hostBits}</div></div>
+        <div class="cidr-info-card"><div class="cidr-info-lbl">Total endereços</div><div class="cidr-info-val">${totalAddr.toLocaleString('pt-BR')}</div></div>
+        <div class="cidr-info-card"><div class="cidr-info-lbl">Hosts úteis</div><div class="cidr-info-val">${usableHosts.toLocaleString('pt-BR')}</div></div>
+        <div class="cidr-info-card"><div class="cidr-info-lbl">Bloco de sub-rede</div><div class="cidr-info-val">${totalAddr}</div></div>`;
+}
+
+/* ══════════════════════════════════════════════
+   SUBNET SLICER
+══════════════════════════════════════════════ */
+function runSlicer() {
+    const netStr  = document.getElementById('slicerNet').value.trim();
+    const basePfx = parseInt(document.getElementById('slicerBase').value);
+    const newPfx  = parseInt(document.getElementById('slicerNew').value);
+    const result  = document.getElementById('slicerResult');
+
+    if (newPfx <= basePfx) {
+        result.innerHTML = '<span style="color:#f87171;font-size:.82em;">O novo prefixo deve ser maior que o original.</span>';
+        return;
+    }
+
+    const parts = netStr.split('.').map(Number);
+    if (parts.length !== 4 || parts.some(x => isNaN(x) || x < 0 || x > 255)) {
+        result.innerHTML = '<span style="color:#f87171;font-size:.82em;">Endereço de rede inválido.</span>';
+        return;
+    }
+
+    const baseMask = (0xFFFFFFFF << (32 - basePfx)) >>> 0;
+    const baseNet  = (ipToNum(netStr) & baseMask) >>> 0;
+    const newMask  = (0xFFFFFFFF << (32 - newPfx)) >>> 0;
+    const subnetSize = Math.pow(2, 32 - newPfx);
+    const numSubs = Math.pow(2, newPfx - basePfx);
+    const hostCount = subnetSize - 2;
+
+    const MAX_SHOW = 32;
+    let rows = '';
+    for (let i = 0; i < Math.min(numSubs, MAX_SHOW); i++) {
+        const sNet = (baseNet + i * subnetSize) >>> 0;
+        const sBc  = (sNet + subnetSize - 1) >>> 0;
+        const delay = Math.min(i * 60, 600);
+        rows += `
+        <div class="snet-row" style="animation-delay:${delay}ms">
+            <span class="snet-id">Sub-rede ${i+1}: ${numToIp(sNet)}/${newPfx}</span>
+            <span class="snet-tag snet-tag-net">Rede: ${numToIp(sNet)}</span>
+            <span class="snet-tag snet-tag-host">Hosts: ${numToIp(sNet+1)} – ${numToIp(sBc-1)} (${hostCount})</span>
+            <span class="snet-tag snet-tag-bc">BC: ${numToIp(sBc)}</span>
+            <div class="snet-bar"><div class="snet-bar-fill" style="width:${Math.min(100, hostCount/Math.max(1,(Math.pow(2,32-basePfx)-2))*100*numSubs)}%"></div></div>
+        </div>`;
+    }
+    if (numSubs > MAX_SHOW) rows += `<div style="color:#64748b;font-size:.78em;padding:8px 0;text-align:center;">… e mais ${numSubs - MAX_SHOW} sub-redes</div>`;
+    result.innerHTML = `<div style="color:#94a3b8;font-size:.74em;margin-bottom:8px;">&#x2705; ${numSubs} sub-redes /${newPfx} criadas — ${hostCount} hosts úteis cada</div>` + rows;
+}
+
+/* ── INIT ── */
+document.addEventListener('DOMContentLoaded', () => {
+    updateViz();
+    const slider = document.getElementById('cidrSlider');
+    if (slider) {
+        slider.addEventListener('input', () => updateCidrExplorer(parseInt(slider.value)));
+        updateCidrExplorer(24);
+    }
+    // fix MC options (remove duplicate)
+    document.querySelectorAll('.mc-question[data-correct="B"] .mc-options li').forEach((li, i) => {
+        if (i === 0) li.dataset.option = 'A', li.textContent = '/28 (14 hosts)';
+        if (i === 1) li.dataset.option = 'B', li.textContent = '/27 (30 hosts)';
+        if (i === 2) li.dataset.option = 'C', li.textContent = '/26 (62 hosts)';
+        if (i === 3) li.dataset.option = 'D', li.textContent = '/25 (126 hosts)';
+    });
+});
+</script>
+</body>
+</html>
