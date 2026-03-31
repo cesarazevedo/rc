@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aula 11 &mdash; IPv6</title>
+    <link rel="stylesheet" href="slide-mode.css">
+    <link rel="stylesheet" href="exercise.css">
+    <link rel="stylesheet" href="lesson.css">
+    <style>
+        :root { --primary:#7c3aed; --secondary:#5b21b6; --bg-light:#faf5ff; --text-dark:#2d3748; }
+
+        /* ── HERO STATS ── */
+        .hero-stats { display:flex; flex-wrap:wrap; gap:10px; margin-top:18px; }
+        .hero-stat { background:rgba(124,58,237,.1); border:1px solid rgba(124,58,237,.22); border-radius:10px; padding:8px 16px; text-align:center; }
+        .hero-stat-val { display:block; font-size:1.15em; font-weight:800; color:var(--primary); }
+        .hero-stat-lbl { display:block; font-size:.63em; color:#718096; font-weight:700; text-transform:uppercase; letter-spacing:.05em; margin-top:2px; }
+
+        /* ── TRAIT GRID ── */
+        .trait-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(155px,1fr)); gap:10px; margin:16px 0; }
+        .trait-card { border-radius:12px; padding:14px 16px; border-top:3px solid transparent; }
+        .tc-red    { background:#fef2f2; border-top-color:#ef4444; }
+        .tc-amber  { background:#fffbeb; border-top-color:#f59e0b; }
+        .tc-blue   { background:#eff6ff; border-top-color:#3b82f6; }
+        .tc-purple { background:#fdf4ff; border-top-color:#a855f7; }
+        .tc-green  { background:#f0fdf4; border-top-color:#10b981; }
+        .tc-cyan   { background:#ecfeff; border-top-color:#06b6d4; }
+        .tc-slate  { background:#f8fafc; border-top-color:#64748b; }
+        .trait-prop { font-size:.68em; font-weight:800; text-transform:uppercase; letter-spacing:.06em; margin-bottom:5px; }
+        .tc-red    .trait-prop { color:#dc2626; }
+        .tc-amber  .trait-prop { color:#d97706; }
+        .tc-blue   .trait-prop { color:#2563eb; }
+        .tc-purple .trait-prop { color:#9333ea; }
+        .tc-green  .trait-prop { color:#16a34a; }
+        .tc-cyan   .trait-prop { color:#0891b2; }
+        .tc-slate  .trait-prop { color:#475569; }
+        .trait-val  { font-size:.88em; font-weight:700; color:#1e293b; margin-bottom:4px; }
+        .trait-impl { font-size:.77em; color:#64748b; line-height:1.4; }
+
+        /* ── IPV6 ADDRESS EXPLORER ── */
+        .ipv6-explorer { background:#0f172a; border-radius:16px; padding:22px; margin:20px 0; }
+        .ipv6-ex-bar { display:flex; flex-wrap:wrap; gap:10px; align-items:flex-end; margin-bottom:18px; }
+        .ipv6-ex-bar label { color:#94a3b8; font-size:.72em; font-weight:700; display:block; margin-bottom:4px; }
+        .ipv6-ex-bar input { background:#1e293b; color:#f1f5f9; border:1px solid #334155; border-radius:8px; padding:7px 14px; font-size:.9em; font-family:monospace; width:340px; outline:none; max-width:100%; }
+        .ipv6-ex-bar input:focus { border-color:#7c3aed; }
+        .ipv6-btn { background:#7c3aed; color:#fff; border:none; border-radius:8px; padding:8px 20px; font-size:.83em; font-weight:700; cursor:pointer; font-family:inherit; transition:background .2s; }
+        .ipv6-btn:hover { background:#6d28d9; }
+        .ipv6-groups { display:flex; flex-wrap:wrap; gap:4px; margin:14px 0; }
+        .ipv6-group { border-radius:8px; padding:10px 12px; display:flex; flex-direction:column; align-items:center; gap:3px; min-width:62px; transition:transform .2s; }
+        .ipv6-group:hover { transform:translateY(-2px); }
+        .ipv6-group-hex { font-family:monospace; font-weight:800; font-size:.92em; color:#f1f5f9; }
+        .ipv6-group-bin { font-family:monospace; font-size:.52em; color:rgba(255,255,255,.35); letter-spacing:.05em; }
+        .ipv6-group-idx { font-size:.6em; color:rgba(255,255,255,.3); font-weight:700; margin-top:2px; }
+        .ipv6-sep { color:#334155; font-size:1.4em; font-weight:300; align-self:center; }
+        .ipv6-result-panel { background:#1e293b; border-radius:12px; padding:16px 20px; margin-top:10px; }
+        .ipv6-result-row { display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-bottom:8px; }
+        .ipv6-result-lbl { font-size:.67em; font-weight:700; text-transform:uppercase; color:#64748b; min-width:90px; }
+        .ipv6-result-val { font-family:monospace; font-size:.88em; font-weight:700; color:#a78bfa; }
+        .ipv6-result-val.good { color:#34d399; }
+        .ipv6-rule-tag { font-size:.7em; padding:2px 8px; border-radius:10px; font-weight:700; }
+        .ipv6-rule-zero { background:rgba(239,68,68,.2); color:#f87171; }
+        .ipv6-rule-lead { background:rgba(251,191,36,.2); color:#fbbf24; }
+
+        /* ── HEADER COMPARISON ── */
+        .hdr-cmp-wrap { background:#0f172a; border-radius:16px; padding:22px; margin:20px 0; }
+        .hdr-cmp-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+        .hdr-col-title { font-size:.74em; font-weight:800; text-transform:uppercase; letter-spacing:.07em; text-align:center; padding:8px; border-radius:8px; margin-bottom:10px; }
+        .hdr-col-v4 { background:rgba(26,115,232,.2); color:#60a5fa; }
+        .hdr-col-v6 { background:rgba(124,58,237,.25); color:#c4b5fd; }
+        .hdr-field-row { display:flex; flex-direction:column; gap:4px; margin-bottom:5px; }
+        .hdr-field { border-radius:7px; padding:6px 10px; font-size:.73em; font-weight:700; text-align:center; color:#fff; }
+        .hf-blue   { background:#1d4ed8; }
+        .hf-purple { background:#6d28d9; }
+        .hf-red    { background:#b91c1c; }
+        .hf-amber  { background:#b45309; }
+        .hf-green  { background:#15803d; }
+        .hf-slate  { background:#374151; }
+        .hf-cyan   { background:#0e7490; }
+        .hf-gone   { background:#1e293b; color:#475569; text-decoration:line-through; font-style:italic; }
+        .hf-new    { background:rgba(52,211,153,.15); border:1px dashed #34d399; color:#34d399; }
+        .hdr-legend { display:flex; gap:12px; flex-wrap:wrap; margin-top:12px; justify-content:center; }
+        .hdr-legend-item { display:flex; align-items:center; gap:5px; font-size:.7em; color:#94a3b8; }
+        .hdr-legend-box { width:12px; height:12px; border-radius:3px; }
+
+        /* ── MIGRATION TIMELINE ── */
+        .migration-track { background:#0f172a; border-radius:14px; padding:20px 22px; margin:20px 0; }
+        .mig-tabs { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:18px; }
+        .mig-tab { background:#1e293b; color:#94a3b8; border:none; border-radius:8px; padding:7px 16px; font-size:.8em; font-weight:700; cursor:pointer; font-family:inherit; transition:all .2s; }
+        .mig-tab.active { background:#7c3aed; color:#fff; }
+        .mig-panel { display:none; animation:fadeIn .25s ease; }
+        .mig-panel.active { display:block; }
+        .mig-diagram { background:#1e293b; border-radius:12px; padding:16px; margin:10px 0; }
+        .mig-node { display:inline-flex; flex-direction:column; align-items:center; gap:3px; }
+        .mig-icon { width:48px; height:48px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:1.4em; }
+        .mig-lbl { font-size:.62em; font-weight:700; text-align:center; }
+        .mig-arrow { color:#334155; font-size:1.4em; padding:0 4px; align-self:center; }
+        .mig-badge { font-size:.65em; font-weight:700; padding:2px 7px; border-radius:8px; margin-top:2px; }
+        .mb-v4 { background:rgba(26,115,232,.25); color:#7dd3fc; }
+        .mb-v6 { background:rgba(124,58,237,.3); color:#c4b5fd; }
+        .mb-both { background:rgba(16,185,129,.2); color:#6ee7b7; }
+
+        @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+        @keyframes slideDown { from{opacity:0;transform:translateY(-8px)} to{opacity:1;transform:translateY(0)} }
+
+        @media(max-width:600px) {
+            .trait-grid { grid-template-columns:1fr 1fr; }
+            .hdr-cmp-grid { grid-template-columns:1fr; }
+            .ipv6-ex-bar input { width:100%; }
+            .ipv6-groups { gap:3px; }
+            .ipv6-group { min-width:50px; padding:8px 6px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="top-bar">
+    <a href="index.html" class="back-btn">&#x2B05; Voltar ao Dashboard</a>
+    <span class="page-badge">2&ordm; Bimestre &mdash; Camada de Internet</span>
+    <button class="slide-toggle" id="slideToggleBtn">&#x1F4FA; Modo Slide</button>
+</div>
+
+<div class="content-wrapper">
+
+    <div class="lesson-hero">
+        <h1>&#x1F195; IPv6</h1>
+        <p class="subtitle">Aula 11 &mdash; O protocolo que sucede o IPv4: endere&ccedil;os de 128 bits, cabe&ccedil;alho simplificado, autoconfiguração nativa e mecanismos de migra&ccedil;&atilde;o em coexist&ecirc;ncia com redes legadas</p>
+        <div class="hero-stats">
+            <div class="hero-stat"><span class="hero-stat-val">128</span><span class="hero-stat-lbl">bits por endereço</span></div>
+            <div class="hero-stat"><span class="hero-stat-val">3,4×10³⁸</span><span class="hero-stat-lbl">endereços possíveis</span></div>
+            <div class="hero-stat"><span class="hero-stat-val">8</span><span class="hero-stat-lbl">grupos de 16 bits</span></div>
+            <div class="hero-stat"><span class="hero-stat-val">40 B</span><span class="hero-stat-lbl">cabeçalho fixo</span></div>
+            <div class="hero-stat"><span class="hero-stat-val">RFC 2460</span><span class="hero-stat-lbl">publicado em 1998</span></div>
+        </div>
+    </div>
+
+    <!-- CARD 1 — Por que IPv6? -->
+    <div class="content-card">
+        <h2>&#x1F6A8; Por que o IPv6 foi criado?</h2>
+        <p>O IPv4, com apenas 32 bits e ~4,3 bilh&otilde;es de endere&ccedil;os, estava se esgotando. A IANA distribuiu seu &uacute;ltimo bloco em <strong>fevereiro de 2011</strong>. Apesar do NAT ter "esticado" a vida &uacute;til do IPv4, ele apenas mascara o problema e cria complexidade. O IPv6 resolve o esgotamento e ainda introduz melhorias estruturais.</p>
+
+        <div class="trait-grid">
+            <div class="trait-card tc-purple">
+                <div class="trait-prop">Espa&ccedil;o infinito</div>
+                <div class="trait-val">3,4 × 10³⁸ endere&ccedil;os</div>
+                <div class="trait-impl">Endereços suficientes para cada grão de areia do planeta ter trilhões de IPs. Fim do esgotamento.</div>
+            </div>
+            <div class="trait-card tc-blue">
+                <div class="trait-prop">Autoconfigura&ccedil;&atilde;o</div>
+                <div class="trait-val">SLAAC nativo</div>
+                <div class="trait-impl">Dispositivos configuram seu próprio endereço sem servidor DHCP, usando o prefixo anunciado pelo roteador.</div>
+            </div>
+            <div class="trait-card tc-green">
+                <div class="trait-prop">Cabe&ccedil;alho simplificado</div>
+                <div class="trait-val">40 bytes fixos</div>
+                <div class="trait-impl">Menos campos que o IPv4. Sem checksum (delegado às camadas superiores) e sem fragmentação por roteadores.</div>
+            </div>
+            <div class="trait-card tc-amber">
+                <div class="trait-prop">Seguran&ccedil;a nativa</div>
+                <div class="trait-val">IPsec obrigat&oacute;rio</div>
+                <div class="trait-impl">O suporte a IPsec (autenticação e criptografia) é parte da especificação, não uma extensão opcional.</div>
+            </div>
+            <div class="trait-card tc-cyan">
+                <div class="trait-prop">Multicast aprimorado</div>
+                <div class="trait-val">Sem broadcast</div>
+                <div class="trait-impl">O IPv6 elimina o broadcast. Todo tráfego "para todos" é feito via multicast, reduzindo ruído na rede.</div>
+            </div>
+            <div class="trait-card tc-red">
+                <div class="trait-prop">Mobilidade</div>
+                <div class="trait-val">Mobile IPv6</div>
+                <div class="trait-impl">Suporte nativo à mobilidade: dispositivos mantêm o mesmo endereço ao trocar de rede (RFC 6275).</div>
+            </div>
+        </div>
+
+        <div class="highlight-box">
+            <p>&#x1F4CA; <strong>Ado&ccedil;&atilde;o atual:</strong> em 2024, o IPv6 representa mais de 45% do tr&aacute;fego global medido pelo Google. Brasil e &Iacute;ndia lideram o crescimento. Operadoras m&oacute;veis foram as primeiras a migrar em massa, pois gerenciar NAT para milh&otilde;es de smartphones se tornava insustent&aacute;vel.</p>
+        </div>
+    </div>
+
+    <!-- CARD 2 — Estrutura do Endereço -->
+    <div class="content-card">
+        <h2>&#x1F9EE; Estrutura do Endere&ccedil;o IPv6</h2>
+        <p>Um endere&ccedil;o IPv6 tem <strong>128 bits</strong> representados em <strong>8 grupos</strong> de 4 d&iacute;gitos hexadecimais separados por dois-pontos. Cada grupo representa 16 bits.</p>
+
+        <div class="terminal-block">
+            <div class="terminal-header">Anatomia de um endereço IPv6 completo</div>
+<pre>
+  2001:0db8:85a3:0000:0000:8a2e:0370:7334
+  ├──┤ ├──┤ ├──┤ ├──┤ ├──┤ ├──┤ ├──┤ ├──┤
+   G1   G2   G3   G4   G5   G6   G7   G8
+  ←──── 64 bits (prefixo de rede) ────→←── 64 bits (ID de interface) ──→
+</pre>
+        </div>
+
+        <h3>Regras de simplifica&ccedil;&atilde;o</h3>
+        <p>Para facilitar a leitura, o IPv6 define duas regras de compress&atilde;o:</p>
+        <div class="flow-steps">
+            <div class="flow-step">
+                <span class="step-num">1</span>
+                <div>
+                    <strong>Omitir zeros &agrave; esquerda</strong> em cada grupo:<br>
+                    <code>0db8</code> → <code>db8</code> &nbsp;|&nbsp; <code>0000</code> → <code>0</code> &nbsp;|&nbsp; <code>0370</code> → <code>370</code>
+                </div>
+            </div>
+            <div class="flow-step">
+                <span class="step-num">2</span>
+                <div>
+                    <strong>Substituir um ou mais grupos de zeros consecutivos</strong> por <code>::</code> (apenas uma vez por endere&ccedil;o):<br>
+                    <code>2001:db8:0:0:0:0:0:1</code> → <code>2001:db8::1</code>
+                </div>
+            </div>
+        </div>
+
+        <!-- IPv6 Address Explorer -->
+        <div class="ipv6-explorer">
+            <div style="color:#94a3b8;font-size:.74em;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px;">&#x1F50D; Explorer de endere&ccedil;o IPv6 &mdash; expande e simplifica</div>
+            <div class="ipv6-ex-bar">
+                <div>
+                    <label>Digite um endere&ccedil;o IPv6 (completo ou simplificado)</label>
+                    <input id="ipv6Input" value="2001:0db8:85a3:0000:0000:8a2e:0370:7334" placeholder="ex: 2001:db8::1 ou fe80::1">
+                </div>
+                <button class="ipv6-btn" onclick="analyzeIPv6()">&#x1F50D; Analisar</button>
+            </div>
+            <div id="ipv6Groups" class="ipv6-groups"></div>
+            <div id="ipv6ResultPanel"></div>
+        </div>
+
+        <h3>Endere&ccedil;o de interface EUI-64</h3>
+        <p>A parte de 64 bits do identificador de interface pode ser derivada automaticamente do endere&ccedil;o MAC (48 bits) do dispositivo usando o processo <strong>EUI-64</strong>:</p>
+        <div class="flow-steps">
+            <div class="flow-step"><span class="step-num">1</span><div>Pega o MAC: <code>00:1A:2B:3C:4D:5E</code></div></div>
+            <div class="flow-step"><span class="step-num">2</span><div>Insere <code>FF:FE</code> no meio: <code>00:1A:2B:<strong>FF:FE</strong>:3C:4D:5E</code></div></div>
+            <div class="flow-step"><span class="step-num">3</span><div>Inverte o 7º bit (bit U/L): <code>00</code> → <code>02</code> (0000 0000 → 0000 <strong>0010</strong>)</div></div>
+            <div class="flow-step"><span class="step-num">4</span><div>Resultado: <code>021A:2BFF:FE3C:4D5E</code> — ID de interface de 64 bits</div></div>
+        </div>
+    </div>
+
+    <!-- CARD 3 — Tipos de Endereços -->
+    <div class="content-card">
+        <h2>&#x1F3F7;&#xFE0F; Tipos de Endere&ccedil;os IPv6</h2>
+        <p>O IPv6 define tr&ecirc;s tipos b&aacute;sicos de endere&ccedil;o. <strong>N&atilde;o existe broadcast</strong> no IPv6 &mdash; toda comunica&ccedil;&atilde;o "para todos" usa multicast.</p>
+
+        <div class="trait-grid" style="grid-template-columns:repeat(auto-fit,minmax(170px,1fr));">
+            <div class="trait-card tc-blue">
+                <div class="trait-prop">Unicast Global</div>
+                <div class="trait-val">2000::/3</div>
+                <div class="trait-impl">Equivalente ao IP público IPv4. Roteável na internet. Prefixo começa com 001 em binário. Ex: <code>2001:db8::/32</code> é reservado para documentação.</div>
+            </div>
+            <div class="trait-card tc-amber">
+                <div class="trait-prop">Link-Local</div>
+                <div class="trait-val">FE80::/10</div>
+                <div class="trait-impl">Automático em toda interface. Usado para comunicação no mesmo segmento (ex: NDP, DHCPv6). Nunca roteado para fora do link.</div>
+            </div>
+            <div class="trait-card tc-green">
+                <div class="trait-prop">Loopback</div>
+                <div class="trait-val">::1/128</div>
+                <div class="trait-impl">Equivalente ao 127.0.0.1 do IPv4. Endereço comprimido de 0000...0001. Tráfego retorna ao próprio host.</div>
+            </div>
+            <div class="trait-card tc-purple">
+                <div class="trait-prop">Multicast</div>
+                <div class="trait-val">FF00::/8</div>
+                <div class="trait-impl">Grupo de múltiplos destinatários. <code>FF02::1</code> = todos nós no link. <code>FF02::2</code> = todos roteadores. Substitui o broadcast.</div>
+            </div>
+            <div class="trait-card tc-cyan">
+                <div class="trait-prop">Anycast</div>
+                <div class="trait-val">do bloco unicast</div>
+                <div class="trait-impl">Mesmo endereço atribuído a múltiplos nós. Pacote entregue ao mais próximo topologicamente. Usado em servidores DNS e CDNs.</div>
+            </div>
+            <div class="trait-card tc-slate">
+                <div class="trait-prop">Unique Local</div>
+                <div class="trait-val">FC00::/7</div>
+                <div class="trait-impl">Equivalente aos endereços privados RFC 1918. Não roteável na internet. Prefixo FD mais comum. Ex: <code>FD00::/8</code>.</div>
+            </div>
+        </div>
+
+        <h3>Endere&ccedil;os especiais importantes</h3>
+        <table>
+            <thead>
+                <tr><th>Endere&ccedil;o</th><th>Significado</th><th>Equivalente IPv4</th></tr>
+            </thead>
+            <tbody>
+                <tr><td><code>::1</code></td><td>Loopback</td><td><code>127.0.0.1</code></td></tr>
+                <tr><td><code>::</code></td><td>Endere&ccedil;o indefinido (unspecified)</td><td><code>0.0.0.0</code></td></tr>
+                <tr><td><code>FE80::/10</code></td><td>Link-local (todo link tem ao menos um)</td><td><code>169.254.0.0/16</code></td></tr>
+                <tr><td><code>FF02::1</code></td><td>Todos os n&oacute;s no link</td><td><code>255.255.255.255</code> (broadcast)</td></tr>
+                <tr><td><code>FF02::2</code></td><td>Todos os roteadores no link</td><td><code>224.0.0.2</code></td></tr>
+                <tr><td><code>2002::/16</code></td><td>Prefixo para t&uacute;nel 6to4</td><td>—</td></tr>
+                <tr><td><code>::ffff:0:0/96</code></td><td>Mapeamento IPv4 em IPv6</td><td>ex: <code>::ffff:192.168.1.1</code></td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- CARD 4 — Cabeçalho IPv6 vs IPv4 -->
+    <div class="content-card">
+        <h2>&#x1F4CB; Cabe&ccedil;alho IPv6 vs IPv4</h2>
+        <p>O cabe&ccedil;alho IPv6 foi reescrito do zero para ser <strong>mais simples e eficiente</strong>. Campos problem&aacute;ticos do IPv4 foram removidos e funcionalidades extras foram movidas para <em>Extension Headers</em> opcionais.</p>
+
+        <div class="hdr-cmp-wrap">
+            <div style="color:#94a3b8;font-size:.74em;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:14px;">&#x1F4CA; Compara&ccedil;&atilde;o visual de cabe&ccedil;alhos</div>
+            <div class="hdr-cmp-grid">
+                <div>
+                    <div class="hdr-col-title hdr-col-v4">IPv4 — 20 a 60 bytes</div>
+                    <div class="hdr-field hf-blue" style="margin-bottom:4px;">Versão (4b) | IHL (4b) | DSCP/ECN (8b)</div>
+                    <div class="hdr-field hf-blue" style="margin-bottom:4px;">Comprimento Total (16b)</div>
+                    <div class="hdr-field hf-amber" style="margin-bottom:4px;">Identificação (16b)</div>
+                    <div class="hdr-field hf-amber" style="margin-bottom:4px;">Flags (3b) | Deslocamento (13b)</div>
+                    <div class="hdr-field hf-green" style="margin-bottom:4px;">TTL (8b) | Protocolo (8b)</div>
+                    <div class="hdr-field hf-red" style="margin-bottom:4px;">Checksum do cabeçalho (16b)</div>
+                    <div class="hdr-field hf-cyan" style="margin-bottom:4px;">Endereço de Origem (32b)</div>
+                    <div class="hdr-field hf-cyan" style="margin-bottom:4px;">Endereço de Destino (32b)</div>
+                    <div class="hdr-field hf-slate" style="margin-bottom:4px;">Opções (variável, 0–40b)</div>
+                </div>
+                <div>
+                    <div class="hdr-col-title hdr-col-v6">IPv6 — 40 bytes fixos</div>
+                    <div class="hdr-field hf-purple" style="margin-bottom:4px;">Versão (4b) | Tráfego (8b) | Flow Label (20b)</div>
+                    <div class="hdr-field hf-purple" style="margin-bottom:4px;">Payload Length (16b) | Next Header (8b) | Hop Limit (8b)</div>
+                    <div class="hdr-field hf-gone" style="margin-bottom:4px;">Fragmentação → Extension Header</div>
+                    <div class="hdr-field hf-gone" style="margin-bottom:4px;">Fragmentação → Extension Header</div>
+                    <div class="hdr-field hf-gone" style="margin-bottom:4px;">Hop Limit substitui TTL ↑</div>
+                    <div class="hdr-field hf-gone" style="margin-bottom:4px;">Sem checksum — TCP/UDP/ICMPv6 garantem</div>
+                    <div class="hdr-field hf-purple" style="margin-bottom:4px;">Endereço de Origem (128b)</div>
+                    <div class="hdr-field hf-purple" style="margin-bottom:4px;">Endereço de Destino (128b)</div>
+                    <div class="hdr-field hf-new" style="margin-bottom:4px;">Extension Headers (opcionais, encadeados)</div>
+                </div>
+            </div>
+            <div class="hdr-legend">
+                <div class="hdr-legend-item"><div class="hdr-legend-box" style="background:#1d4ed8;"></div>IPv4 original</div>
+                <div class="hdr-legend-item"><div class="hdr-legend-box" style="background:#6d28d9;"></div>IPv6 equivalente</div>
+                <div class="hdr-legend-item"><div class="hdr-legend-box" style="background:#374151;text-decoration:line-through;"></div>Removido no IPv6</div>
+                <div class="hdr-legend-item"><div class="hdr-legend-box" style="background:rgba(52,211,153,.15);border:1px dashed #34d399;"></div>Novo no IPv6</div>
+            </div>
+        </div>
+
+        <h3>O que mudou e por qu&ecirc;</h3>
+        <div class="trait-grid">
+            <div class="trait-card tc-red">
+                <div class="trait-prop">Sem Checksum</div>
+                <div class="trait-val">Eliminado do cabe&ccedil;alho</div>
+                <div class="trait-impl">No IPv4, cada roteador recalculava o checksum (TTL muda). No IPv6, TCP, UDP e ICMPv6 garantem integridade fim-a-fim. Ganho de velocidade nos roteadores.</div>
+            </div>
+            <div class="trait-card tc-amber">
+                <div class="trait-prop">Sem Fragmenta&ccedil;&atilde;o</div>
+                <div class="trait-val">Somente no host origem</div>
+                <div class="trait-impl">Roteadores IPv6 não fragmentam pacotes. O host usa Path MTU Discovery para descobrir o MTU mínimo do caminho antes de enviar.</div>
+            </div>
+            <div class="trait-card tc-purple">
+                <div class="trait-prop">Flow Label</div>
+                <div class="trait-val">Campo novo (20 bits)</div>
+                <div class="trait-impl">Permite que roteadores identifiquem fluxos sem abrir TCP/UDP. Essencial para QoS em tempo real (VoIP, vídeo).</div>
+            </div>
+            <div class="trait-card tc-green">
+                <div class="trait-prop">Extension Headers</div>
+                <div class="trait-val">Cadeia de extens&otilde;es</div>
+                <div class="trait-impl">Fragmentação, routing, mobilidade e segurança são Extension Headers opcionais, encadeados após o cabeçalho fixo. Roteadores pulam o que não conhecem.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CARD 5 — NDP e Autoconfiguração -->
+    <div class="content-card">
+        <h2>&#x1F916; NDP e Autoconfiguração</h2>
+        <p>O IPv6 substitui o ARP pelo <strong>NDP</strong> (Neighbor Discovery Protocol, RFC 4861), que usa mensagens ICMPv6 para descobrir vizinhos, roteadores e configurar endere&ccedil;os automaticamente.</p>
+
+        <div class="trait-grid">
+            <div class="trait-card tc-blue">
+                <div class="trait-prop">Router Solicitation (RS)</div>
+                <div class="trait-val">ICMPv6 tipo 133</div>
+                <div class="trait-impl">Host envia RS para FF02::2 (todos os roteadores) pedindo um prefixo de rede. Enviado na inicialização.</div>
+            </div>
+            <div class="trait-card tc-green">
+                <div class="trait-prop">Router Advertisement (RA)</div>
+                <div class="trait-val">ICMPv6 tipo 134</div>
+                <div class="trait-impl">Roteador anuncia prefixo, flags e parâmetros. Enviado periodicamente ou em resposta ao RS. Base do SLAAC.</div>
+            </div>
+            <div class="trait-card tc-amber">
+                <div class="trait-prop">Neighbor Solicitation (NS)</div>
+                <div class="trait-val">ICMPv6 tipo 135</div>
+                <div class="trait-impl">Equivale ao ARP Request. Pergunta "quem tem este endereço IPv6?" usando multicast solicited-node.</div>
+            </div>
+            <div class="trait-card tc-purple">
+                <div class="trait-prop">Neighbor Advertisement (NA)</div>
+                <div class="trait-val">ICMPv6 tipo 136</div>
+                <div class="trait-impl">Equivale ao ARP Reply. Responde com o endereço MAC associado ao IPv6 solicitado.</div>
+            </div>
+        </div>
+
+        <h3>SLAAC — Autoconfiguração sem Estado</h3>
+        <p>Com o <strong>SLAAC</strong> (Stateless Address Autoconfiguration), um dispositivo configura seu endere&ccedil;o global <em>sem servidor DHCP</em>:</p>
+        <div class="flow-steps">
+            <div class="flow-step"><span class="step-num">1</span><div>Gera endere&ccedil;o Link-Local (<code>FE80::/10</code> + EUI-64 do MAC)</div></div>
+            <div class="flow-step"><span class="step-num">2</span><div>Verifica unicidade com <strong>DAD</strong> (Duplicate Address Detection) via NS multicast</div></div>
+            <div class="flow-step"><span class="step-num">3</span><div>Envia RS para FF02::2 pedindo prefixo ao roteador</div></div>
+            <div class="flow-step"><span class="step-num">4</span><div>Recebe RA com prefixo /64 (ex: <code>2001:db8:1::/64</code>)</div></div>
+            <div class="flow-step"><span class="step-num">5</span><div>Concatena prefixo + EUI-64 → endere&ccedil;o global completo. Pronto!</div></div>
+        </div>
+
+        <div class="tip-box">
+            <p>&#x1F512; <strong>Privacidade no SLAAC:</strong> usar EUI-64 expõe o MAC do dispositivo. O RFC 4941 define <em>Privacy Extensions</em>: endere&ccedil;os tempor&aacute;rios com parte aleat&oacute;ria, trocados periodicamente. Sistemas modernos (Windows, Linux, Android) usam isso por padr&atilde;o.</p>
+        </div>
+    </div>
+
+    <!-- CARD 6 — Mecanismos de Migração -->
+    <div class="content-card">
+        <h2>&#x1F6A7; Mecanismos de Migra&ccedil;&atilde;o</h2>
+        <p>A migra&ccedil;&atilde;o de IPv4 para IPv6 &eacute; gradual. Tr&ecirc;s abordagens principais permitem <strong>coexist&ecirc;ncia</strong> durante a transi&ccedil;&atilde;o:</p>
+
+        <div class="migration-track">
+            <div style="color:#94a3b8;font-size:.74em;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:14px;">&#x1F4CD; Clique para ver cada mecanismo</div>
+            <div class="mig-tabs">
+                <button class="mig-tab active" onclick="showMig('dual')">Dual Stack</button>
+                <button class="mig-tab" onclick="showMig('tunnel')">Tunelamento</button>
+                <button class="mig-tab" onclick="showMig('nat64')">NAT64 / DNS64</button>
+            </div>
+
+            <div class="mig-panel active" id="mig-dual">
+                <p style="color:#cbd5e1;font-size:.88em;margin-bottom:10px;">O dispositivo executa <strong>IPv4 e IPv6 simultaneamente</strong>. Usa o protocolo mais adequado para cada destino. É a abordagem mais comum em redes modernas.</p>
+                <div class="mig-diagram" style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:center;">
+                    <div class="mig-node">
+                        <div class="mig-icon" style="background:#1e3a5f;">💻</div>
+                        <div class="mig-lbl" style="color:#94a3b8;">Host</div>
+                        <div class="mig-badge mb-both">IPv4 + IPv6</div>
+                    </div>
+                    <div class="mig-arrow">→</div>
+                    <div class="mig-node">
+                        <div class="mig-icon" style="background:#2d1b69;">🔀</div>
+                        <div class="mig-lbl" style="color:#94a3b8;">Roteador</div>
+                        <div class="mig-badge mb-both">Dual Stack</div>
+                    </div>
+                    <div class="mig-arrow">→</div>
+                    <div style="display:flex;flex-direction:column;gap:6px;">
+                        <div style="display:flex;align-items:center;gap:6px;">
+                            <div class="mig-arrow">→</div>
+                            <div class="mig-node">
+                                <div class="mig-icon" style="background:#1e3a5f;">🌐</div>
+                                <div class="mig-lbl" style="color:#94a3b8;">Servidor IPv6</div>
+                                <div class="mig-badge mb-v6">IPv6</div>
+                            </div>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:6px;">
+                            <div class="mig-arrow">→</div>
+                            <div class="mig-node">
+                                <div class="mig-icon" style="background:#1e293b;">🌐</div>
+                                <div class="mig-lbl" style="color:#94a3b8;">Servidor IPv4</div>
+                                <div class="mig-badge mb-v4">IPv4</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tip-box" style="margin-top:10px;"><p>&#x2705; <strong>Vantagem:</strong> transparente para aplicações. <strong>Desvantagem:</strong> requer infraestrutura preparada para ambos os protocolos.</p></div>
+            </div>
+
+            <div class="mig-panel" id="mig-tunnel">
+                <p style="color:#cbd5e1;font-size:.88em;margin-bottom:10px;">Pacotes IPv6 s&atilde;o <strong>encapsulados dentro de pacotes IPv4</strong> para atravessar redes que n&atilde;o suportam IPv6. O t&uacute;nel &eacute; transparente para os endpoints.</p>
+                <div class="mig-diagram" style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:center;">
+                    <div class="mig-node">
+                        <div class="mig-icon" style="background:#1e3a5f;">💻</div>
+                        <div class="mig-lbl" style="color:#94a3b8;">Host IPv6</div>
+                        <div class="mig-badge mb-v6">IPv6</div>
+                    </div>
+                    <div class="mig-arrow">→</div>
+                    <div class="mig-node">
+                        <div class="mig-icon" style="background:#2d1b69;">🔀</div>
+                        <div class="mig-lbl" style="color:#94a3b8;">Entrada túnel</div>
+                        <div class="mig-badge mb-both">encapsula</div>
+                    </div>
+                    <div class="mig-arrow">→</div>
+                    <div class="mig-node">
+                        <div class="mig-icon" style="background:#1e293b;">🌍</div>
+                        <div class="mig-lbl" style="color:#94a3b8;">Rede IPv4</div>
+                        <div class="mig-badge mb-v4">IPv6 dentro IPv4</div>
+                    </div>
+                    <div class="mig-arrow">→</div>
+                    <div class="mig-node">
+                        <div class="mig-icon" style="background:#2d1b69;">🔀</div>
+                        <div class="mig-lbl" style="color:#94a3b8;">Saída túnel</div>
+                        <div class="mig-badge mb-both">desencapsula</div>
+                    </div>
+                    <div class="mig-arrow">→</div>
+                    <div class="mig-node">
+                        <div class="mig-icon" style="background:#1e3a5f;">🖥️</div>
+                        <div class="mig-lbl" style="color:#94a3b8;">Host IPv6</div>
+                        <div class="mig-badge mb-v6">IPv6</div>
+                    </div>
+                </div>
+                <div class="tip-box" style="margin-top:10px;"><p>&#x1F4CC; Tipos: <strong>6in4</strong> (protocolo 41), <strong>6to4</strong> (prefixo 2002::/16), <strong>ISATAP</strong>, <strong>Teredo</strong> (IPv6 em UDP). Usado quando o backbone IPv4 não pode ser substituído imediatamente.</p></div>
+            </div>
+
+            <div class="mig-panel" id="mig-nat64">
+                <p style="color:#cbd5e1;font-size:.88em;margin-bottom:10px;">Permite que hosts <strong>apenas-IPv6</strong> se comuniquem com servidores <strong>apenas-IPv4</strong>. O DNS64 sintetiza registros AAAA a partir de registros A; o NAT64 traduz os pacotes.</p>
+                <div class="mig-diagram" style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:center;">
+                    <div class="mig-node">
+                        <div class="mig-icon" style="background:#1e3a5f;">📱</div>
+                        <div class="mig-lbl" style="color:#94a3b8;">Cliente IPv6</div>
+                        <div class="mig-badge mb-v6">somente IPv6</div>
+                    </div>
+                    <div class="mig-arrow">→</div>
+                    <div class="mig-node">
+                        <div class="mig-icon" style="background:#292524;">🔍</div>
+                        <div class="mig-lbl" style="color:#94a3b8;">DNS64</div>
+                        <div class="mig-badge mb-both">sintetiza AAAA</div>
+                    </div>
+                    <div class="mig-arrow">→</div>
+                    <div class="mig-node">
+                        <div class="mig-icon" style="background:#2d1b69;">🔄</div>
+                        <div class="mig-lbl" style="color:#94a3b8;">NAT64</div>
+                        <div class="mig-badge mb-both">traduz v6↔v4</div>
+                    </div>
+                    <div class="mig-arrow">→</div>
+                    <div class="mig-node">
+                        <div class="mig-icon" style="background:#1e293b;">🖥️</div>
+                        <div class="mig-lbl" style="color:#94a3b8;">Servidor IPv4</div>
+                        <div class="mig-badge mb-v4">somente IPv4</div>
+                    </div>
+                </div>
+                <div class="tip-box" style="margin-top:10px;"><p>&#x1F4F1; Muito usado por <strong>operadoras m&oacute;veis</strong>: o celular recebe apenas endere&ccedil;o IPv6 e o NAT64 garante acesso a qualquer servi&ccedil;o legado IPv4. A Apple exige suporte a NAT64 em apps iOS desde 2016.</p></div>
+            </div>
+        </div>
+
+        <h3>Comandos &uacute;teis para IPv6</h3>
+        <div class="cmd-grid">
+            <div class="cmd-card">
+                <div class="cmd-label">Linux — ver endere&ccedil;os IPv6</div>
+                <div class="cmd-code">ip -6 addr show</div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-label">Linux — ping IPv6</div>
+                <div class="cmd-code">ping6 ::1</div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-label">Linux — rotas IPv6</div>
+                <div class="cmd-code">ip -6 route show</div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-label">Windows — ping IPv6</div>
+                <div class="cmd-code">ping -6 ::1</div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-label">Windows — config IPv6</div>
+                <div class="cmd-code">ipconfig /all</div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-label">traceroute IPv6</div>
+                <div class="cmd-code">traceroute6 2001:db8::1</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ATIVIDADE PRÁTICA -->
+    <div class="content-card practical-activity">
+        <h2>&#x1F6E0;&#xFE0F; Atividade Pr&aacute;tica</h2>
+        <p>Pratique compress&atilde;o e expans&atilde;o de endere&ccedil;os IPv6, identifica&ccedil;&atilde;o de tipos e racioc&iacute;nio sobre migra&ccedil;&atilde;o.</p>
+
+        <div class="prat-steps">
+            <div class="prat-step">
+                <span class="prat-num">1</span>
+                <div>
+                    <strong>Comprima os endere&ccedil;os IPv6 abaixo</strong> aplicando as duas regras de simplifica&ccedil;&atilde;o:
+                    <ul style="margin-top:8px;">
+                        <li><code>2001:0DB8:0000:0000:0000:0000:0000:0001</code></li>
+                        <li><code>FE80:0000:0000:0000:020C:29FF:FE4A:1B2C</code></li>
+                        <li><code>0000:0000:0000:0000:0000:0000:0000:0001</code></li>
+                        <li><code>2001:0DB8:ABCD:0012:0000:0000:0000:0000</code></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="prat-step">
+                <span class="prat-num">2</span>
+                <div>
+                    <strong>Identifique o tipo</strong> de cada endere&ccedil;o IPv6:
+                    <ul style="margin-top:8px;">
+                        <li><code>::1</code></li>
+                        <li><code>FE80::1</code></li>
+                        <li><code>FF02::1</code></li>
+                        <li><code>2001:db8:cafe::10</code></li>
+                        <li><code>FD00::1</code></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="prat-step">
+                <span class="prat-num">3</span>
+                <div>
+                    <strong>Cen&aacute;rio de migra&ccedil;&atilde;o:</strong> uma empresa tem servidores internos com IPv4 (<code>10.0.0.0/8</code>) e quer dar acesso IPv6 a clientes m&oacute;veis que possuem <em>apenas</em> IPv6. Qual mecanismo de migra&ccedil;&atilde;o &eacute; mais adequado? Justifique e descreva o fluxo de um pacote do cliente at&eacute; o servidor.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- QUESTÕES DE MÚLTIPLA ESCOLHA -->
+    <div class="content-card">
+        <h2>&#x2753; Quest&otilde;es de M&uacute;ltipla Escolha</h2>
+
+        <div class="mc-question" data-correct="C">
+            <p class="mc-enunciado"><strong>1.</strong> Quantos bits comp&otilde;em um endere&ccedil;o IPv6 e em quantos grupos ele &eacute; dividido na nota&ccedil;&atilde;o textual?</p>
+            <ul class="mc-options">
+                <li data-option="A">64 bits em 4 grupos</li>
+                <li data-option="B">128 bits em 4 grupos de 32 bits</li>
+                <li data-option="C">128 bits em 8 grupos de 16 bits</li>
+                <li data-option="D">256 bits em 16 grupos</li>
+            </ul>
+            <button class="btn-verificar">Verificar</button>
+            <div class="mc-feedback"></div>
+            <div class="mc-explicacao">Um endere&ccedil;o IPv6 tem <strong>128 bits</strong> divididos em <strong>8 grupos de 16 bits</strong> cada, separados por dois-pontos e representados em hexadecimal. Exemplo: <code>2001:0db8:85a3:0000:0000:8a2e:0370:7334</code>.</div>
+        </div>
+
+        <div class="mc-question" data-correct="B">
+            <p class="mc-enunciado"><strong>2.</strong> Qual &eacute; a forma corretamente comprimida do endere&ccedil;o <code>2001:0DB8:0000:0000:0000:0000:0000:0001</code>?</p>
+            <ul class="mc-options">
+                <li data-option="A">2001:DB8:0:0:0:0:0:1</li>
+                <li data-option="B">2001:db8::1</li>
+                <li data-option="C">2001::db8::1</li>
+                <li data-option="D">2001:db8:0::1</li>
+            </ul>
+            <button class="btn-verificar">Verificar</button>
+            <div class="mc-feedback"></div>
+            <div class="mc-explicacao">Primeiro removemos zeros à esquerda: <code>2001:DB8:0:0:0:0:0:1</code>. Depois substituímos o maior grupo contíguo de zeros por <code>::</code>: <strong><code>2001:db8::1</code></strong>. O <code>::</code> só pode aparecer uma vez, por isso a opção C está errada.</div>
+        </div>
+
+        <div class="mc-question" data-correct="D">
+            <p class="mc-enunciado"><strong>3.</strong> O endere&ccedil;o <code>FE80::1</code> pertence a qual tipo de endere&ccedil;o IPv6?</p>
+            <ul class="mc-options">
+                <li data-option="A">Unicast Global (rote&aacute;vel na internet)</li>
+                <li data-option="B">Multicast (prefixo FF00::/8)</li>
+                <li data-option="C">Unique Local (prefixo FC00::/7)</li>
+                <li data-option="D">Link-Local (prefixo FE80::/10)</li>
+            </ul>
+            <button class="btn-verificar">Verificar</button>
+            <div class="mc-feedback"></div>
+            <div class="mc-explicacao">Endere&ccedil;os come&ccedil;ando com <strong>FE80::/10</strong> s&atilde;o <strong>link-local</strong>. S&atilde;o configurados automaticamente em toda interface IPv6 e usados para comunica&ccedil;&atilde;o no mesmo segmento (NDP, SLAAC). Nunca s&atilde;o roteados para fora do link.</div>
+        </div>
+
+        <div class="mc-question" data-correct="A">
+            <p class="mc-enunciado"><strong>4.</strong> Qual afirma&ccedil;&atilde;o sobre o cabe&ccedil;alho IPv6 em compara&ccedil;&atilde;o ao IPv4 &eacute; <strong>correta</strong>?</p>
+            <ul class="mc-options">
+                <li data-option="A">O IPv6 n&atilde;o possui checksum no cabe&ccedil;alho e n&atilde;o permite fragmenta&ccedil;&atilde;o por roteadores</li>
+                <li data-option="B">O cabe&ccedil;alho IPv6 &eacute; menor que o IPv4, com apenas 20 bytes fixos</li>
+                <li data-option="C">O IPv6 mant&eacute;m o campo de identifica&ccedil;&atilde;o para fragmenta&ccedil;&atilde;o igual ao IPv4</li>
+                <li data-option="D">O IPv6 adicionou suporte a broadcast nativo no cabe&ccedil;alho</li>
+            </ul>
+            <button class="btn-verificar">Verificar</button>
+            <div class="mc-feedback"></div>
+            <div class="mc-explicacao">O cabe&ccedil;alho IPv6 tem <strong>40 bytes fixos</strong> (maior que os 20 do IPv4, mas muito mais simples). Sem checksum (TCP/UDP garantem integridade) e sem fragmenta&ccedil;&atilde;o por roteadores (apenas o host de origem fragmenta, via Extension Header). IPv6 tamb&eacute;m eliminou o broadcast.</div>
+        </div>
+
+        <div class="mc-question" data-correct="C">
+            <p class="mc-enunciado"><strong>5.</strong> Uma operadora m&oacute;vel fornece apenas endere&ccedil;os IPv6 aos smartphones, mas precisa que eles acessem sites legados com somente IPv4. Qual mecanismo de migra&ccedil;&atilde;o &eacute; mais adequado?</p>
+            <ul class="mc-options">
+                <li data-option="A">Dual Stack no smartphone</li>
+                <li data-option="B">Tunelamento 6in4</li>
+                <li data-option="C">NAT64 + DNS64</li>
+                <li data-option="D">6to4 com prefixo 2002::/16</li>
+            </ul>
+            <button class="btn-verificar">Verificar</button>
+            <div class="mc-feedback"></div>
+            <div class="mc-explicacao"><strong>NAT64 + DNS64</strong> é o mecanismo ideal: o dispositivo tem somente IPv6, o DNS64 sintetiza registros AAAA a partir de A (para sites sem IPv6), e o NAT64 traduz pacotes IPv6↔IPv4 na fronteira da rede. Dual Stack exigiria IPv4 no cliente — mas o cliente só tem IPv6. A Apple exige suporte a NAT64 em todos os apps iOS desde 2016.</div>
+        </div>
+    </div>
+
+</div><!-- .content-wrapper -->
+
+<nav class="nav-footer">
+    <a href="rc10-enderecamento.html" class="nav-btn nav-prev">&#x2B05; Aula anterior<br><small>Endere&ccedil;amento IPv4</small></a>
+    <a href="index.html" class="nav-btn nav-home">&#x1F3E0; Dashboard</a>
+    <a href="rc12-roteamento-estatico.html" class="nav-btn nav-next">Pr&oacute;xima aula &#x27A1;<br><small>Roteamento Est&aacute;tico</small></a>
+</nav>
+
+<script src="slide-mode.js"></script>
+<script src="exercise-drag.js"></script>
+<script src="exercise-print.js"></script>
+<script src="exercise-mc.js"></script>
+<script>
+/* ══════════════════════════════════════════════
+   IPv6 ADDRESS EXPLORER
+══════════════════════════════════════════════ */
+const GROUP_COLORS = [
+    '#6d28d9','#7c3aed','#8b5cf6','#a78bfa',
+    '#2563eb','#3b82f6','#0e7490','#0891b2'
+];
+
+function expandIPv6(addr) {
+    addr = addr.trim().toLowerCase();
+    // Handle :: expansion
+    if (addr.includes('::')) {
+        const parts = addr.split('::');
+        const left  = parts[0] ? parts[0].split(':') : [];
+        const right = parts[1] ? parts[1].split(':') : [];
+        const missing = 8 - left.length - right.length;
+        const mid = Array(missing).fill('0');
+        addr = [...left, ...mid, ...right].join(':');
+    }
+    return addr.split(':').map(g => g.padStart(4,'0')).join(':');
+}
+
+function compressIPv6(full) {
+    // Remove leading zeros in each group
+    let groups = full.split(':').map(g => g.replace(/^0+/, '') || '0');
+    // Find longest run of '0' groups
+    let best = {start:-1,len:0}, cur = {start:-1,len:0};
+    groups.forEach((g,i) => {
+        if (g === '0') {
+            if (cur.start === -1) cur = {start:i,len:1};
+            else cur.len++;
+            if (cur.len > best.len) best = {...cur};
+        } else { cur = {start:-1,len:0}; }
+    });
+    if (best.len >= 2) {
+        const compressed = [...groups.slice(0,best.start), '', ...groups.slice(best.start+best.len)];
+        return compressed.join(':').replace(/^:|:$/g,'').replace('::','::') || '::';
+    }
+    return groups.join(':');
+}
+
+function hexToBin(hex) {
+    return parseInt(hex,16).toString(2).padStart(16,'0');
+}
+
+function detectType(full) {
+    const g = full.split(':');
+    const prefix16 = parseInt(g[0],16);
+    if (full === '0000:0000:0000:0000:0000:0000:0000:0001') return {label:'Loopback',color:'#10b981'};
+    if (full === '0000:0000:0000:0000:0000:0000:0000:0000') return {label:'Indefinido (unspecified)',color:'#64748b'};
+    if ((prefix16 & 0xFE00) === 0xFE80) return {label:'Link-Local (FE80::/10)',color:'#f59e0b'};
+    if ((prefix16 & 0xFF00) === 0xFF00) return {label:'Multicast (FF00::/8)',color:'#a855f7'};
+    if ((prefix16 & 0xFE00) === 0xFC00) return {label:'Unique Local (FC00::/7)',color:'#06b6d4'};
+    if ((prefix16 & 0xE000) === 0x2000) return {label:'Unicast Global (2000::/3)',color:'#22c55e'};
+    return {label:'Reservado / Especial',color:'#64748b'};
+}
+
+function analyzeIPv6() {
+    const raw = document.getElementById('ipv6Input').value.trim();
+    const groupsEl = document.getElementById('ipv6Groups');
+    const panelEl  = document.getElementById('ipv6ResultPanel');
+
+    let expanded;
+    try {
+        expanded = expandIPv6(raw);
+        const groups = expanded.split(':');
+        if (groups.length !== 8 || groups.some(g => g.length > 4 || !/^[0-9a-f]+$/i.test(g))) throw new Error();
+    } catch(e) {
+        groupsEl.innerHTML = '<span style="color:#f87171;font-size:.82em;">Endereço IPv6 inválido. Verifique a sintaxe.</span>';
+        panelEl.innerHTML = '';
+        return;
+    }
+
+    const groups = expanded.split(':');
+    const compressed = compressIPv6(expanded);
+    const type = detectType(expanded);
+
+    // Render bit groups
+    let html = '';
+    groups.forEach((g, i) => {
+        html += `<div class="ipv6-group" style="background:${GROUP_COLORS[i]}20;border:1px solid ${GROUP_COLORS[i]}44;">
+            <div class="ipv6-group-hex" style="color:${GROUP_COLORS[i]};">${g.padStart(4,'0')}</div>
+            <div class="ipv6-group-bin">${hexToBin(g).slice(0,8)}<br>${hexToBin(g).slice(8)}</div>
+            <div class="ipv6-group-idx">G${i+1}</div>
+        </div>`;
+        if (i < 7) html += `<div class="ipv6-sep" style="color:${GROUP_COLORS[i]}55;">:</div>`;
+    });
+    groupsEl.innerHTML = html;
+
+    // Check applied rules
+    const hasLeadingZeros = groups.some(g => g !== g.replace(/^0+/,'').padStart(1,'0') && g !== '0000' );
+    const hasZeroGroup = groups.some(g => g === '0000');
+    let rules = '';
+    if (hasZeroGroup)    rules += '<span class="ipv6-rule-tag ipv6-rule-zero">:: aplicado (zeros consecutivos)</span>';
+    if (hasLeadingZeros) rules += '<span class="ipv6-rule-tag ipv6-rule-lead" style="margin-left:6px;">zeros à esquerda removidos</span>';
+
+    panelEl.innerHTML = `<div class="ipv6-result-panel" style="animation:slideDown .22s ease;">
+        <div class="ipv6-result-row">
+            <span class="ipv6-result-lbl">Expandido</span>
+            <span class="ipv6-result-val">${expanded}</span>
+        </div>
+        <div class="ipv6-result-row">
+            <span class="ipv6-result-lbl">Comprimido</span>
+            <span class="ipv6-result-val good">${compressed}</span>
+        </div>
+        <div class="ipv6-result-row">
+            <span class="ipv6-result-lbl">Tipo</span>
+            <span class="ipv6-result-val" style="color:${type.color};">${type.label}</span>
+        </div>
+        ${rules ? `<div class="ipv6-result-row"><span class="ipv6-result-lbl">Regras</span><div style="display:flex;flex-wrap:wrap;gap:6px;">${rules}</div></div>` : ''}
+        <div class="ipv6-result-row">
+            <span class="ipv6-result-lbl">Prefixo /64</span>
+            <span class="ipv6-result-val">${groups.slice(0,4).join(':').replace(/^0+/g,'')||'0'}::/64</span>
+        </div>
+    </div>`;
+}
+
+/* ── MIGRATION TABS ── */
+function showMig(id) {
+    document.querySelectorAll('.mig-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.mig-tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('mig-' + id).classList.add('active');
+    event.target.classList.add('active');
+}
+
+/* ── INIT ── */
+document.addEventListener('DOMContentLoaded', () => {
+    analyzeIPv6();
+    document.getElementById('ipv6Input').addEventListener('keydown', e => {
+        if (e.key === 'Enter') analyzeIPv6();
+    });
+});
+</script>
+</body>
+</html>
