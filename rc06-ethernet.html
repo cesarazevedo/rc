@@ -14,6 +14,78 @@
             --bg-light:  #f4f7fe;
             --text-dark: #2d3748;
         }
+
+        /* ── Cable & Network Visualizations ───────────────── */
+        .viz-wrap {
+            background: #0f172a;
+            border-radius: 10px;
+            padding: 1.25rem 1.25rem 1rem;
+            margin: 1rem 0;
+            overflow: hidden;
+        }
+        .viz-title {
+            color: #64748b;
+            font-size: 0.71rem;
+            text-transform: uppercase;
+            letter-spacing: .09em;
+            margin-bottom: .75rem;
+            font-family: 'Courier New', monospace;
+        }
+        @keyframes draw-path {
+            from { stroke-dashoffset: 900; }
+            to   { stroke-dashoffset: 0;   }
+        }
+        .tw-wire {
+            stroke-dasharray: 900;
+            stroke-dashoffset: 900;
+            animation: draw-path 2s ease forwards;
+        }
+        @keyframes light-travel {
+            0%   { stroke-dashoffset: 700; opacity: 0.1; }
+            45%  { opacity: 1; }
+            100% { stroke-dashoffset: 0;   opacity: 0.1; }
+        }
+        .light-beam  { stroke-dasharray: 700; animation: light-travel 2.4s ease-in-out infinite; }
+        .light-beam-b { animation-delay: 1.2s; }
+        @keyframes dash-flow { from { stroke-dashoffset: 18; } to { stroke-dashoffset: 0; } }
+        .flow-line { stroke-dasharray: 9 5; animation: dash-flow .7s linear infinite; }
+        /* Crimping activity */
+        @keyframes crimp-press {
+            0%,30%  { transform: translateY(0); }
+            50%,65% { transform: translateY(-16px); }
+            85%,100%{ transform: translateY(0); }
+        }
+        .crimp-jaw { animation: crimp-press 2.2s ease-in-out infinite; transform-box: fill-box; transform-origin: top center; }
+        @keyframes led-seq {
+            0%,8%    { opacity: .15; }
+            15%,88%  { opacity: 1; }
+            96%,100% { opacity: .15; }
+        }
+        .led-1 { animation: led-seq 3.2s infinite; animation-delay: 0s; }
+        .led-2 { animation: led-seq 3.2s infinite; animation-delay: .35s; }
+        .led-3 { animation: led-seq 3.2s infinite; animation-delay: .7s; }
+        .led-4 { animation: led-seq 3.2s infinite; animation-delay: 1.05s; }
+        .led-5 { animation: led-seq 3.2s infinite; animation-delay: 1.4s; }
+        .led-6 { animation: led-seq 3.2s infinite; animation-delay: 1.75s; }
+        .led-7 { animation: led-seq 3.2s infinite; animation-delay: 2.1s; }
+        .led-8 { animation: led-seq 3.2s infinite; animation-delay: 2.45s; }
+        /* RJ-45 pins */
+        .rj45-wrap  { display:flex; gap:2.5rem; flex-wrap:wrap; justify-content:center; margin-top:.5rem; }
+        .rj45-std   { text-align:center; }
+        .rj45-label { color:#fbbf24; font-family:monospace; font-size:11px; margin-bottom:7px; }
+        .rj45-pins  { display:flex; gap:4px; justify-content:center; }
+        .rj45-pin   { width:22px; height:50px; border-radius:3px 3px 8px 8px; cursor:default; transition:transform .15s; }
+        .rj45-pin:hover { transform:translateY(-4px); }
+        .rj45-nums  { display:flex; gap:4px; justify-content:center; margin-top:4px; }
+        .rj45-nums span { width:22px; text-align:center; font-size:9px; font-family:monospace; color:#64748b; }
+        .rj45-note  { color:#94a3b8; font-size:11px; font-family:monospace; margin-top:.75rem; padding:.5rem .75rem; background:#1e293b; border-radius:6px; line-height:1.7; }
+        /* Comparison bars */
+        .bar-section h4 { font-size:.78rem; color:#64748b; text-transform:uppercase; letter-spacing:.07em; margin:1rem 0 .45rem; font-weight:600; }
+        .bar-row  { display:flex; align-items:center; gap:.6rem; margin:.35rem 0; }
+        .bar-lbl  { font-size:11px; font-family:monospace; color:var(--text-dark); min-width:150px; }
+        .bar-track { flex:1; background:#e2e8f0; border-radius:4px; height:11px; overflow:hidden; }
+        .bar-fill  { height:100%; border-radius:4px; width:0; transition:width 1.4s cubic-bezier(.4,0,.2,1); }
+        .bar-val   { font-size:10px; font-family:monospace; color:#64748b; min-width:80px; text-align:right; }
     </style>
 </head>
 <body>
@@ -67,31 +139,54 @@
         <h2>&#x1F6A6; CSMA/CD &mdash; Acesso ao Meio Compartilhado</h2>
         <p>Nas primeiras redes Ethernet, todos os dispositivos compartilhavam o mesmo cabo (barramento). Era preciso um m&eacute;todo para evitar que dois dispositivos transmitissem ao mesmo tempo e corrompessem os dados. A solu&ccedil;&atilde;o foi o <strong>CSMA/CD &mdash; Carrier Sense Multiple Access with Collision Detection</strong>.</p>
 
-        <div class="terminal-block">
-            <div class="terminal-header">Como o CSMA/CD funciona — passo a passo</div>
-<pre>
-  1. CARRIER SENSE (CS) — "Ouvir antes de falar"
-     O dispositivo verifica se o cabo está livre (sem sinal).
-     Se livre → começa a transmitir.
-     Se ocupado → espera até o cabo ficar livre.
+        <div class="viz-wrap">
+            <div class="viz-title">CSMA/CD — passo a passo: carrier sense → colisão → backoff (animado)</div>
+            <svg viewBox="0 0 580 280" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block">
+                <!-- Shared bus cable -->
+                <rect x="20" y="135" width="540" height="10" rx="4" fill="#334155"/>
+                <text x="290" y="160" text-anchor="middle" fill="#475569" font-size="9" font-family="monospace">cabo compartilhado (barramento)</text>
 
-  2. MULTIPLE ACCESS (MA) — "Todos acessam o mesmo meio"
-     Qualquer dispositivo pode transmitir quando o cabo está livre.
-     Não há reserva de canal ou prioridade.
+                <!-- Node A -->
+                <rect x="30" y="80" width="90" height="46" rx="6" fill="#1e3a5f" stroke="#3b82f6" stroke-width="1.5"/>
+                <text x="75" y="99" text-anchor="middle" fill="#93c5fd" font-size="11" font-weight="bold" font-family="monospace">Nó A</text>
+                <text x="75" y="114" text-anchor="middle" fill="#64748b" font-size="9" font-family="monospace">TX: dados</text>
+                <line x1="75" y1="126" x2="75" y2="135" stroke="#3b82f6" stroke-width="2"/>
 
-  3. COLLISION DETECTION (CD) — "Detectar colisão enquanto transmite"
-     Se dois dispositivos transmitirem simultaneamente → COLISÃO.
-     Os sinais se misturam e corrompem ambas as transmissões.
+                <!-- Node B -->
+                <rect x="460" y="80" width="90" height="46" rx="6" fill="#1e3a5f" stroke="#3b82f6" stroke-width="1.5"/>
+                <text x="505" y="99" text-anchor="middle" fill="#93c5fd" font-size="11" font-weight="bold" font-family="monospace">Nó B</text>
+                <text x="505" y="114" text-anchor="middle" fill="#64748b" font-size="9" font-family="monospace">TX: dados</text>
+                <line x1="505" y1="126" x2="505" y2="135" stroke="#3b82f6" stroke-width="2"/>
 
-  4. JAM SIGNAL — "Avisar a todos sobre a colisão"
-     O dispositivo que detecta a colisão envia um sinal de jam (32 bits)
-     para garantir que todos saibam que houve colisão.
+                <!-- Signal from A -->
+                <line x1="75" y1="140" x2="290" y2="140" stroke="#60a5fa" stroke-width="3" stroke-linecap="round" opacity="0.8">
+                    <animate attributeName="x2" values="75;505;505" keyTimes="0;0.5;1" dur="3s" repeatCount="indefinite"/>
+                    <animate attributeName="opacity" values="0.8;0.8;0" keyTimes="0;0.45;0.55" dur="3s" repeatCount="indefinite"/>
+                </line>
+                <!-- Signal from B -->
+                <line x1="505" y1="140" x2="290" y2="140" stroke="#f97316" stroke-width="3" stroke-linecap="round" opacity="0.8">
+                    <animate attributeName="x2" values="505;75;75" keyTimes="0;0.5;1" dur="3s" repeatCount="indefinite"/>
+                    <animate attributeName="opacity" values="0.8;0.8;0" keyTimes="0;0.45;0.55" dur="3s" repeatCount="indefinite"/>
+                </line>
+                <!-- Collision flash -->
+                <circle cx="290" cy="140" r="18" fill="#ef4444" opacity="0">
+                    <animate attributeName="opacity" values="0;0;1;0.7;0" keyTimes="0;0.44;0.5;0.56;0.62" dur="3s" repeatCount="indefinite"/>
+                    <animate attributeName="r" values="5;5;22;28;35" keyTimes="0;0.44;0.5;0.56;0.62" dur="3s" repeatCount="indefinite"/>
+                </circle>
+                <text x="290" y="137" text-anchor="middle" fill="#fca5a5" font-size="10" font-weight="bold" font-family="monospace" opacity="0">
+                    COLISÃO
+                    <animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;0.46;0.5;0.58;0.64" dur="3s" repeatCount="indefinite"/>
+                </text>
 
-  5. BACKOFF EXPONENCIAL — "Esperar tempo aleatório e tentar de novo"
-     Cada dispositivo espera um tempo aleatório (algoritmo de backoff)
-     antes de tentar retransmitir.
-     A cada colisão, o tempo máximo de espera dobra (até 16 tentativas).
-</pre>
+                <!-- Step labels -->
+                <rect x="20" y="175" width="540" height="98" rx="6" fill="#1e293b"/>
+                <text x="30" y="194" fill="#fbbf24" font-size="10" font-weight="bold" font-family="monospace">1. CARRIER SENSE</text>
+                <text x="30" y="208" fill="#94a3b8" font-size="9" font-family="monospace">Verifica se o meio está livre antes de transmitir</text>
+                <text x="30" y="224" fill="#fbbf24" font-size="10" font-weight="bold" font-family="monospace">2. COLISÃO DETECTADA</text>
+                <text x="30" y="238" fill="#94a3b8" font-size="9" font-family="monospace">Dois nós transmitem ao mesmo tempo → sinais corrompidos → JAM signal (32 bits)</text>
+                <text x="30" y="254" fill="#fbbf24" font-size="10" font-weight="bold" font-family="monospace">3. BACKOFF EXPONENCIAL</text>
+                <text x="30" y="268" fill="#94a3b8" font-size="9" font-family="monospace">Cada nó aguarda tempo aleatório (dobra a cada colisão, até 16 tentativas) e retransmite</text>
+            </svg>
         </div>
 
         <div class="alert-box">
@@ -117,17 +212,50 @@
         <h2>&#x1F4E6; Estrutura do Quadro Ethernet</h2>
         <p>O <strong>quadro (frame)</strong> &eacute; a PDU da camada de enlace &mdash; a unidade de dados que o Ethernet transmite. Cada quadro carrega os endere&ccedil;os MAC de origem e destino, o tipo de protocolo, os dados e um campo de verifica&ccedil;&atilde;o de erros.</p>
 
-        <div class="terminal-block">
-            <div class="terminal-header">Estrutura do quadro Ethernet II (IEEE 802.3)</div>
-<pre>
-  ┌──────────┬─────┬─────────────┬─────────────┬───────────┬──────────────────┬─────┐
-  │Preâmbulo │ SFD │  MAC Destino│  MAC Origem │EtherType/ │      Dados       │ FCS │
-  │ 7 bytes  │1 b  │   6 bytes   │   6 bytes   │  Length   │  46 – 1500 bytes │4 b  │
-  │          │     │             │             │  2 bytes  │                  │     │
-  └──────────┴─────┴─────────────┴─────────────┴───────────┴──────────────────┴─────┘
-  Total mínimo: 64 bytes (sem preâmbulo/SFD)
-  Total máximo: 1518 bytes (sem preâmbulo/SFD)
-</pre>
+        <div class="viz-wrap">
+            <div class="viz-title">Estrutura do quadro Ethernet II — campos e tamanhos em bytes</div>
+            <svg viewBox="0 0 580 130" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block">
+                <!-- Field blocks — proportional to field size (visual) -->
+                <!-- Preâmbulo: 7B -->
+                <rect x="10"  y="30" width="62" height="52" rx="4" fill="#1e3a5f" stroke="#3b82f6" stroke-width="1.5"/>
+                <text x="41"  y="53" text-anchor="middle" fill="#93c5fd" font-size="9"  font-family="monospace" font-weight="bold">Pre-</text>
+                <text x="41"  y="64" text-anchor="middle" fill="#93c5fd" font-size="9"  font-family="monospace" font-weight="bold">âmbulo</text>
+                <text x="41"  y="76" text-anchor="middle" fill="#64748b" font-size="8"  font-family="monospace">7 bytes</text>
+                <!-- SFD: 1B -->
+                <rect x="74"  y="30" width="28" height="52" rx="4" fill="#1e2a3a" stroke="#60a5fa" stroke-width="1.5"/>
+                <text x="88"  y="53" text-anchor="middle" fill="#7dd3fc" font-size="8"  font-family="monospace">SFD</text>
+                <text x="88"  y="76" text-anchor="middle" fill="#64748b" font-size="7"  font-family="monospace">1 b</text>
+                <!-- MAC Destino: 6B -->
+                <rect x="104" y="30" width="74" height="52" rx="4" fill="#1a3a2a" stroke="#22c55e" stroke-width="1.5"/>
+                <text x="141" y="50" text-anchor="middle" fill="#86efac" font-size="9"  font-family="monospace" font-weight="bold">MAC</text>
+                <text x="141" y="62" text-anchor="middle" fill="#86efac" font-size="9"  font-family="monospace" font-weight="bold">Destino</text>
+                <text x="141" y="76" text-anchor="middle" fill="#64748b" font-size="8"  font-family="monospace">6 bytes</text>
+                <!-- MAC Origem: 6B -->
+                <rect x="180" y="30" width="74" height="52" rx="4" fill="#162a1e" stroke="#4ade80" stroke-width="1.5"/>
+                <text x="217" y="50" text-anchor="middle" fill="#4ade80" font-size="9"  font-family="monospace" font-weight="bold">MAC</text>
+                <text x="217" y="62" text-anchor="middle" fill="#4ade80" font-size="9"  font-family="monospace" font-weight="bold">Origem</text>
+                <text x="217" y="76" text-anchor="middle" fill="#64748b" font-size="8"  font-family="monospace">6 bytes</text>
+                <!-- EtherType: 2B -->
+                <rect x="256" y="30" width="52" height="52" rx="4" fill="#2d1a4a" stroke="#a855f7" stroke-width="1.5"/>
+                <text x="282" y="50" text-anchor="middle" fill="#d8b4fe" font-size="8"  font-family="monospace">Ether-</text>
+                <text x="282" y="62" text-anchor="middle" fill="#d8b4fe" font-size="8"  font-family="monospace">Type</text>
+                <text x="282" y="76" text-anchor="middle" fill="#64748b" font-size="7"  font-family="monospace">2 bytes</text>
+                <!-- Dados: 46–1500B -->
+                <rect x="310" y="30" width="200" height="52" rx="4" fill="#2d2514" stroke="#fbbf24" stroke-width="1.5"/>
+                <text x="410" y="53" text-anchor="middle" fill="#fde68a" font-size="10" font-family="monospace" font-weight="bold">Dados (Payload)</text>
+                <text x="410" y="72" text-anchor="middle" fill="#64748b" font-size="8"  font-family="monospace">46 – 1500 bytes</text>
+                <!-- FCS: 4B -->
+                <rect x="512" y="30" width="58" height="52" rx="4" fill="#3a1a1a" stroke="#ef4444" stroke-width="1.5"/>
+                <text x="541" y="53" text-anchor="middle" fill="#fca5a5" font-size="9"  font-family="monospace" font-weight="bold">FCS</text>
+                <text x="541" y="76" text-anchor="middle" fill="#64748b" font-size="8"  font-family="monospace">4 bytes</text>
+
+                <!-- Bottom labels -->
+                <text x="290" y="102" text-anchor="middle" fill="#475569" font-size="9" font-family="monospace">Total mín.: 64 bytes · Total máx.: 1518 bytes (sem preâmbulo/SFD)</text>
+                <!-- Flow arrow -->
+                <line x1="10" y1="118" x2="570" y2="118" stroke="#334155" stroke-width="1" marker-end="url(#arr)"/>
+                <defs><marker id="arr" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><polygon points="0 0, 7 3.5, 0 7" fill="#334155"/></marker></defs>
+                <text x="575" y="122" fill="#334155" font-size="8" font-family="monospace">TX →</text>
+            </svg>
         </div>
 
         <table>
@@ -187,27 +315,38 @@
         <h2>&#x1F3F7;&#xFE0F; Endere&ccedil;o MAC</h2>
         <p>O <strong>endere&ccedil;o MAC (Media Access Control)</strong> &eacute; o identificador &uacute;nico de cada interface de rede no n&iacute;vel da camada de enlace. Diferente do endere&ccedil;o IP (que pode mudar), o MAC &eacute; gravado na mem&oacute;ria ROM da placa de rede pelo fabricante &mdash; por isso &eacute; chamado de <strong>endere&ccedil;o f&iacute;sico</strong> ou <strong>endere&ccedil;o de hardware</strong>.</p>
 
-        <div class="terminal-block">
-            <div class="terminal-header">Estrutura do endereço MAC (48 bits = 6 bytes)</div>
-<pre>
-  Exemplo:  A8 : 5E : 45 : F3 : 2B : 7C
-            ──────────────   ────────────
-            OUI (3 bytes)    NIC (3 bytes)
-            Identificador    Identificador
-            do fabricante    único da placa
+        <div class="viz-wrap">
+            <div class="viz-title">Estrutura do endereço MAC — 6 octetos, OUI vs NIC, bits especiais</div>
+            <svg viewBox="0 0 580 190" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block">
+                <!-- Example MAC label -->
+                <text x="290" y="22" text-anchor="middle" fill="#94a3b8" font-size="11" font-family="monospace">Exemplo: A8 : 5E : 45 : F3 : 2B : 7C</text>
 
-  OUI — Organizationally Unique Identifier
-        Atribuído pelo IEEE a cada fabricante.
-        A8:5E:45 → Intel Corporation (exemplo)
+                <!-- OUI group (bytes 1-3) -->
+                <rect x="20"  y="32" width="258" height="60" rx="6" fill="#1e3a5f" stroke="#3b82f6" stroke-width="1.5"/>
+                <text x="149" y="52" text-anchor="middle" fill="#60a5fa" font-size="10" font-weight="bold" font-family="monospace">OUI — Organizationally Unique Identifier</text>
+                <text x="149" y="66" text-anchor="middle" fill="#93c5fd" font-size="9" font-family="monospace">A8 : 5E : 45</text>
+                <text x="149" y="82" text-anchor="middle" fill="#64748b" font-size="8" font-family="monospace">Atribuído pelo IEEE ao fabricante (ex.: Intel)</text>
 
-  NIC — Network Interface Controller portion
-        Atribuído pelo próprio fabricante para cada placa.
+                <!-- NIC group (bytes 4-6) -->
+                <rect x="302" y="32" width="258" height="60" rx="6" fill="#1a3a2a" stroke="#22c55e" stroke-width="1.5"/>
+                <text x="431" y="52" text-anchor="middle" fill="#4ade80" font-size="10" font-weight="bold" font-family="monospace">NIC — Network Interface Portion</text>
+                <text x="431" y="66" text-anchor="middle" fill="#86efac" font-size="9" font-family="monospace">F3 : 2B : 7C</text>
+                <text x="431" y="82" text-anchor="middle" fill="#64748b" font-size="8" font-family="monospace">Atribuído pelo fabricante para cada placa</text>
 
-  Representações aceitas:
-    A8:5E:45:F3:2B:7C  (Linux/macOS — dois pontos)
-    A8-5E-45-F3-2B-7C  (Windows — hífen)
-    A85E.45F3.2B7C     (Cisco IOS — ponto a cada 2 bytes)
-</pre>
+                <!-- Special bits row -->
+                <rect x="20" y="104" width="258" height="42" rx="5" fill="#2d1a4a" stroke="#a855f7" stroke-width="1"/>
+                <text x="149" y="120" text-anchor="middle" fill="#d8b4fe" font-size="9" font-family="monospace" font-weight="bold">Bit I/G (bit 0 do octeto 1)</text>
+                <text x="149" y="136" text-anchor="middle" fill="#94a3b8" font-size="8" font-family="monospace">0 = Unicast  |  1 = Multicast/Broadcast</text>
+
+                <rect x="302" y="104" width="258" height="42" rx="5" fill="#2d2514" stroke="#fbbf24" stroke-width="1"/>
+                <text x="431" y="120" text-anchor="middle" fill="#fde68a" font-size="9" font-family="monospace" font-weight="bold">Bit U/L (bit 1 do octeto 1)</text>
+                <text x="431" y="136" text-anchor="middle" fill="#94a3b8" font-size="8" font-family="monospace">0 = Universally Administered  |  1 = LAA</text>
+
+                <!-- Representations -->
+                <rect x="20" y="156" width="540" height="28" rx="5" fill="#1e293b"/>
+                <text x="30" y="170" fill="#64748b" font-size="8" font-family="monospace">Linux/macOS: A8:5E:45:F3:2B:7C  |  Windows: A8-5E-45-F3-2B-7C  |  Cisco IOS: A85E.45F3.2B7C</text>
+                <text x="30" y="182" fill="#475569" font-size="8" font-family="monospace">Broadcast: FF:FF:FF:FF:FF:FF (todos os bits = 1)</text>
+            </svg>
         </div>
 
         <h3>Tipos de Endere&ccedil;o MAC</h3>
@@ -232,28 +371,58 @@
         <h3>MAC e ARP</h3>
         <p>O IP trabalha com endere&ccedil;os l&oacute;gicos, mas o Ethernet precisa de endere&ccedil;os MAC para entregar o quadro na LAN. O <strong>ARP (Address Resolution Protocol)</strong> faz essa ponte:</p>
 
-        <div class="terminal-block">
-            <div class="terminal-header">Como o ARP funciona</div>
-<pre>
-  PC-A quer enviar um pacote para IP 192.168.1.10, mas não sabe o MAC.
+        <div class="viz-wrap">
+            <div class="viz-title">Protocolo ARP — resolução de IP para MAC (animado)</div>
+            <svg viewBox="0 0 560 220" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block">
+                <!-- PC-A -->
+                <rect x="20" y="30" width="110" height="60" rx="6" fill="#1e3a5f" stroke="#3b82f6" stroke-width="1.5"/>
+                <text x="75" y="55" text-anchor="middle" fill="#93c5fd" font-size="11" font-weight="bold" font-family="monospace">PC-A</text>
+                <text x="75" y="70" text-anchor="middle" fill="#64748b" font-size="8" font-family="monospace">192.168.1.1</text>
+                <text x="75" y="82" text-anchor="middle" fill="#64748b" font-size="8" font-family="monospace">A8:5E:45:F3:2B:7C</text>
 
-  1. PC-A envia um ARP Request em broadcast:
-     "Quem tem o IP 192.168.1.10? Me diga seu MAC."
-     Destino MAC: FF:FF:FF:FF:FF:FF (broadcast)
+                <!-- Switch -->
+                <rect x="220" y="50" width="120" height="40" rx="5" fill="#1e293b" stroke="#475569" stroke-width="1.5"/>
+                <text x="280" y="68" text-anchor="middle" fill="#94a3b8" font-size="10" font-weight="bold" font-family="monospace">SWITCH</text>
+                <text x="280" y="82" text-anchor="middle" fill="#475569" font-size="8" font-family="monospace">L2 · encaminha</text>
 
-  2. PC-B (192.168.1.10) responde com ARP Reply em unicast:
-     "Eu tenho esse IP. Meu MAC é B4:2E:99:1A:C7:F0."
+                <!-- PC-B -->
+                <rect x="430" y="30" width="110" height="60" rx="6" fill="#1a3a2a" stroke="#22c55e" stroke-width="1.5"/>
+                <text x="485" y="55" text-anchor="middle" fill="#86efac" font-size="11" font-weight="bold" font-family="monospace">PC-B</text>
+                <text x="485" y="70" text-anchor="middle" fill="#64748b" font-size="8" font-family="monospace">192.168.1.10</text>
+                <text x="485" y="82" text-anchor="middle" fill="#64748b" font-size="8" font-family="monospace">B4:2E:99:1A:C7:F0</text>
 
-  3. PC-A armazena a resposta na tabela ARP (cache):
-     192.168.1.10 → B4:2E:99:1A:C7:F0
+                <!-- ARP Request arrow (broadcast) -->
+                <line x1="130" y1="55" x2="218" y2="65" stroke="#fbbf24" stroke-width="2" stroke-dasharray="6 3">
+                    <animate attributeName="stroke-dashoffset" values="18;0" dur="0.7s" repeatCount="indefinite"/>
+                </line>
+                <line x1="340" y1="65" x2="428" y2="55" stroke="#fbbf24" stroke-width="2" stroke-dasharray="6 3">
+                    <animate attributeName="stroke-dashoffset" values="18;0" dur="0.7s" repeatCount="indefinite"/>
+                </line>
+                <text x="280" y="110" text-anchor="middle" fill="#fde68a" font-size="9" font-family="monospace">→ ARP Request (broadcast FF:FF:FF:FF:FF:FF) →</text>
+                <text x="280" y="122" text-anchor="middle" fill="#94a3b8" font-size="8" font-family="monospace">"Quem tem 192.168.1.10? Me diga seu MAC."</text>
 
-  4. A partir daí, PC-A usa o MAC diretamente sem novos ARPs.
-     (O cache ARP expira após alguns minutos.)
+                <!-- ARP Reply arrow (unicast) -->
+                <line x1="428" y1="78" x2="340" y2="82" stroke="#4ade80" stroke-width="2" stroke-dasharray="6 3">
+                    <animate attributeName="stroke-dashoffset" values="0;-18" dur="0.7s" repeatCount="indefinite"/>
+                </line>
+                <line x1="218" y1="82" x2="130" y2="78" stroke="#4ade80" stroke-width="2" stroke-dasharray="6 3">
+                    <animate attributeName="stroke-dashoffset" values="0;-18" dur="0.7s" repeatCount="indefinite"/>
+                </line>
+                <text x="280" y="140" text-anchor="middle" fill="#4ade80" font-size="9" font-family="monospace">← ARP Reply (unicast para A8:5E:45:F3:2B:7C) ←</text>
+                <text x="280" y="152" text-anchor="middle" fill="#94a3b8" font-size="8" font-family="monospace">"Eu tenho esse IP. Meu MAC é B4:2E:99:1A:C7:F0."</text>
 
-  Comando para ver a tabela ARP:
-    arp -a          (Windows e Linux)
-    ip neigh show   (Linux moderno)
-</pre>
+                <!-- ARP cache box -->
+                <rect x="20" y="165" width="240" height="46" rx="5" fill="#1e293b"/>
+                <text x="30" y="181" fill="#fbbf24" font-size="9" font-family="monospace" font-weight="bold">Tabela ARP de PC-A (cache):</text>
+                <text x="30" y="195" fill="#86efac" font-size="9" font-family="monospace">192.168.1.10 → B4:2E:99:1A:C7:F0</text>
+                <text x="30" y="207" fill="#475569" font-size="8" font-family="monospace">Expira em minutos · arp -a (Windows/Linux)</text>
+
+                <!-- Note -->
+                <rect x="280" y="165" width="260" height="46" rx="5" fill="#1e293b"/>
+                <text x="290" y="181" fill="#94a3b8" font-size="9" font-family="monospace">Próximas transmissões usam o</text>
+                <text x="290" y="195" fill="#94a3b8" font-size="9" font-family="monospace">MAC diretamente — sem novo ARP.</text>
+                <text x="290" y="207" fill="#475569" font-size="8" font-family="monospace">ARP opera na fronteira L2/L3</text>
+            </svg>
         </div>
     </div>
 
@@ -332,6 +501,40 @@
             </tbody>
         </table>
 
+        <div class="bar-section">
+            <h4>Velocidade por padr&atilde;o Ethernet</h4>
+            <div class="bar-row">
+                <span class="bar-lbl">10BASE-T / 10BASE-2</span>
+                <div class="bar-track"><div class="bar-fill" style="background:#94a3b8" data-w="0.01%"></div></div>
+                <span class="bar-val">10 Mbps</span>
+            </div>
+            <div class="bar-row">
+                <span class="bar-lbl">100BASE-TX (Fast Ethernet)</span>
+                <div class="bar-track"><div class="bar-fill" style="background:#60a5fa" data-w="0.1%"></div></div>
+                <span class="bar-val">100 Mbps</span>
+            </div>
+            <div class="bar-row">
+                <span class="bar-lbl">1000BASE-T (Gigabit)</span>
+                <div class="bar-track"><div class="bar-fill" style="background:#3b82f6" data-w="1%"></div></div>
+                <span class="bar-val">1 Gbps</span>
+            </div>
+            <div class="bar-row">
+                <span class="bar-lbl">10GBASE-T / 10GBASE-SR</span>
+                <div class="bar-track"><div class="bar-fill" style="background:#22c55e" data-w="10%"></div></div>
+                <span class="bar-val">10 Gbps</span>
+            </div>
+            <div class="bar-row">
+                <span class="bar-lbl">40GBASE</span>
+                <div class="bar-track"><div class="bar-fill" style="background:#fbbf24" data-w="40%"></div></div>
+                <span class="bar-val">40 Gbps</span>
+            </div>
+            <div class="bar-row">
+                <span class="bar-lbl">100GBASE</span>
+                <div class="bar-track"><div class="bar-fill" style="background:#f97316" data-w="100%"></div></div>
+                <span class="bar-val">100 Gbps</span>
+            </div>
+        </div>
+
         <div class="tip-box">
             <p>&#x2705; <strong>Como ler o nome do padr&atilde;o:</strong> <code>1000BASE-T</code> significa: <em>1000</em> = velocidade em Mbps, <em>BASE</em> = banda base (n&atilde;o modulado), <em>T</em> = meio (T = Twisted pair, S = Short fiber, L = Long fiber, X = extens&atilde;o m&eacute;dia).</p>
         </div>
@@ -344,23 +547,65 @@
         <h3>Switches e Dom&iacute;nios de Colis&atilde;o</h3>
         <p>O switch substituiu o hub e revolucionou o Ethernet. Enquanto o hub retransmite tudo para todas as portas (um &uacute;nico dom&iacute;nio de colis&atilde;o), o switch aprende os MACs de cada porta e encaminha quadros apenas para o destino correto &mdash; cada porta &eacute; seu pr&oacute;prio dom&iacute;nio de colis&atilde;o isolado, operando em full-duplex.</p>
 
-        <div class="terminal-block">
-            <div class="terminal-header">Tabela MAC do switch (MAC Address Table)</div>
-<pre>
-  O switch mantém uma tabela associando MACs às portas físicas:
+        <div class="viz-wrap">
+            <div class="viz-title">Tabela MAC do switch — aprendizado dinâmico e encaminhamento (animado)</div>
+            <svg viewBox="0 0 580 230" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block">
+                <!-- Switch body -->
+                <rect x="200" y="90" width="180" height="70" rx="8" fill="#1e293b" stroke="#475569" stroke-width="2"/>
+                <text x="290" y="114" text-anchor="middle" fill="#94a3b8" font-size="12" font-weight="bold" font-family="monospace">SWITCH</text>
+                <text x="290" y="130" text-anchor="middle" fill="#475569" font-size="9" font-family="monospace">MAC Address Table</text>
+                <!-- Port indicators on switch -->
+                <rect x="210" y="148" width="20" height="8" rx="2" fill="#3b82f6"/>
+                <rect x="235" y="148" width="20" height="8" rx="2" fill="#22c55e"/>
+                <rect x="260" y="148" width="20" height="8" rx="2" fill="#f97316"/>
+                <rect x="345" y="148" width="25" height="8" rx="2" fill="#a855f7"/>
+                <text x="220" y="170" text-anchor="middle" fill="#64748b" font-size="7" font-family="monospace">Fa0/1</text>
+                <text x="245" y="170" text-anchor="middle" fill="#64748b" font-size="7" font-family="monospace">Fa0/2</text>
+                <text x="270" y="170" text-anchor="middle" fill="#64748b" font-size="7" font-family="monospace">Fa0/3</text>
+                <text x="358" y="170" text-anchor="middle" fill="#64748b" font-size="7" font-family="monospace">Gi0/1</text>
 
-  Porta │ MAC Address        │ VLAN │ Tipo
-  ──────┼────────────────────┼──────┼──────────
-  Fa0/1 │ A8:5E:45:F3:2B:7C │   1  │ Dinâmico
-  Fa0/2 │ B4:2E:99:1A:C7:F0 │   1  │ Dinâmico
-  Fa0/3 │ C0:FF:EE:12:34:56 │  10  │ Estático
-  Gi0/1 │ — (uplink)        │ all  │ Trunk
+                <!-- Devices -->
+                <!-- PC 1 - Fa0/1 -->
+                <rect x="20" y="30" width="110" height="48" rx="5" fill="#1e3a5f" stroke="#3b82f6" stroke-width="1.5"/>
+                <text x="75" y="52" text-anchor="middle" fill="#93c5fd" font-size="9" font-family="monospace" font-weight="bold">PC-A · Fa0/1</text>
+                <text x="75" y="66" text-anchor="middle" fill="#64748b" font-size="7" font-family="monospace">A8:5E:45:F3:2B:7C</text>
+                <line x1="130" y1="54" x2="198" y2="115" stroke="#3b82f6" stroke-width="1.5"/>
 
-  Quando chega um quadro para A8:5E:45:F3:2B:7C,
-  o switch envia apenas para Fa0/1, sem inundar as demais portas.
+                <!-- PC 2 - Fa0/2 -->
+                <rect x="20" y="110" width="110" height="48" rx="5" fill="#1a3a2a" stroke="#22c55e" stroke-width="1.5"/>
+                <text x="75" y="132" text-anchor="middle" fill="#86efac" font-size="9" font-family="monospace" font-weight="bold">PC-B · Fa0/2</text>
+                <text x="75" y="146" text-anchor="middle" fill="#64748b" font-size="7" font-family="monospace">B4:2E:99:1A:C7:F0</text>
+                <line x1="130" y1="134" x2="198" y2="140" stroke="#22c55e" stroke-width="1.5"/>
 
-  Se o MAC não estiver na tabela → flooding (envia para todas as portas).
-</pre>
+                <!-- PC 3 - Fa0/3 -->
+                <rect x="20" y="190" width="110" height="48" rx="5" fill="#2d1a1a" stroke="#f97316" stroke-width="1.5"/>
+                <text x="75" y="212" text-anchor="middle" fill="#fb923c" font-size="9" font-family="monospace" font-weight="bold">PC-C · Fa0/3</text>
+                <text x="75" y="226" text-anchor="middle" fill="#64748b" font-size="7" font-family="monospace">C0:FF:EE:12:34:56</text>
+                <line x1="130" y1="214" x2="198" y2="155" stroke="#f97316" stroke-width="1.5"/>
+
+                <!-- Uplink -->
+                <rect x="450" y="90" width="110" height="48" rx="5" fill="#2d1a4a" stroke="#a855f7" stroke-width="1.5"/>
+                <text x="505" y="112" text-anchor="middle" fill="#d8b4fe" font-size="9" font-family="monospace" font-weight="bold">Gi0/1 · Trunk</text>
+                <text x="505" y="126" text-anchor="middle" fill="#64748b" font-size="7" font-family="monospace">uplink · VLANs all</text>
+                <line x1="380" y1="125" x2="448" y2="114" stroke="#a855f7" stroke-width="1.5" stroke-dasharray="5 3">
+                    <animate attributeName="stroke-dashoffset" values="16;0" dur="0.6s" repeatCount="indefinite"/>
+                </line>
+
+                <!-- Animated unicast frame Fa0/1 → Fa0/2 -->
+                <circle r="5" fill="#fbbf24" opacity="0.9">
+                    <animateMotion dur="2.5s" repeatCount="indefinite" begin="0s" calcMode="spline" keySplines="0.4 0 0.6 1; 0.4 0 0.6 1">
+                        <mpath href="#path-a-b"/>
+                    </animateMotion>
+                    <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.05;0.9;1" dur="2.5s" repeatCount="indefinite"/>
+                </circle>
+                <path id="path-a-b" d="M130,54 L200,120 L200,140 L130,134" fill="none"/>
+
+                <!-- MAC Table display -->
+                <rect x="200" y="182" width="180" height="42" rx="4" fill="#0f172a" stroke="#334155" stroke-width="1"/>
+                <text x="210" y="196" fill="#fbbf24" font-size="7" font-family="monospace" font-weight="bold">Porta   MAC                  VLAN  Tipo</text>
+                <text x="210" y="207" fill="#86efac" font-size="7" font-family="monospace">Fa0/1   A8:5E:45:F3:2B:7C    1   Dinâm.</text>
+                <text x="210" y="217" fill="#86efac" font-size="7" font-family="monospace">Fa0/2   B4:2E:99:1A:C7:F0    1   Dinâm.</text>
+            </svg>
         </div>
 
         <h3>VLANs &mdash; IEEE 802.1Q</h3>
@@ -387,6 +632,55 @@
                 <strong>At&eacute; 90 W</strong>
                 <span>Laptops, telas digitais, access points Wi-Fi 6E de alta performance</span>
             </div>
+        </div>
+    </div>
+
+    <!-- MÚLTIPLA ESCOLHA -->
+    <div class="content-card exercise-card">
+        <h2>&#x2753; Verifique seu Conhecimento</h2>
+
+        <div class="mc-question" data-correct="b">
+            <p class="mc-q-text">Qual campo do quadro Ethernet &eacute; respons&aacute;vel pela detec&ccedil;&atilde;o de erros de transmiss&atilde;o, permitindo ao receptor descartar quadros corrompidos?</p>
+            <div class="mc-options">
+                <div class="mc-option" data-option="a"><span class="mc-letter">A</span><span>Pre&acirc;mbulo</span></div>
+                <div class="mc-option" data-option="b"><span class="mc-letter">B</span><span>FCS (Frame Check Sequence)</span></div>
+                <div class="mc-option" data-option="c"><span class="mc-letter">C</span><span>EtherType</span></div>
+                <div class="mc-option" data-option="d"><span class="mc-letter">D</span><span>SFD (Start Frame Delimiter)</span></div>
+            </div>
+            <div class="mc-explanation">&#x2713; O FCS (4 bytes, CRC-32) &eacute; calculado sobre o conte&uacute;do do quadro pelo emissor. O receptor refaz o c&aacute;lculo e compara: se diferente, o quadro foi corrompido e &eacute; descartado silenciosamente. O pre&acirc;mbulo sincroniza o clock; o SFD marca o in&iacute;cio; o EtherType indica o protocolo da camada superior.</div>
+        </div>
+        <hr class="mc-sep">
+        <div class="mc-question" data-correct="d">
+            <p class="mc-q-text">O endere&ccedil;o MAC FF:FF:FF:FF:FF:FF &eacute; um endere&ccedil;o:</p>
+            <div class="mc-options">
+                <div class="mc-option" data-option="a"><span class="mc-letter">A</span><span>Unicast &mdash; identifica uma &uacute;nica placa de rede</span></div>
+                <div class="mc-option" data-option="b"><span class="mc-letter">B</span><span>Multicast &mdash; envia para um grupo de dispositivos</span></div>
+                <div class="mc-option" data-option="c"><span class="mc-letter">C</span><span>Loopback &mdash; usado para testes internos da placa</span></div>
+                <div class="mc-option" data-option="d"><span class="mc-letter">D</span><span>Broadcast &mdash; recebido por todos os dispositivos da LAN</span></div>
+            </div>
+            <div class="mc-explanation">&#x2713; FF:FF:FF:FF:FF:FF &eacute; o endere&ccedil;o de broadcast Ethernet: todos os 48 bits em 1. Qualquer dispositivo na mesma LAN recebe e processa o quadro. &Eacute; usado pelo ARP Request, DHCP Discover e outros protocolos que precisam alcan&ccedil;ar todos na rede local.</div>
+        </div>
+        <hr class="mc-sep">
+        <div class="mc-question" data-correct="c">
+            <p class="mc-q-text">Por que o CSMA/CD tornou-se irrelevante nas redes Ethernet modernas?</p>
+            <div class="mc-options">
+                <div class="mc-option" data-option="a"><span class="mc-letter">A</span><span>O IPv6 eliminou a necessidade de controle de colis&atilde;o</span></div>
+                <div class="mc-option" data-option="b"><span class="mc-letter">B</span><span>Os cabos Cat 6A absorvem as colis&otilde;es fisicamente</span></div>
+                <div class="mc-option" data-option="c"><span class="mc-letter">C</span><span>Switches modernos operam em full-duplex, onde cada porta tem seu pr&oacute;prio dom&iacute;nio de colis&atilde;o e n&atilde;o h&aacute; meio compartilhado</span></div>
+                <div class="mc-option" data-option="d"><span class="mc-letter">D</span><span>O IEEE 802.3 removeu o CSMA/CD da especifica&ccedil;&atilde;o em 2010</span></div>
+            </div>
+            <div class="mc-explanation">&#x2713; Switches criam dom&iacute;nios de colis&atilde;o isolados por porta e operam em full-duplex &mdash; cada dispositivo transmite e recebe simultaneamente em pares dedicados, sem compartilhamento de meio. Sem meio compartilhado, n&atilde;o h&aacute; colis&atilde;o, tornando o CSMA/CD desnecess&aacute;rio. Hubs (meio compartilhado) praticamente desapareceram.</div>
+        </div>
+        <hr class="mc-sep">
+        <div class="mc-question" data-correct="a">
+            <p class="mc-q-text">Um switch recebe um quadro cujo MAC de destino n&atilde;o est&aacute; em sua tabela MAC. O que ele faz?</p>
+            <div class="mc-options">
+                <div class="mc-option" data-option="a"><span class="mc-letter">A</span><span>Encaminha o quadro para todas as portas, exceto a de origem (flooding)</span></div>
+                <div class="mc-option" data-option="b"><span class="mc-letter">B</span><span>Descarta o quadro e solicita reenvio ao remetente</span></div>
+                <div class="mc-option" data-option="c"><span class="mc-letter">C</span><span>Encaminha apenas para a porta de uplink (gateway)</span></div>
+                <div class="mc-option" data-option="d"><span class="mc-letter">D</span><span>Envia um ARP Request para descobrir a porta correta</span></div>
+            </div>
+            <div class="mc-explanation">&#x2713; Quando o MAC de destino n&atilde;o est&aacute; na tabela, o switch faz <em>flooding</em>: encaminha o quadro para todas as portas, exceto a de origem. Quando o destinat&aacute;rio responde, o switch aprende seu MAC e porta, e as pr&oacute;ximas transmiss&otilde;es j&aacute; s&atilde;o encaminhadas diretamente. O ARP &eacute; fun&ccedil;&atilde;o do IP (camada 3), n&atilde;o do switch (camada 2).</div>
         </div>
     </div>
 
@@ -449,55 +743,6 @@
         </div>
     </div>
 
-    <!-- MÚLTIPLA ESCOLHA -->
-    <div class="content-card exercise-card">
-        <h2>&#x2753; Verifique seu Conhecimento</h2>
-
-        <div class="mc-question" data-correct="b">
-            <p class="mc-q-text">Qual campo do quadro Ethernet &eacute; respons&aacute;vel pela detec&ccedil;&atilde;o de erros de transmiss&atilde;o, permitindo ao receptor descartar quadros corrompidos?</p>
-            <div class="mc-options">
-                <div class="mc-option" data-option="a"><span class="mc-letter">A</span><span>Pre&acirc;mbulo</span></div>
-                <div class="mc-option" data-option="b"><span class="mc-letter">B</span><span>FCS (Frame Check Sequence)</span></div>
-                <div class="mc-option" data-option="c"><span class="mc-letter">C</span><span>EtherType</span></div>
-                <div class="mc-option" data-option="d"><span class="mc-letter">D</span><span>SFD (Start Frame Delimiter)</span></div>
-            </div>
-            <div class="mc-explanation">&#x2713; O FCS (4 bytes, CRC-32) &eacute; calculado sobre o conte&uacute;do do quadro pelo emissor. O receptor refaz o c&aacute;lculo e compara: se diferente, o quadro foi corrompido e &eacute; descartado silenciosamente. O pre&acirc;mbulo sincroniza o clock; o SFD marca o in&iacute;cio; o EtherType indica o protocolo da camada superior.</div>
-        </div>
-        <hr class="mc-sep">
-        <div class="mc-question" data-correct="d">
-            <p class="mc-q-text">O endere&ccedil;o MAC FF:FF:FF:FF:FF:FF &eacute; um endere&ccedil;o:</p>
-            <div class="mc-options">
-                <div class="mc-option" data-option="a"><span class="mc-letter">A</span><span>Unicast &mdash; identifica uma &uacute;nica placa de rede</span></div>
-                <div class="mc-option" data-option="b"><span class="mc-letter">B</span><span>Multicast &mdash; envia para um grupo de dispositivos</span></div>
-                <div class="mc-option" data-option="c"><span class="mc-letter">C</span><span>Loopback &mdash; usado para testes internos da placa</span></div>
-                <div class="mc-option" data-option="d"><span class="mc-letter">D</span><span>Broadcast &mdash; recebido por todos os dispositivos da LAN</span></div>
-            </div>
-            <div class="mc-explanation">&#x2713; FF:FF:FF:FF:FF:FF &eacute; o endere&ccedil;o de broadcast Ethernet: todos os 48 bits em 1. Qualquer dispositivo na mesma LAN recebe e processa o quadro. &Eacute; usado pelo ARP Request, DHCP Discover e outros protocolos que precisam alcan&ccedil;ar todos na rede local.</div>
-        </div>
-        <hr class="mc-sep">
-        <div class="mc-question" data-correct="c">
-            <p class="mc-q-text">Por que o CSMA/CD tornou-se irrelevante nas redes Ethernet modernas?</p>
-            <div class="mc-options">
-                <div class="mc-option" data-option="a"><span class="mc-letter">A</span><span>O IPv6 eliminou a necessidade de controle de colis&atilde;o</span></div>
-                <div class="mc-option" data-option="b"><span class="mc-letter">B</span><span>Os cabos Cat 6A absorvem as colis&otilde;es fisicamente</span></div>
-                <div class="mc-option" data-option="c"><span class="mc-letter">C</span><span>Switches modernos operam em full-duplex, onde cada porta tem seu pr&oacute;prio dom&iacute;nio de colis&atilde;o e n&atilde;o h&aacute; meio compartilhado</span></div>
-                <div class="mc-option" data-option="d"><span class="mc-letter">D</span><span>O IEEE 802.3 removeu o CSMA/CD da especifica&ccedil;&atilde;o em 2010</span></div>
-            </div>
-            <div class="mc-explanation">&#x2713; Switches criam dom&iacute;nios de colis&atilde;o isolados por porta e operam em full-duplex &mdash; cada dispositivo transmite e recebe simultaneamente em pares dedicados, sem compartilhamento de meio. Sem meio compartilhado, n&atilde;o h&aacute; colis&atilde;o, tornando o CSMA/CD desnecess&aacute;rio. Hubs (meio compartilhado) praticamente desapareceram.</div>
-        </div>
-        <hr class="mc-sep">
-        <div class="mc-question" data-correct="a">
-            <p class="mc-q-text">Um switch recebe um quadro cujo MAC de destino n&atilde;o est&aacute; em sua tabela MAC. O que ele faz?</p>
-            <div class="mc-options">
-                <div class="mc-option" data-option="a"><span class="mc-letter">A</span><span>Encaminha o quadro para todas as portas, exceto a de origem (flooding)</span></div>
-                <div class="mc-option" data-option="b"><span class="mc-letter">B</span><span>Descarta o quadro e solicita reenvio ao remetente</span></div>
-                <div class="mc-option" data-option="c"><span class="mc-letter">C</span><span>Encaminha apenas para a porta de uplink (gateway)</span></div>
-                <div class="mc-option" data-option="d"><span class="mc-letter">D</span><span>Envia um ARP Request para descobrir a porta correta</span></div>
-            </div>
-            <div class="mc-explanation">&#x2713; Quando o MAC de destino n&atilde;o est&aacute; na tabela, o switch faz <em>flooding</em>: encaminha o quadro para todas as portas, exceto a de origem. Quando o destinat&aacute;rio responde, o switch aprende seu MAC e porta, e as pr&oacute;ximas transmiss&otilde;es j&aacute; s&atilde;o encaminhadas diretamente. O ARP &eacute; fun&ccedil;&atilde;o do IP (camada 3), n&atilde;o do switch (camada 2).</div>
-        </div>
-    </div>
-
     <div class="nav-footer">
         <a href="rc05-meios-transmissao.html" class="nav-link">&#x2B05; Anterior: Meios de Transmiss&atilde;o</a>
         <a href="rc07-wifi.html" class="nav-link">Pr&oacute;xima: Wi-Fi (IEEE 802.11) &#x27A1;</a>
@@ -509,5 +754,20 @@
 <script src="exercise-drag.js"></script>
 <script src="exercise-print.js"></script>
 <script src="exercise-mc.js"></script>
+<script>
+(function () {
+    var fills = document.querySelectorAll('.bar-fill');
+    if (!fills.length) return;
+    var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+            if (e.isIntersecting) {
+                e.target.style.width = e.target.dataset.w;
+                io.unobserve(e.target);
+            }
+        });
+    }, { threshold: 0.3 });
+    fills.forEach(function (el) { io.observe(el); });
+}());
+</script>
 </body>
 </html>
