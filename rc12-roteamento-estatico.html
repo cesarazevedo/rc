@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aula 12 &mdash; Roteamento Est&aacute;tico</title>
+    <link rel="stylesheet" href="slide-mode.css">
+    <link rel="stylesheet" href="exercise.css">
+    <link rel="stylesheet" href="lesson.css">
+    <style>
+        :root { --primary:#f57c00; --secondary:#e65100; --bg-light:#fff8f0; --text-dark:#2d3748; }
+
+        /* ── HERO STATS ── */
+        .hero-stats { display:flex; flex-wrap:wrap; gap:10px; margin-top:18px; }
+        .hero-stat { background:rgba(245,124,0,.1); border:1px solid rgba(245,124,0,.22); border-radius:10px; padding:8px 16px; text-align:center; }
+        .hero-stat-val { display:block; font-size:1.15em; font-weight:800; color:var(--primary); }
+        .hero-stat-lbl { display:block; font-size:.63em; color:#718096; font-weight:700; text-transform:uppercase; letter-spacing:.05em; margin-top:2px; }
+
+        /* ── TRAIT GRID ── */
+        .trait-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(155px,1fr)); gap:10px; margin:16px 0; }
+        .trait-card { border-radius:12px; padding:14px 16px; border-top:3px solid transparent; }
+        .tc-red    { background:#fef2f2; border-top-color:#ef4444; }
+        .tc-amber  { background:#fffbeb; border-top-color:#f59e0b; }
+        .tc-blue   { background:#eff6ff; border-top-color:#3b82f6; }
+        .tc-purple { background:#fdf4ff; border-top-color:#a855f7; }
+        .tc-green  { background:#f0fdf4; border-top-color:#10b981; }
+        .tc-orange { background:#fff7ed; border-top-color:#f97316; }
+        .trait-prop { font-size:.68em; font-weight:800; text-transform:uppercase; letter-spacing:.06em; margin-bottom:5px; }
+        .tc-red    .trait-prop { color:#dc2626; }
+        .tc-amber  .trait-prop { color:#d97706; }
+        .tc-blue   .trait-prop { color:#2563eb; }
+        .tc-purple .trait-prop { color:#9333ea; }
+        .tc-green  .trait-prop { color:#16a34a; }
+        .tc-orange .trait-prop { color:#ea580c; }
+        .trait-val  { font-size:.88em; font-weight:700; color:#1e293b; margin-bottom:4px; }
+        .trait-impl { font-size:.77em; color:#64748b; line-height:1.4; }
+
+        /* ── ROUTING TABLE ── */
+        .rtable-wrap { background:#0f172a; border-radius:16px; padding:22px; margin:20px 0; overflow-x:auto; }
+        .rtable { width:100%; border-collapse:collapse; font-size:.82em; min-width:500px; }
+        .rtable th { background:#1e293b; color:#64748b; padding:9px 12px; text-align:left; font-size:.7em; text-transform:uppercase; letter-spacing:.06em; border-bottom:1px solid #334155; }
+        .rtable td { padding:9px 12px; border-bottom:1px solid #1e293b; font-family:monospace; }
+        .rtable tr { transition:background .2s; }
+        .rtable tr.match    { background:rgba(245,124,0,.18) !important; }
+        .rtable tr.best     { background:rgba(16,185,129,.18) !important; }
+        .rtable tr.nomatch  { opacity:.35; }
+        .rtable tr.checking { background:rgba(59,130,246,.12) !important; }
+        .rt-dest  { color:#7dd3fc; font-weight:700; }
+        .rt-mask  { color:#94a3b8; }
+        .rt-nh    { color:#fbbf24; }
+        .rt-iface { color:#a78bfa; }
+        .rt-type  { font-size:.72em; padding:2px 7px; border-radius:8px; font-weight:700; font-family:inherit; }
+        .rt-type-c { background:rgba(16,185,129,.2); color:#34d399; }
+        .rt-type-s { background:rgba(245,124,0,.2);  color:#fb923c; }
+        .rt-type-d { background:rgba(59,130,246,.2); color:#60a5fa; }
+
+        /* ── ROUTE DECISION SIMULATOR ── */
+        .sim-wrap { background:#0f172a; border-radius:16px; padding:22px; margin:20px 0; }
+        .sim-bar  { display:flex; flex-wrap:wrap; gap:10px; align-items:flex-end; margin-bottom:16px; }
+        .sim-bar label { color:#94a3b8; font-size:.72em; font-weight:700; display:block; margin-bottom:4px; }
+        .sim-bar input  { background:#1e293b; color:#f1f5f9; border:1px solid #334155; border-radius:8px; padding:7px 14px; font-size:.88em; font-family:monospace; width:180px; outline:none; }
+        .sim-bar input:focus { border-color:#f57c00; }
+        .sim-btn { background:#f57c00; color:#fff; border:none; border-radius:8px; padding:8px 20px; font-size:.83em; font-weight:700; cursor:pointer; font-family:inherit; transition:background .2s; }
+        .sim-btn:hover { background:#ea580c; }
+        .sim-log  { border-top:1px solid #1e293b; margin-top:14px; padding-top:10px; max-height:140px; overflow-y:auto; }
+        .sim-verdict { background:#1e293b; border-radius:10px; padding:12px 16px; margin-top:10px; animation:slideDown .22s ease; }
+
+        /* ── TOPOLOGY DIAGRAM ── */
+        .topo-wrap { background:#0f172a; border-radius:16px; padding:22px; margin:20px 0; }
+        .topo-svg-wrap { overflow-x:auto; }
+        .topo-node { cursor:pointer; }
+        .topo-node circle { transition:fill .25s, stroke .25s; }
+        .topo-node text   { font-family:inherit; pointer-events:none; }
+        .topo-node.active circle { stroke:#f97316 !important; stroke-width:3px !important; }
+        .topo-link { stroke:#334155; stroke-width:2; }
+        .topo-link.active { stroke:#f97316; stroke-width:3; }
+        .topo-pkt { fill:#f97316; }
+
+        /* ── LPM VISUALIZER ── */
+        .lpm-wrap { background:#0f172a; border-radius:14px; padding:18px 22px; margin:16px 0; }
+        .lpm-row  { display:flex; align-items:center; gap:10px; padding:7px 0; border-bottom:1px solid #1e293b; }
+        .lpm-row:last-child { border-bottom:none; }
+        .lpm-bits { display:flex; gap:2px; font-family:monospace; font-size:.72em; }
+        .lpm-bit  { width:16px; height:20px; display:flex; align-items:center; justify-content:center; border-radius:3px; }
+        .lpm-bit-match  { background:#1d4ed8; color:#bfdbfe; }
+        .lpm-bit-fail   { background:#7f1d1d; color:#fca5a5; }
+        .lpm-bit-host   { background:#1e293b; color:#334155; }
+        .lpm-prefix { font-family:monospace; font-size:.82em; color:#94a3b8; min-width:130px; }
+        .lpm-result { font-size:.72em; font-weight:700; padding:2px 8px; border-radius:8px; }
+        .lpm-ok   { background:rgba(16,185,129,.2); color:#34d399; }
+        .lpm-fail { background:rgba(239,68,68,.2); color:#f87171; }
+        .lpm-best { background:rgba(245,124,0,.25); color:#fb923c; }
+
+        @keyframes fadeIn   { from{opacity:0} to{opacity:1} }
+        @keyframes slideDown{ from{opacity:0;transform:translateY(-8px)} to{opacity:1;transform:translateY(0)} }
+        @keyframes pulse    { 0%,100%{opacity:1} 50%{opacity:.4} }
+
+        @media(max-width:600px){
+            .trait-grid { grid-template-columns:1fr 1fr; }
+            .sim-bar input { width:140px; }
+            .lpm-bit { width:12px; font-size:.62em; }
+        }
+
+        /* ── Viz Wrappers ── */
+        .viz-wrap{background:#0f172a;border-radius:10px;padding:1.25rem;margin:1rem 0;overflow:hidden}
+        .viz-title{color:#64748b;font-size:.71rem;text-transform:uppercase;letter-spacing:.09em;margin-bottom:.75rem;font-family:'Courier New',monospace}
+        @keyframes draw-path{from{stroke-dashoffset:900}to{stroke-dashoffset:0}}
+        .tw-wire{stroke-dasharray:900;stroke-dashoffset:900;animation:draw-path 2s ease forwards}
+        @keyframes dash-flow{from{stroke-dashoffset:18}to{stroke-dashoffset:0}}
+        .flow-line{stroke-dasharray:9 5;animation:dash-flow .7s linear infinite}
+        @keyframes route-hop{0%{transform:translate(0,0);opacity:1}33%{transform:translate(100px,-20px);opacity:1}66%{transform:translate(200px,10px);opacity:1}100%{transform:translate(300px,0);opacity:.1}}
+        .route-pkt{animation:route-hop 3s linear infinite}
+        @keyframes table-row-in{from{opacity:0;transform:translateX(-15px)}to{opacity:1;transform:translateX(0)}}
+        .rt-row{animation:table-row-in .5s ease forwards;opacity:0}
+        .rt-row:nth-child(1){animation-delay:.2s}
+        .rt-row:nth-child(2){animation-delay:.5s}
+        .rt-row:nth-child(3){animation-delay:.8s}
+        .rt-row:nth-child(4){animation-delay:1.1s}
+        @keyframes router-pulse{0%,100%{fill:rgba(16,185,129,.2)}50%{fill:rgba(16,185,129,.6)}}
+        .router-icon{animation:router-pulse 1.8s ease-in-out infinite}
+        @keyframes link-flash{0%{stroke:rgba(99,102,241,.3)}50%{stroke:rgba(99,102,241,.9)}100%{stroke:rgba(99,102,241,.3)}}
+        .active-link{animation:link-flash 1.5s ease-in-out infinite}
+        /* ── Comparison Bars ── */
+        .bar-section{margin:1.5rem 0}
+        .bar-label{display:flex;justify-content:space-between;font-size:.82rem;color:#475569;margin-bottom:4px}
+        .bar-track{background:#e2e8f0;border-radius:4px;height:18px;overflow:hidden}
+        .bar-fill{height:100%;border-radius:4px;width:0;transition:width 1.4s cubic-bezier(.4,0,.2,1)}
+    </style>
+</head>
+<body>
+
+<div class="top-bar">
+    <a href="index.html" class="back-btn">&#x2B05; Voltar ao Dashboard</a>
+    <span class="page-badge">2&ordm; Bimestre &mdash; Camada de Internet</span>
+    <button class="slide-toggle" id="slideToggleBtn">&#x1F4FA; Modo Slide</button>
+</div>
+
+<div class="content-wrapper">
+
+    <div class="lesson-hero">
+        <h1>&#x1F5FA;&#xFE0F; Roteamento Est&aacute;tico</h1>
+        <p class="subtitle">Aula 12 &mdash; Como roteadores tomam decis&otilde;es de encaminhamento: tabela de roteamento, rotas est&aacute;ticas, rota padr&atilde;o e o algoritmo de longest prefix match</p>
+        <div class="hero-stats">
+            <div class="hero-stat"><span class="hero-stat-val">AD 1</span><span class="hero-stat-lbl">distância admin.</span></div>
+            <div class="hero-stat"><span class="hero-stat-val">0.0.0.0/0</span><span class="hero-stat-lbl">rota padrão</span></div>
+            <div class="hero-stat"><span class="hero-stat-val">LPM</span><span class="hero-stat-lbl">longest prefix match</span></div>
+            <div class="hero-stat"><span class="hero-stat-val">next-hop</span><span class="hero-stat-lbl">próximo salto</span></div>
+            <div class="hero-stat"><span class="hero-stat-val">manual</span><span class="hero-stat-lbl">config. pelo admin</span></div>
+        </div>
+    </div>
+
+    <!-- CARD 1 — O que é Roteamento -->
+    <div class="content-card">
+        <h2>&#x1F4E6; O que &eacute; Roteamento?</h2>
+        <p>Roteamento &eacute; o processo pelo qual um <strong>roteador decide para onde encaminhar</strong> cada pacote IP que recebe. Diferente de um switch (que trabalha com endere&ccedil;os MAC na mesma rede), o roteador conecta <strong>redes distintas</strong> e opera na Camada 3 do modelo OSI.</p>
+
+        <div class="flow-steps">
+            <div class="flow-step">
+                <span class="step-num">1</span>
+                <div><strong>Pacote chega</strong> em uma interface do roteador com um endere&ccedil;o IP de destino</div>
+            </div>
+            <div class="flow-step">
+                <span class="step-num">2</span>
+                <div><strong>Consulta a tabela de roteamento</strong> buscando a rota que melhor combina com o destino (longest prefix match)</div>
+            </div>
+            <div class="flow-step">
+                <span class="step-num">3</span>
+                <div><strong>Determina o next-hop</strong> (pr&oacute;ximo roteador) ou a interface de sa&iacute;da direta</div>
+            </div>
+            <div class="flow-step">
+                <span class="step-num">4</span>
+                <div><strong>Decrementa o TTL</strong>, recalcula o checksum do cabe&ccedil;alho e <strong>encaminha</strong> o pacote pela interface correta</div>
+            </div>
+            <div class="flow-step">
+                <span class="step-num">5</span>
+                <div>Se nenhuma rota encontrada e sem rota padr&atilde;o: pacote &eacute; <strong>descartado</strong> e ICMP &ldquo;Destination Unreachable&rdquo; &eacute; enviado</div>
+            </div>
+        </div>
+
+        <h3>Tipos de rota na tabela de roteamento</h3>
+        <div class="trait-grid">
+            <div class="trait-card tc-green">
+                <div class="trait-prop">Conectada (C)</div>
+                <div class="trait-val">Redes diretamente ligadas</div>
+                <div class="trait-impl">Criada automaticamente quando uma interface recebe um IP e está ativa. Distância administrativa = 0. Cisco: prefixo <strong>C</strong>.</div>
+            </div>
+            <div class="trait-card tc-orange">
+                <div class="trait-prop">Est&aacute;tica (S)</div>
+                <div class="trait-val">Configurada manualmente</div>
+                <div class="trait-impl">O administrador define explicitamente: destino, máscara e next-hop. Distância administrativa = 1. Cisco: prefixo <strong>S</strong>.</div>
+            </div>
+            <div class="trait-card tc-blue">
+                <div class="trait-prop">Din&acirc;mica (D/O/R...)</div>
+                <div class="trait-val">Aprendida por protocolo</div>
+                <div class="trait-impl">Populada automaticamente por OSPF, EIGRP, BGP, RIP. AD varia por protocolo. Tema da próxima aula.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CARD 2 — Tabela de Roteamento -->
+    <div class="content-card">
+        <h2>&#x1F4CB; Tabela de Roteamento</h2>
+        <p>A tabela de roteamento (também chamada de <em>RIB — Routing Information Base</em>) &eacute; o banco de dados de encaminhamento do roteador. Cada entrada define <strong>para onde enviar</strong> pacotes com determinado destino.</p>
+
+        <h3>Campos de cada entrada</h3>
+        <div class="trait-grid">
+            <div class="trait-card tc-blue">
+                <div class="trait-prop">Rede de Destino</div>
+                <div class="trait-val">ex: 192.168.2.0/24</div>
+                <div class="trait-impl">O prefixo de rede para o qual esta rota se aplica. Combinado com a máscara para a decisão de encaminhamento.</div>
+            </div>
+            <div class="trait-card tc-amber">
+                <div class="trait-prop">Next-Hop</div>
+                <div class="trait-val">ex: 10.0.0.2</div>
+                <div class="trait-impl">Endereço IP do próximo roteador para o qual o pacote deve ser enviado. Pode ser "directly connected" para redes locais.</div>
+            </div>
+            <div class="trait-card tc-purple">
+                <div class="trait-prop">Interface de Sa&iacute;da</div>
+                <div class="trait-val">ex: GigabitEthernet0/1</div>
+                <div class="trait-impl">Interface física ou lógica pelo qual o pacote sairá. Pode ser determinada automaticamente a partir do next-hop.</div>
+            </div>
+            <div class="trait-card tc-red">
+                <div class="trait-prop">M&eacute;trica</div>
+                <div class="trait-val">ex: 1 (estática), 110 (OSPF)</div>
+                <div class="trait-impl">Custo para atingir o destino. Usado para comparar rotas para o mesmo destino aprendidas pelo mesmo protocolo.</div>
+            </div>
+            <div class="trait-card tc-green">
+                <div class="trait-prop">Dist. Administrativa</div>
+                <div class="trait-val">0–255 (menor = melhor)</div>
+                <div class="trait-impl">Confiabilidade da fonte da rota. Conectada=0, Estática=1, EIGRP=90, OSPF=110, RIP=120, eBGP=20.</div>
+            </div>
+        </div>
+
+        <!-- Administrative Distance Bars -->
+        <h3>Dist&acirc;ncia Administrativa (AD) por fonte de rota</h3>
+        <div class="bar-section">
+            <div class="bar-label"><span>Diretamente conectado (C)</span><span>AD 0</span></div>
+            <div class="bar-track"><div class="bar-fill" data-w="0.8%" style="background:#10b981;"></div></div>
+        </div>
+        <div class="bar-section">
+            <div class="bar-label"><span>Rota est&aacute;tica (S)</span><span>AD 1</span></div>
+            <div class="bar-track"><div class="bar-fill" data-w="1.2%" style="background:#f97316;"></div></div>
+        </div>
+        <div class="bar-section">
+            <div class="bar-label"><span>EIGRP interno</span><span>AD 90</span></div>
+            <div class="bar-track"><div class="bar-fill" data-w="35%" style="background:#6366f1;"></div></div>
+        </div>
+        <div class="bar-section">
+            <div class="bar-label"><span>OSPF</span><span>AD 110</span></div>
+            <div class="bar-track"><div class="bar-fill" data-w="43%" style="background:#3b82f6;"></div></div>
+        </div>
+        <div class="bar-section">
+            <div class="bar-label"><span>RIP</span><span>AD 120</span></div>
+            <div class="bar-track"><div class="bar-fill" data-w="47%" style="background:#ef4444;"></div></div>
+        </div>
+
+        <!-- Routing Table Example -->
+        <div class="rtable-wrap">
+            <div style="color:#94a3b8;font-size:.74em;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px;">&#x1F4CB; Exemplo de tabela de roteamento &mdash; Cisco IOS (show ip route)</div>
+            <table class="rtable" id="routeTable">
+                <thead>
+                    <tr>
+                        <th>Tipo</th>
+                        <th>Rede de Destino</th>
+                        <th>Máscara</th>
+                        <th>Next-Hop</th>
+                        <th>Interface</th>
+                        <th>AD / Métrica</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr data-net="10.0.0.0"   data-prefix="30">
+                        <td><span class="rt-type rt-type-c">C</span></td>
+                        <td class="rt-dest">10.0.0.0</td>
+                        <td class="rt-mask">/30</td>
+                        <td class="rt-nh">—</td>
+                        <td class="rt-iface">Gi0/0</td>
+                        <td>0/0</td>
+                    </tr>
+                    <tr data-net="192.168.1.0" data-prefix="24">
+                        <td><span class="rt-type rt-type-c">C</span></td>
+                        <td class="rt-dest">192.168.1.0</td>
+                        <td class="rt-mask">/24</td>
+                        <td class="rt-nh">—</td>
+                        <td class="rt-iface">Gi0/1</td>
+                        <td>0/0</td>
+                    </tr>
+                    <tr data-net="192.168.2.0" data-prefix="24">
+                        <td><span class="rt-type rt-type-s">S</span></td>
+                        <td class="rt-dest">192.168.2.0</td>
+                        <td class="rt-mask">/24</td>
+                        <td class="rt-nh">10.0.0.2</td>
+                        <td class="rt-iface">Gi0/0</td>
+                        <td>1/0</td>
+                    </tr>
+                    <tr data-net="192.168.2.128" data-prefix="25">
+                        <td><span class="rt-type rt-type-s">S</span></td>
+                        <td class="rt-dest">192.168.2.128</td>
+                        <td class="rt-mask">/25</td>
+                        <td class="rt-nh">10.0.0.2</td>
+                        <td class="rt-iface">Gi0/0</td>
+                        <td>1/0</td>
+                    </tr>
+                    <tr data-net="172.16.0.0"  data-prefix="16">
+                        <td><span class="rt-type rt-type-s">S</span></td>
+                        <td class="rt-dest">172.16.0.0</td>
+                        <td class="rt-mask">/16</td>
+                        <td class="rt-nh">10.0.0.2</td>
+                        <td class="rt-iface">Gi0/0</td>
+                        <td>1/0</td>
+                    </tr>
+                    <tr data-net="0.0.0.0"     data-prefix="0">
+                        <td><span class="rt-type rt-type-s">S*</span></td>
+                        <td class="rt-dest">0.0.0.0</td>
+                        <td class="rt-mask">/0</td>
+                        <td class="rt-nh">10.0.0.2</td>
+                        <td class="rt-iface">Gi0/0</td>
+                        <td>1/0</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- CARD 3 — Longest Prefix Match + Simulator -->
+    <div class="content-card">
+        <h2>&#x1F3AF; Longest Prefix Match (LPM)</h2>
+        <p>Quando existem <strong>m&uacute;ltiplas rotas que cobrem o mesmo destino</strong>, o roteador escolhe a que tem o <strong>prefixo mais longo</strong> (mais específico). Esta &eacute; a regra central do algoritmo de encaminhamento IP.</p>
+
+        <div class="highlight-box">
+            <p>&#x1F4A1; <strong>Intui&ccedil;&atilde;o:</strong> &ldquo;mais longo&rdquo; = mais específico = mais preciso. Um /25 descreve metade dos hosts de um /24. Se um pacote cabe em ambos, o /25 &eacute; a resposta mais exata — como usar o CEP completo em vez de só a cidade para entregar uma carta.</p>
+        </div>
+
+        <!-- LPM Visualizer -->
+        <div class="lpm-wrap" id="lpmViz" style="display:none;">
+            <div style="color:#94a3b8;font-size:.7em;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px;">Compara&ccedil;&atilde;o bit a bit — destino vs. prefixos</div>
+            <div id="lpmRows"></div>
+        </div>
+
+        <!-- Route Decision Simulator -->
+        <div class="sim-wrap">
+            <div style="color:#94a3b8;font-size:.74em;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:14px;">&#x1F9EA; Simulador de decis&atilde;o de roteamento</div>
+            <div class="sim-bar">
+                <div>
+                    <label>IP de destino do pacote</label>
+                    <input id="simDest" value="192.168.2.200" placeholder="ex: 192.168.2.200">
+                </div>
+                <button class="sim-btn" onclick="runSim()">&#x25B6; Simular encaminhamento</button>
+            </div>
+            <div class="sim-log" id="simLog"></div>
+            <div id="simVerdict"></div>
+        </div>
+    </div>
+
+    <!-- CARD 4 — Rota Padrão -->
+    <div class="content-card">
+        <h2>&#x1F30D; Rota Padr&atilde;o &mdash; 0.0.0.0/0</h2>
+        <p>A <strong>rota padr&atilde;o</strong> (default route) &eacute; a rota de &uacute;ltimo recurso: corresponde a <em>qualquer</em> destino que n&atilde;o tenha uma entrada mais espec&iacute;fica na tabela. Ela garante que o roteador sempre saiba para onde enviar pacotes desconhecidos.</p>
+
+        <div class="trait-grid">
+            <div class="trait-card tc-orange">
+                <div class="trait-prop">Menor prefixo poss&iacute;vel</div>
+                <div class="trait-val">0.0.0.0/0</div>
+                <div class="trait-impl">Prefixo /0 tem 0 bits fixos — combina com absolutamente qualquer endereço. Por ser o menos específico, só é escolhido quando nenhuma outra rota combina.</div>
+            </div>
+            <div class="trait-card tc-blue">
+                <div class="trait-prop">Gateway de &uacute;ltimo recurso</div>
+                <div class="trait-val">gateway of last resort</div>
+                <div class="trait-impl">Nomenclatura Cisco. Normalmente aponta para o roteador do ISP ou para o firewall de borda. Presente em praticamente todo roteador de borda.</div>
+            </div>
+            <div class="trait-card tc-green">
+                <div class="trait-prop">Simplifica tabelas</div>
+                <div class="trait-val">redes stub</div>
+                <div class="trait-impl">Em redes com uma única saída para a internet ("stub networks"), a rota padrão elimina a necessidade de rotas para cada rede remota.</div>
+            </div>
+        </div>
+
+        <div class="viz-wrap">
+            <div class="viz-title">Rota padrão — Cisco IOS e Linux</div>
+            <svg viewBox="0 0 560 200" width="100%" style="max-height:200px;">
+                <!-- background panels -->
+                <rect x="10" y="8" width="260" height="184" rx="8" fill="#1e293b"/>
+                <rect x="290" y="8" width="260" height="184" rx="8" fill="#1e293b"/>
+                <!-- panel labels -->
+                <text x="20" y="28" fill="#64748b" font-size="9" font-family="monospace" font-weight="700">CISCO IOS</text>
+                <text x="300" y="28" fill="#64748b" font-size="9" font-family="monospace" font-weight="700">LINUX</text>
+                <!-- Cisco commands -->
+                <text x="20" y="48" fill="#475569" font-size="8.5" font-family="monospace">! Rota padrão via next-hop</text>
+                <text x="20" y="64" fill="#f97316" font-size="8.5" font-family="monospace">R1(config)#</text>
+                <text x="88" y="64" fill="#e2e8f0" font-size="8.5" font-family="monospace">ip route 0.0.0.0 0.0.0.0 10.0.0.1</text>
+                <text x="20" y="84" fill="#475569" font-size="8.5" font-family="monospace">! Verificar configuração</text>
+                <text x="20" y="100" fill="#f97316" font-size="8.5" font-family="monospace">R1#</text>
+                <text x="42" y="100" fill="#e2e8f0" font-size="8.5" font-family="monospace">show ip route</text>
+                <!-- show ip route output animated -->
+                <g class="rt-row">
+                    <text x="20" y="118" fill="#fb923c" font-size="8.5" font-family="monospace" font-weight="700">S*</text>
+                    <text x="36" y="118" fill="#7dd3fc" font-size="8.5" font-family="monospace">0.0.0.0/0</text>
+                    <text x="98" y="118" fill="#94a3b8" font-size="8.5" font-family="monospace">[1/0] via 10.0.0.1</text>
+                </g>
+                <text x="20" y="136" fill="#64748b" font-size="8" font-family="monospace">     ↑ gateway of last resort</text>
+                <!-- default route flow arrow -->
+                <line x1="20" y1="158" x2="250" y2="158" class="flow-line" stroke="#f97316" stroke-width="2"/>
+                <polygon points="250,153 260,158 250,163" fill="#f97316"/>
+                <text x="128" y="173" fill="#64748b" font-size="8" font-family="monospace" text-anchor="middle">qualquer destino desconhecido →</text>
+                <!-- Linux commands -->
+                <text x="300" y="48" fill="#475569" font-size="8.5" font-family="monospace"># Adicionar rota padrão</text>
+                <text x="300" y="64" fill="#34d399" font-size="8.5" font-family="monospace">$</text>
+                <text x="312" y="64" fill="#e2e8f0" font-size="8.5" font-family="monospace">ip route add default via 192.168.1.1</text>
+                <text x="300" y="84" fill="#475569" font-size="8.5" font-family="monospace"># Ver tabela de roteamento</text>
+                <text x="300" y="100" fill="#34d399" font-size="8.5" font-family="monospace">$</text>
+                <text x="312" y="100" fill="#e2e8f0" font-size="8.5" font-family="monospace">ip route show</text>
+                <g class="rt-row">
+                    <text x="300" y="118" fill="#7dd3fc" font-size="8.5" font-family="monospace">default</text>
+                    <text x="344" y="118" fill="#94a3b8" font-size="8.5" font-family="monospace">via 192.168.1.1 dev eth0</text>
+                </g>
+                <text x="300" y="136" fill="#475569" font-size="8.5" font-family="monospace"># ou: netstat -rn | grep '^0.0.0'</text>
+                <!-- Linux flow arrow -->
+                <line x1="300" y1="158" x2="530" y2="158" class="flow-line" stroke="#34d399" stroke-width="2"/>
+                <polygon points="530,153 540,158 530,163" fill="#34d399"/>
+                <text x="418" y="173" fill="#64748b" font-size="8" font-family="monospace" text-anchor="middle">encaminha via gateway padrão →</text>
+            </svg>
+        </div>
+    </div>
+
+    <!-- CARD 5 — Configuração de Rotas Estáticas -->
+    <div class="content-card">
+        <h2>&#x2699;&#xFE0F; Configurando Rotas Est&aacute;ticas</h2>
+        <p>Rotas est&aacute;ticas s&atilde;o inseridas manualmente pelo administrador. S&atilde;o simples, previs&iacute;veis e eficientes, mas <strong>n&atilde;o se adaptam automaticamente</strong> a falhas ou mudan&ccedil;as na topologia.</p>
+
+        <h3>Sintaxe b&aacute;sica</h3>
+        <div class="viz-wrap">
+            <div class="viz-title">Cisco IOS — ip route</div>
+            <svg viewBox="0 0 580 230" width="100%" style="max-height:230px;">
+                <rect x="0" y="0" width="580" height="230" rx="8" fill="#0f172a"/>
+                <!-- syntax line -->
+                <text x="12" y="20" fill="#64748b" font-size="8.5" font-family="monospace">Sintaxe:</text>
+                <text x="12" y="36" fill="#94a3b8" font-size="8.5" font-family="monospace">  ip route</text>
+                <text x="68" y="36" fill="#7dd3fc" font-size="8.5" font-family="monospace">&lt;rede-destino&gt;</text>
+                <text x="158" y="36" fill="#a78bfa" font-size="8.5" font-family="monospace">&lt;máscara&gt;</text>
+                <text x="224" y="36" fill="#fbbf24" font-size="8.5" font-family="monospace">&lt;next-hop | interface&gt;</text>
+                <text x="356" y="36" fill="#94a3b8" font-size="8.5" font-family="monospace">[distância-admin]</text>
+                <line x1="12" y1="44" x2="568" y2="44" stroke="#1e293b" stroke-width="1"/>
+                <!-- examples, each as rt-row animated -->
+                <text x="12" y="60" fill="#475569" font-size="8" font-family="monospace">! Rota via next-hop (mais comum)</text>
+                <g class="rt-row">
+                    <text x="12" y="76" fill="#f97316" font-size="8.5" font-family="monospace">R1(config)#</text>
+                    <text x="82" y="76" fill="#e2e8f0" font-size="8.5" font-family="monospace">ip route 192.168.3.0 255.255.255.0</text>
+                    <text x="326" y="76" fill="#fbbf24" font-size="8.5" font-family="monospace">10.0.0.2</text>
+                </g>
+                <text x="12" y="94" fill="#475569" font-size="8" font-family="monospace">! Rota via interface de saída (links ponto-a-ponto)</text>
+                <g class="rt-row">
+                    <text x="12" y="110" fill="#f97316" font-size="8.5" font-family="monospace">R1(config)#</text>
+                    <text x="82" y="110" fill="#e2e8f0" font-size="8.5" font-family="monospace">ip route 192.168.3.0 255.255.255.0</text>
+                    <text x="326" y="110" fill="#a78bfa" font-size="8.5" font-family="monospace">Serial0/0/0</text>
+                </g>
+                <text x="12" y="128" fill="#475569" font-size="8" font-family="monospace">! Rota flutuante — backup com AD maior (só entra se principal cair)</text>
+                <g class="rt-row">
+                    <text x="12" y="144" fill="#f97316" font-size="8.5" font-family="monospace">R1(config)#</text>
+                    <text x="82" y="144" fill="#e2e8f0" font-size="8.5" font-family="monospace">ip route 192.168.3.0 255.255.255.0</text>
+                    <text x="326" y="144" fill="#fbbf24" font-size="8.5" font-family="monospace">10.0.0.6</text>
+                    <text x="370" y="144" fill="#fb923c" font-size="8.5" font-family="monospace" font-weight="700">10</text>
+                </g>
+                <text x="12" y="162" fill="#475569" font-size="8" font-family="monospace">! Rota host (destino específico /32)</text>
+                <g class="rt-row">
+                    <text x="12" y="178" fill="#f97316" font-size="8.5" font-family="monospace">R1(config)#</text>
+                    <text x="82" y="178" fill="#e2e8f0" font-size="8.5" font-family="monospace">ip route 10.1.1.1 255.255.255.255</text>
+                    <text x="314" y="178" fill="#fbbf24" font-size="8.5" font-family="monospace">10.0.0.2</text>
+                </g>
+                <text x="12" y="196" fill="#475569" font-size="8" font-family="monospace">! Remover rota estática</text>
+                <g class="rt-row">
+                    <text x="12" y="212" fill="#f97316" font-size="8.5" font-family="monospace">R1(config)#</text>
+                    <text x="82" y="212" fill="#f87171" font-size="8.5" font-family="monospace">no</text>
+                    <text x="100" y="212" fill="#e2e8f0" font-size="8.5" font-family="monospace">ip route 192.168.3.0 255.255.255.0 10.0.0.2</text>
+                </g>
+            </svg>
+        </div>
+
+        <div class="viz-wrap">
+            <div class="viz-title">Linux — ip route / route add</div>
+            <svg viewBox="0 0 580 210" width="100%" style="max-height:210px;">
+                <rect x="0" y="0" width="580" height="210" rx="8" fill="#0f172a"/>
+                <text x="12" y="20" fill="#475569" font-size="8.5" font-family="monospace"># Adicionar rota estática</text>
+                <g class="rt-row">
+                    <text x="12" y="36" fill="#34d399" font-size="8.5" font-family="monospace">$</text>
+                    <text x="24" y="36" fill="#e2e8f0" font-size="8.5" font-family="monospace">ip route add 192.168.3.0/24 via</text>
+                    <text x="226" y="36" fill="#fbbf24" font-size="8.5" font-family="monospace">10.0.0.2</text>
+                </g>
+                <text x="12" y="54" fill="#475569" font-size="8.5" font-family="monospace"># Rota via interface específica</text>
+                <g class="rt-row">
+                    <text x="12" y="70" fill="#34d399" font-size="8.5" font-family="monospace">$</text>
+                    <text x="24" y="70" fill="#e2e8f0" font-size="8.5" font-family="monospace">ip route add 192.168.3.0/24 dev</text>
+                    <text x="224" y="70" fill="#a78bfa" font-size="8.5" font-family="monospace">eth1</text>
+                </g>
+                <text x="12" y="88" fill="#475569" font-size="8.5" font-family="monospace"># Rota com métrica (peso)</text>
+                <g class="rt-row">
+                    <text x="12" y="104" fill="#34d399" font-size="8.5" font-family="monospace">$</text>
+                    <text x="24" y="104" fill="#e2e8f0" font-size="8.5" font-family="monospace">ip route add 192.168.3.0/24 via 10.0.0.2 metric</text>
+                    <text x="336" y="104" fill="#fb923c" font-size="8.5" font-family="monospace">100</text>
+                </g>
+                <text x="12" y="122" fill="#475569" font-size="8.5" font-family="monospace"># Remover rota</text>
+                <g class="rt-row">
+                    <text x="12" y="138" fill="#34d399" font-size="8.5" font-family="monospace">$</text>
+                    <text x="24" y="138" fill="#f87171" font-size="8.5" font-family="monospace">ip route del</text>
+                    <text x="100" y="138" fill="#e2e8f0" font-size="8.5" font-family="monospace">192.168.3.0/24 via 10.0.0.2</text>
+                </g>
+                <text x="12" y="156" fill="#475569" font-size="8.5" font-family="monospace"># Ver tabela de roteamento</text>
+                <g class="rt-row">
+                    <text x="12" y="172" fill="#34d399" font-size="8.5" font-family="monospace">$</text>
+                    <text x="24" y="172" fill="#e2e8f0" font-size="8.5" font-family="monospace">ip route show</text>
+                    <text x="140" y="172" fill="#64748b" font-size="8.5" font-family="monospace">  # ou:  netstat -rn</text>
+                </g>
+                <line x1="12" y1="182" x2="568" y2="182" stroke="#1e293b" stroke-width="1"/>
+                <text x="12" y="198" fill="#64748b" font-size="8" font-family="monospace">192.168.3.0/24 via 10.0.0.2 dev eth0  proto static  metric 100</text>
+            </svg>
+        </div>
+
+        <h3>Quando usar roteamento est&aacute;tico?</h3>
+        <div class="trait-grid">
+            <div class="trait-card tc-green">
+                <div class="trait-prop">&#x2705; Indicado para</div>
+                <div class="trait-val">Cenários pequenos e controlados</div>
+                <div class="trait-impl">Redes stub com uma única saída. Links ponto-a-ponto. Rotas de backup (flutuantes). Situações onde previsibilidade é crítica.</div>
+            </div>
+            <div class="trait-card tc-red">
+                <div class="trait-prop">&#x274C; N&atilde;o indicado para</div>
+                <div class="trait-val">Redes grandes e din&acirc;micas</div>
+                <div class="trait-impl">Redes com muitos roteadores e caminhos alternativos. Não se recupera de falhas automaticamente. Difícil de manter em escala.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CARD 6 — Topologia Prática e Troubleshooting -->
+    <div class="content-card">
+        <h2>&#x1F527; Cenário Pr&aacute;tico e Troubleshooting</h2>
+        <p>Considere a topologia abaixo com tr&ecirc;s roteadores. Cada roteador precisa de rotas est&aacute;ticas para alcan&ccedil;ar as redes que n&atilde;o est&atilde;o diretamente conectadas.</p>
+
+        <div class="topo-wrap">
+            <div style="color:#94a3b8;font-size:.74em;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px;">&#x1F4CD; Topologia — 3 roteadores, 5 redes</div>
+            <div class="topo-svg-wrap">
+                <svg id="topoSvg" viewBox="0 0 640 280" width="100%" style="min-width:400px;max-height:280px;">
+                    <!-- Links -->
+                    <line class="topo-link" id="lnk-r1r2" x1="180" y1="140" x2="320" y2="140"/>
+                    <line class="topo-link" id="lnk-r2r3" x1="320" y1="140" x2="460" y2="140"/>
+                    <line class="topo-link" id="lnk-r1pc1" x1="180" y1="140" x2="60"  y2="80"/>
+                    <line class="topo-link" id="lnk-r1pc2" x1="180" y1="140" x2="60"  y2="200"/>
+                    <line class="topo-link" id="lnk-r3srv" x1="460" y1="140" x2="590" y2="80"/>
+
+                    <!-- Link labels -->
+                    <text x="250" y="130" fill="#475569" font-size="10" text-anchor="middle">10.0.12.0/30</text>
+                    <text x="390" y="130" fill="#475569" font-size="10" text-anchor="middle">10.0.23.0/30</text>
+                    <text x="95"  y="95"  fill="#475569" font-size="10" text-anchor="middle">.0/24</text>
+                    <text x="95"  y="190" fill="#475569" font-size="10" text-anchor="middle">.0/24</text>
+                    <text x="530" y="95"  fill="#475569" font-size="10" text-anchor="middle">.0/24</text>
+
+                    <!-- Nodes — PCs -->
+                    <g class="topo-node" id="tn-pc1">
+                        <circle cx="60" cy="70" r="24" fill="#1e293b" stroke="#334155" stroke-width="2"/>
+                        <text x="60" y="65" fill="#94a3b8" font-size="16" text-anchor="middle">💻</text>
+                        <text x="60" y="78" fill="#94a3b8" font-size="9" text-anchor="middle">192.168.1.0/24</text>
+                    </g>
+                    <g class="topo-node" id="tn-pc2">
+                        <circle cx="60" cy="200" r="24" fill="#1e293b" stroke="#334155" stroke-width="2"/>
+                        <text x="60" y="195" fill="#94a3b8" font-size="16" text-anchor="middle">💻</text>
+                        <text x="60" y="208" fill="#94a3b8" font-size="9" text-anchor="middle">192.168.2.0/24</text>
+                    </g>
+
+                    <!-- Routers -->
+                    <g class="topo-node" id="tn-r1" onclick="showRouterTable('r1')">
+                        <circle cx="180" cy="140" r="30" fill="#1e3a5f" stroke="#3b82f6" stroke-width="2"/>
+                        <text x="180" y="135" fill="#7dd3fc" font-size="18" text-anchor="middle">🔀</text>
+                        <text x="180" y="150" fill="#7dd3fc" font-size="10" font-weight="700" text-anchor="middle">R1</text>
+                    </g>
+                    <g class="topo-node" id="tn-r2" onclick="showRouterTable('r2')">
+                        <circle cx="320" cy="140" r="30" fill="#1e3a5f" stroke="#3b82f6" stroke-width="2"/>
+                        <text x="320" y="135" fill="#7dd3fc" font-size="18" text-anchor="middle">🔀</text>
+                        <text x="320" y="150" fill="#7dd3fc" font-size="10" font-weight="700" text-anchor="middle">R2</text>
+                    </g>
+                    <g class="topo-node" id="tn-r3" onclick="showRouterTable('r3')">
+                        <circle cx="460" cy="140" r="30" fill="#1e3a5f" stroke="#3b82f6" stroke-width="2"/>
+                        <text x="460" y="135" fill="#7dd3fc" font-size="18" text-anchor="middle">🔀</text>
+                        <text x="460" y="150" fill="#7dd3fc" font-size="10" font-weight="700" text-anchor="middle">R3</text>
+                    </g>
+
+                    <!-- Server -->
+                    <g class="topo-node" id="tn-srv">
+                        <circle cx="590" cy="70" r="24" fill="#1e293b" stroke="#334155" stroke-width="2"/>
+                        <text x="590" y="65" fill="#94a3b8" font-size="16" text-anchor="middle">🖥️</text>
+                        <text x="590" y="78" fill="#94a3b8" font-size="9" text-anchor="middle">10.10.10.0/24</text>
+                    </g>
+
+                    <!-- Hint -->
+                    <text x="320" y="265" fill="#334155" font-size="11" text-anchor="middle">Clique em R1, R2 ou R3 para ver a tabela de roteamento</text>
+                </svg>
+            </div>
+            <div id="topoTablePanel" style="margin-top:12px;"></div>
+        </div>
+
+        <h3>Troubleshooting de roteamento</h3>
+        <div class="cmd-grid">
+            <div class="cmd-card">
+                <div class="cmd-label">Ver tabela de roteamento</div>
+                <div class="cmd-code">show ip route</div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-label">Ver rota específica</div>
+                <div class="cmd-code">show ip route 192.168.3.0</div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-label">Testar conectividade</div>
+                <div class="cmd-code">ping 192.168.3.1 source Gi0/1</div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-label">Rastrear caminho</div>
+                <div class="cmd-code">traceroute 192.168.3.1</div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-label">Debug de pacotes IP</div>
+                <div class="cmd-code">debug ip packet</div>
+            </div>
+            <div class="cmd-card">
+                <div class="cmd-label">Linux — testar rota</div>
+                <div class="cmd-code">ip route get 192.168.3.5</div>
+            </div>
+        </div>
+
+        <div class="alert-box">
+            <p>&#x26A0;&#xFE0F; <strong>Rota de volta!</strong> O erro mais comum em roteamento est&aacute;tico &eacute; configurar apenas a rota de <em>ida</em> e esquecer a rota de <em>volta</em>. Comunica&ccedil;&atilde;o IP &eacute; bidirecional — o roteador remoto tamb&eacute;m precisa saber como alcan&ccedil;ar a rede de origem.</p>
+        </div>
+    </div>
+
+    <!-- QUESTÕES -->
+    <div class="content-card">
+        <h2>&#x2753; Quest&otilde;es de M&uacute;ltipla Escolha</h2>
+
+        <div class="mc-question" data-correct="C">
+            <p class="mc-enunciado"><strong>1.</strong> Um roteador tem as seguintes rotas: <code>192.168.1.0/24</code>, <code>192.168.1.128/25</code> e <code>0.0.0.0/0</code>. Para um pacote destinado a <code>192.168.1.200</code>, qual rota ser&aacute; escolhida?</p>
+            <ul class="mc-options">
+                <li data-option="A">0.0.0.0/0 — rota padrão tem prioridade máxima</li>
+                <li data-option="B">192.168.1.0/24 — foi configurada primeiro</li>
+                <li data-option="C">192.168.1.128/25 — longest prefix match (mais específica)</li>
+                <li data-option="D">Empate; o roteador usa round-robin entre as duas</li>
+            </ul>
+            <button class="btn-verificar">Verificar</button>
+            <div class="mc-feedback"></div>
+            <div class="mc-explicacao">O algoritmo <strong>Longest Prefix Match</strong> sempre escolhe a rota mais espec&iacute;fica. O endere&ccedil;o .200 cabe em /24 (128–255 são os hosts de /25 que começa em .128), portanto o prefixo /25 &eacute; mais longo e mais preciso que /24. A rota /0 &eacute; a menos espec&iacute;fica poss&iacute;vel.</div>
+        </div>
+
+        <div class="mc-question" data-correct="A">
+            <p class="mc-enunciado"><strong>2.</strong> Qual &eacute; a dist&acirc;ncia administrativa padr&atilde;o de uma rota est&aacute;tica no Cisco IOS?</p>
+            <ul class="mc-options">
+                <li data-option="A">1</li>
+                <li data-option="B">0</li>
+                <li data-option="C">110</li>
+                <li data-option="D">255</li>
+            </ul>
+            <button class="btn-verificar">Verificar</button>
+            <div class="mc-feedback"></div>
+            <div class="mc-explicacao">Rotas est&aacute;ticas t&ecirc;m AD = <strong>1</strong> no Cisco IOS. Rotas diretamente conectadas t&ecirc;m AD = 0. OSPF = 110, RIP = 120. AD = 255 significa "inacess&iacute;vel" — a rota &eacute; descartada. Quanto menor a AD, mais confi&aacute;vel a fonte.</div>
+        </div>
+
+        <div class="mc-question" data-correct="D">
+            <p class="mc-enunciado"><strong>3.</strong> O que &eacute; uma <em>rota flutuante</em> (floating static route)?</p>
+            <ul class="mc-options">
+                <li data-option="A">Rota din&acirc;mica que flutua entre protocolos</li>
+                <li data-option="B">Rota com next-hop que muda automaticamente</li>
+                <li data-option="C">Rota padr&atilde;o configurada no gateway da internet</li>
+                <li data-option="D">Rota est&aacute;tica de backup com AD maior, que s&oacute; entra se a rota principal sumir</li>
+            </ul>
+            <button class="btn-verificar">Verificar</button>
+            <div class="mc-feedback"></div>
+            <div class="mc-explicacao">Uma rota flutuante &eacute; uma rota est&aacute;tica configurada com uma <strong>dist&acirc;ncia administrativa maior</strong> que a rota principal. Ela fica "escondida" na tabela enquanto a rota de menor AD existir. Se a rota principal sumir (falha de interface), a flutuante assume. Ex: <code>ip route 0.0.0.0 0.0.0.0 10.0.0.6 <strong>10</strong></code>.</div>
+        </div>
+
+        <div class="mc-question" data-correct="B">
+            <p class="mc-enunciado"><strong>4.</strong> Um pacote chega ao roteador com destino <code>10.5.3.77</code>. A tabela tem: <code>10.0.0.0/8</code>, <code>10.5.0.0/16</code>, <code>10.5.3.0/24</code> e <code>0.0.0.0/0</code>. Qual &eacute; escolhida?</p>
+            <ul class="mc-options">
+                <li data-option="A">10.0.0.0/8</li>
+                <li data-option="B">10.5.3.0/24</li>
+                <li data-option="C">10.5.0.0/16</li>
+                <li data-option="D">0.0.0.0/0</li>
+            </ul>
+            <button class="btn-verificar">Verificar</button>
+            <div class="mc-feedback"></div>
+            <div class="mc-explicacao">Todas as quatro rotas cobrem o destino 10.5.3.77, mas o LPM escolhe a mais espec&iacute;fica: <strong>10.5.3.0/24</strong> com 24 bits fixos. Em ordem decrescente de especificidade: /24 &gt; /16 &gt; /8 &gt; /0. O /24 vence.</div>
+        </div>
+
+        <div class="mc-question" data-correct="C">
+            <p class="mc-enunciado"><strong>5.</strong> Ao configurar rotas est&aacute;ticas entre R1 e R2, qual cuidado &eacute; essencial para garantir comunica&ccedil;&atilde;o bidirecional?</p>
+            <ul class="mc-options">
+                <li data-option="A">Usar sempre interfaces seriais em vez de Ethernet</li>
+                <li data-option="B">Configurar NAT em ambos os roteadores</li>
+                <li data-option="C">Configurar rotas em <em>ambos</em> os roteadores — ida e volta</li>
+                <li data-option="D">Desativar o TTL nos pacotes de controle</li>
+            </ul>
+            <button class="btn-verificar">Verificar</button>
+            <div class="mc-feedback"></div>
+            <div class="mc-explicacao">Comunica&ccedil;&atilde;o IP &eacute; bidirecional. Se R1 tem rota para chegar &agrave; rede de R2, mas R2 n&atilde;o tem rota de volta para a rede de R1, o pacote chega mas a <strong>resposta n&atilde;o volta</strong> — conex&atilde;o falha silenciosamente. Configurar rotas de volta &eacute; o erro mais comum de iniciantes em roteamento est&aacute;tico.</div>
+        </div>
+    </div>
+
+    <!-- ATIVIDADE PRÁTICA -->
+    <div class="content-card practical-activity">
+        <h2>&#x1F6E0;&#xFE0F; Atividade Pr&aacute;tica</h2>
+        <p>Aplique os conceitos de roteamento est&aacute;tico na topologia com 3 roteadores descrita acima.</p>
+        <div class="prat-steps">
+            <div class="prat-step">
+                <span class="prat-num">1</span>
+                <div>
+                    <strong>Mapeie as interfaces:</strong> para cada roteador (R1, R2, R3), liste as redes diretamente conectadas e os endere&ccedil;os de cada interface com base na topologia do diagrama.
+                </div>
+            </div>
+            <div class="prat-step">
+                <span class="prat-num">2</span>
+                <div>
+                    <strong>Escreva os comandos Cisco IOS</strong> de rota est&aacute;tica para que todos os roteadores alcancem <em>todas</em> as redes da topologia. Lembre-se das rotas de volta!
+                </div>
+            </div>
+            <div class="prat-step">
+                <span class="prat-num">3</span>
+                <div>
+                    <strong>Adicione uma rota padr&atilde;o</strong> em R1 apontando para R2. Qual seria o impacto se R1 receber um pacote destinado a <code>8.8.8.8</code>?
+                </div>
+            </div>
+            <div class="prat-step">
+                <span class="prat-num">4</span>
+                <div>
+                    <strong>Cenário de falha:</strong> o link entre R2 e R3 cai. O que acontece com os pacotes enviados de <code>192.168.1.0/24</code> para <code>10.10.10.0/24</code>? Como rotas flutuantes poderiam ajudar?
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div><!-- .content-wrapper -->
+
+<nav class="nav-footer">
+    <a href="rc11-ipv6.html" class="nav-btn nav-prev">&#x2B05; Aula anterior<br><small>IPv6</small></a>
+    <a href="index.html" class="nav-btn nav-home">&#x1F3E0; Dashboard</a>
+    <a href="rc13-roteamento-dinamico.html" class="nav-btn nav-next">Pr&oacute;xima aula &#x27A1;<br><small>Roteamento Din&acirc;mico</small></a>
+</nav>
+
+<script src="slide-mode.js"></script>
+<script src="exercise-drag.js"></script>
+<script src="exercise-print.js"></script>
+<script src="exercise-mc.js"></script>
+<script>
+/* ══════════════════════════════════════════════
+   ROUTE TABLES per router
+══════════════════════════════════════════════ */
+const ROUTER_TABLES = {
+    r1: [
+        { type:'C', net:'192.168.1.0', pfx:24, nh:'—',          iface:'Gi0/1', ad:'0/0',  desc:'Rede LAN1 — diretamente conectada' },
+        { type:'C', net:'192.168.2.0', pfx:24, nh:'—',          iface:'Gi0/2', ad:'0/0',  desc:'Rede LAN2 — diretamente conectada' },
+        { type:'C', net:'10.0.12.0',   pfx:30, nh:'—',          iface:'Gi0/0', ad:'0/0',  desc:'Link R1↔R2 — diretamente conectada' },
+        { type:'S', net:'10.0.23.0',   pfx:30, nh:'10.0.12.2',  iface:'Gi0/0', ad:'1/0',  desc:'Link R2↔R3 — via R2' },
+        { type:'S', net:'10.10.10.0',  pfx:24, nh:'10.0.12.2',  iface:'Gi0/0', ad:'1/0',  desc:'Rede Servidores — via R2' },
+        { type:'S', net:'0.0.0.0',     pfx:0,  nh:'10.0.12.2',  iface:'Gi0/0', ad:'1/0',  desc:'Rota padrão — via R2' },
+    ],
+    r2: [
+        { type:'C', net:'10.0.12.0',   pfx:30, nh:'—',          iface:'Gi0/0', ad:'0/0',  desc:'Link R1↔R2 — diretamente conectada' },
+        { type:'C', net:'10.0.23.0',   pfx:30, nh:'—',          iface:'Gi0/1', ad:'0/0',  desc:'Link R2↔R3 — diretamente conectada' },
+        { type:'S', net:'192.168.1.0', pfx:24, nh:'10.0.12.1',  iface:'Gi0/0', ad:'1/0',  desc:'Rede LAN1 de R1 — via R1' },
+        { type:'S', net:'192.168.2.0', pfx:24, nh:'10.0.12.1',  iface:'Gi0/0', ad:'1/0',  desc:'Rede LAN2 de R1 — via R1' },
+        { type:'S', net:'10.10.10.0',  pfx:24, nh:'10.0.23.2',  iface:'Gi0/1', ad:'1/0',  desc:'Rede Servidores — via R3' },
+    ],
+    r3: [
+        { type:'C', net:'10.0.23.0',   pfx:30, nh:'—',          iface:'Gi0/0', ad:'0/0',  desc:'Link R2↔R3 — diretamente conectada' },
+        { type:'C', net:'10.10.10.0',  pfx:24, nh:'—',          iface:'Gi0/1', ad:'0/0',  desc:'Rede Servidores — diretamente conectada' },
+        { type:'S', net:'192.168.1.0', pfx:24, nh:'10.0.23.1',  iface:'Gi0/0', ad:'1/0',  desc:'Rede LAN1 de R1 — via R2' },
+        { type:'S', net:'192.168.2.0', pfx:24, nh:'10.0.23.1',  iface:'Gi0/0', ad:'1/0',  desc:'Rede LAN2 de R1 — via R2' },
+        { type:'S', net:'10.0.12.0',   pfx:30, nh:'10.0.23.1',  iface:'Gi0/0', ad:'1/0',  desc:'Link R1↔R2 — via R2' },
+    ]
+};
+
+function showRouterTable(id) {
+    const rows = ROUTER_TABLES[id];
+    const panel = document.getElementById('topoTablePanel');
+    let html = `<div style="background:#1e293b;border-radius:12px;padding:14px 18px;animation:slideDown .2s ease;">
+        <div style="color:#f97316;font-size:.74em;font-weight:700;text-transform:uppercase;margin-bottom:10px;">Tabela de Roteamento — Roteador ${id.toUpperCase()}</div>
+        <table class="rtable" style="min-width:0;">
+            <thead><tr><th>Tipo</th><th>Destino</th><th>Pfx</th><th>Next-Hop</th><th>Interface</th><th>AD</th></tr></thead>
+            <tbody>`;
+    rows.forEach(r => {
+        html += `<tr>
+            <td><span class="rt-type rt-type-${r.type.toLowerCase().replace('*','')}">${r.type}</span></td>
+            <td class="rt-dest">${r.net}</td>
+            <td class="rt-mask">/${r.pfx}</td>
+            <td class="rt-nh">${r.nh}</td>
+            <td class="rt-iface">${r.iface}</td>
+            <td>${r.ad}</td>
+        </tr>`;
+    });
+    html += '</tbody></table></div>';
+    panel.innerHTML = html;
+    document.querySelectorAll('.topo-node').forEach(n => n.classList.remove('active'));
+    document.getElementById('tn-' + id).classList.add('active');
+}
+
+/* ══════════════════════════════════════════════
+   ROUTE DECISION SIMULATOR (uses ROUTER_TABLES.r1 + custom table)
+══════════════════════════════════════════════ */
+const SIM_ROUTES = [
+    { net:'10.0.0.0',    pfx:30  },
+    { net:'192.168.1.0', pfx:24  },
+    { net:'192.168.2.0', pfx:24  },
+    { net:'192.168.2.128',pfx:25 },
+    { net:'172.16.0.0',  pfx:16  },
+    { net:'0.0.0.0',     pfx:0   },
+];
+
+function ipToNum(ip) {
+    return ip.split('.').reduce((a,o) => (a<<8)|parseInt(o), 0) >>> 0;
+}
+function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+async function runSim() {
+    const destStr = document.getElementById('simDest').value.trim();
+    const logEl   = document.getElementById('simLog');
+    const verdict = document.getElementById('simVerdict');
+    const rows    = document.querySelectorAll('#routeTable tbody tr');
+    const lpmViz  = document.getElementById('lpmViz');
+    const lpmRows = document.getElementById('lpmRows');
+
+    logEl.innerHTML = '';
+    verdict.innerHTML = '';
+    lpmViz.style.display = 'none';
+    rows.forEach(r => r.className = '');
+
+    const parts = destStr.split('.').map(Number);
+    if (parts.length !== 4 || parts.some(x => isNaN(x)||x<0||x>255)) {
+        logEl.innerHTML = '<span style="color:#f87171;font-size:.82em;">IP inválido.</span>';
+        return;
+    }
+    const destNum = ipToNum(destStr);
+
+    function log(msg, color) {
+        const d = document.createElement('div');
+        d.style.cssText = `color:${color||'#94a3b8'};font-size:.78em;padding:2px 0;border-bottom:1px solid #1e293b;animation:fadeIn .2s;`;
+        d.innerHTML = msg;
+        logEl.appendChild(d);
+        logEl.scrollTop = logEl.scrollHeight;
+    }
+
+    log(`📦 Pacote recebido — destino: <strong style="color:#f1f5f9;">${destStr}</strong>`, '#38bdf8');
+    log('🔍 Consultando tabela de roteamento...', '#94a3b8');
+    await delay(400);
+
+    let matches = [];
+    const allRoutes = SIM_ROUTES;
+
+    for (let i = 0; i < allRoutes.length; i++) {
+        const r = allRoutes[i];
+        const maskNum = r.pfx === 0 ? 0 : (0xFFFFFFFF << (32-r.pfx)) >>> 0;
+        const netNum  = ipToNum(r.net);
+        const isMatch = (destNum & maskNum) === netNum;
+
+        if (rows[i]) rows[i].className = 'checking';
+        await delay(320);
+        if (rows[i]) rows[i].className = isMatch ? 'match' : 'nomatch';
+
+        if (isMatch) {
+            log(`✅ <strong>${r.net}/${r.pfx}</strong> — combina! (prefixo /${r.pfx})`, '#4ade80');
+            matches.push({...r, idx:i});
+        } else {
+            log(`❌ ${r.net}/${r.pfx} — não combina`, '#475569');
+        }
+        await delay(120);
+    }
+
+    await delay(300);
+
+    if (matches.length === 0) {
+        log('🚫 Nenhuma rota — pacote descartado. ICMP Unreachable enviado.', '#f87171');
+        verdict.innerHTML = `<div class="sim-verdict"><span style="color:#f87171;font-weight:800;">DESCARTADO</span> — sem rota para ${destStr}</div>`;
+        return;
+    }
+
+    // LPM — pick longest
+    const best = matches.reduce((b,m) => m.pfx > b.pfx ? m : b);
+    rows.forEach((r,i) => { if (r.className==='match' && allRoutes[i].pfx !== best.pfx) r.className='nomatch'; });
+    if (rows[best.idx]) rows[best.idx].className = 'best';
+
+    log(`🏆 LPM: melhor rota = <strong style="color:#f97316;">${best.net}/${best.pfx}</strong> (prefixo mais longo)`, '#f97316');
+
+    // Show LPM viz
+    lpmViz.style.display = 'block';
+    let lpmHtml = '';
+    const destBin = destNum.toString(2).padStart(32,'0');
+    matches.forEach(m => {
+        const netBin = ipToNum(m.net).toString(2).padStart(32,'0');
+        let bits = '';
+        for (let b = 0; b < 32; b++) {
+            let cls = 'lpm-bit-host';
+            if (b < m.pfx) cls = destBin[b]===netBin[b] ? 'lpm-bit-match' : 'lpm-bit-fail';
+            bits += `<div class="lpm-bit ${cls}">${destBin[b]}</div>`;
+            if ((b+1)%8===0 && b<31) bits += '<div style="width:4px;"></div>';
+        }
+        const isBest = m.pfx === best.pfx && m.net === best.net;
+        lpmHtml += `<div class="lpm-row">
+            <div class="lpm-prefix">${m.net}/${m.pfx}</div>
+            <div class="lpm-bits">${bits}</div>
+            <div class="lpm-result ${isBest?'lpm-best':'lpm-ok'}">${isBest?'⭐ ESCOLHIDA':'combina'}</div>
+        </div>`;
+    });
+    lpmRows.innerHTML = lpmHtml;
+
+    const nhDisplay = best.pfx === 0 ? 'via rota padrão' : `via ${best.net}/${best.pfx}`;
+    verdict.innerHTML = `<div class="sim-verdict">
+        <span style="color:#34d399;font-weight:800;">ENCAMINHADO</span> —
+        destino <code>${destStr}</code> → rota <code>${best.net}/${best.pfx}</code>
+        <span style="color:#94a3b8;font-size:.85em;">(${nhDisplay})</span>
+    </div>`;
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('simDest').addEventListener('keydown', e => {
+        if (e.key === 'Enter') runSim();
+    });
+});
+</script>
+<script>
+(function(){
+  var bars = document.querySelectorAll('.bar-fill');
+  if(!bars.length) return;
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){
+        e.target.style.width = e.target.dataset.w;
+        io.unobserve(e.target);
+      }
+    });
+  },{threshold:.3});
+  bars.forEach(function(b){ io.observe(b); });
+})();
+</script>
+</body>
+</html>
