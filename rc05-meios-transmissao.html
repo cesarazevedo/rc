@@ -683,7 +683,118 @@
                 <div class="step-num">1</div>
                 <div class="step-body">
                     <div class="step-label">&#x1F465; Trabalho em grupo &mdash; Proposta de infraestrutura de rede</div>
-                    <div class="step-desc"><strong>(Aprendizagem Baseada em Projetos &mdash; grupos de 3&ndash;4 alunos)</strong> Cada grupo recebe um cen&aacute;rio de cliente: (A) escola p&uacute;blica com 5 salas e laborat&oacute;rio, or&ccedil;amento limitado; (B) empresa de 3 andares com data center pr&oacute;prio; (C) hospital que exige alta disponibilidade e sem interfer&ecirc;ncia. O grupo deve elaborar uma proposta com: tipo de cabo, categoria, justificativa t&eacute;cnica, diagrama simplificado e estimativa de custo. Cada grupo apresenta em 3 minutos e a turma debate os trade-offs de cada solu&ccedil;&atilde;o. <em>Discutam: um cliente com or&ccedil;amento apertado deve abrir m&atilde;o de Cat 6A para Cat 5e? Quais as consequ&ecirc;ncias a longo prazo?</em></div>
+                    <div class="step-desc">
+                        <strong>(Aprendizagem Baseada em Projetos &mdash; grupos de 3&ndash;4 alunos)</strong> Cada grupo sorteia um dos cen&aacute;rios abaixo e elabora uma proposta com: tipo de cabo, categoria, justificativa t&eacute;cnica, diagrama simplificado e estimativa de custo. Cada grupo apresenta em 3 minutos e a turma debate os trade-offs.
+
+                        <!-- Cenários ilustrados -->
+                        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin:1.25rem 0">
+
+                            <!-- Cenário A — Escola -->
+                            <div style="border:2px solid #f59e0b;border-radius:12px;padding:1rem;background:#fffbeb;text-align:center">
+                                <svg viewBox="0 0 90 80" width="90" height="80" style="display:block;margin:0 auto 8px">
+                                    <!-- sombra do prédio -->
+                                    <rect x="12" y="38" width="66" height="38" rx="2" fill="#fde68a" stroke="#d97706" stroke-width="2"/>
+                                    <!-- telhado -->
+                                    <polygon points="8,40 45,8 82,40" fill="#d97706"/>
+                                    <!-- janela esq -->
+                                    <rect x="18" y="46" width="14" height="13" rx="1" fill="#fff" stroke="#d97706" stroke-width="1.5"/>
+                                    <line x1="25" y1="46" x2="25" y2="59" stroke="#d97706" stroke-width="1"/>
+                                    <line x1="18" y1="52.5" x2="32" y2="52.5" stroke="#d97706" stroke-width="1"/>
+                                    <!-- janela dir -->
+                                    <rect x="58" y="46" width="14" height="13" rx="1" fill="#fff" stroke="#d97706" stroke-width="1.5"/>
+                                    <line x1="65" y1="46" x2="65" y2="59" stroke="#d97706" stroke-width="1"/>
+                                    <line x1="58" y1="52.5" x2="72" y2="52.5" stroke="#d97706" stroke-width="1"/>
+                                    <!-- porta -->
+                                    <rect x="34" y="57" width="22" height="19" rx="2" fill="#b45309"/>
+                                    <circle cx="53" cy="67" r="2" fill="#fde68a"/>
+                                    <!-- mastro + bandeira -->
+                                    <line x1="45" y1="8" x2="45" y2="2" stroke="#92400e" stroke-width="2"/>
+                                    <polygon points="45,2 55,5 45,8" fill="#dc2626"/>
+                                </svg>
+                                <div style="font-weight:700;color:#d97706;font-size:13px;margin-bottom:4px">Cen&aacute;rio A</div>
+                                <div style="font-size:12px;color:#1e293b;font-weight:600;margin-bottom:6px">Escola P&uacute;blica</div>
+                                <ul style="text-align:left;font-size:11px;color:#475569;margin:0;padding-left:14px;line-height:1.7">
+                                    <li>5 salas + laborat&oacute;rio</li>
+                                    <li>Or&ccedil;amento limitado</li>
+                                    <li>~30 pontos de rede</li>
+                                    <li>1 andar</li>
+                                </ul>
+                                <div style="margin-top:8px;background:#fef3c7;border-radius:6px;padding:5px 8px;font-size:10px;color:#92400e"><strong>Desafio:</strong> m&aacute;ximo de custo-benef&iacute;cio</div>
+                            </div>
+
+                            <!-- Cenário B — Empresa -->
+                            <div style="border:2px solid #3b82f6;border-radius:12px;padding:1rem;background:#eff6ff;text-align:center">
+                                <svg viewBox="0 0 90 80" width="90" height="80" style="display:block;margin:0 auto 8px">
+                                    <!-- prédio principal -->
+                                    <rect x="18" y="10" width="54" height="66" rx="2" fill="#bfdbfe" stroke="#2563eb" stroke-width="2"/>
+                                    <!-- andares (linhas) -->
+                                    <line x1="18" y1="32" x2="72" y2="32" stroke="#93c5fd" stroke-width="1.5"/>
+                                    <line x1="18" y1="54" x2="72" y2="54" stroke="#93c5fd" stroke-width="1.5"/>
+                                    <!-- janelas andar 1 -->
+                                    <rect x="24" y="14" width="10" height="10" rx="1" fill="#dbeafe" stroke="#3b82f6" stroke-width="1"/>
+                                    <rect x="40" y="14" width="10" height="10" rx="1" fill="#dbeafe" stroke="#3b82f6" stroke-width="1"/>
+                                    <rect x="56" y="14" width="10" height="10" rx="1" fill="#dbeafe" stroke="#3b82f6" stroke-width="1"/>
+                                    <!-- janelas andar 2 -->
+                                    <rect x="24" y="36" width="10" height="10" rx="1" fill="#dbeafe" stroke="#3b82f6" stroke-width="1"/>
+                                    <rect x="40" y="36" width="10" height="10" rx="1" fill="#dbeafe" stroke="#3b82f6" stroke-width="1"/>
+                                    <rect x="56" y="36" width="10" height="10" rx="1" fill="#dbeafe" stroke="#3b82f6" stroke-width="1"/>
+                                    <!-- data center (rack) andar 3 -->
+                                    <rect x="28" y="58" width="34" height="14" rx="2" fill="#1d4ed8"/>
+                                    <rect x="31" y="61" width="6" height="3" rx="1" fill="#60a5fa"/>
+                                    <rect x="39" y="61" width="6" height="3" rx="1" fill="#60a5fa"/>
+                                    <rect x="47" y="61" width="6" height="3" rx="1" fill="#34d399"/>
+                                    <rect x="55" y="61" width="4" height="3" rx="1" fill="#f87171"/>
+                                    <!-- antena -->
+                                    <line x1="45" y1="10" x2="45" y2="4" stroke="#1d4ed8" stroke-width="1.5"/>
+                                    <line x1="42" y1="6" x2="45" y2="4" stroke="#1d4ed8" stroke-width="1.5"/>
+                                    <line x1="48" y1="6" x2="45" y2="4" stroke="#1d4ed8" stroke-width="1.5"/>
+                                </svg>
+                                <div style="font-weight:700;color:#2563eb;font-size:13px;margin-bottom:4px">Cen&aacute;rio B</div>
+                                <div style="font-size:12px;color:#1e293b;font-weight:600;margin-bottom:6px">Empresa Corporativa</div>
+                                <ul style="text-align:left;font-size:11px;color:#475569;margin:0;padding-left:14px;line-height:1.7">
+                                    <li>3 andares</li>
+                                    <li>Data center pr&oacute;prio</li>
+                                    <li>Alta performance</li>
+                                    <li>~80 pontos de rede</li>
+                                </ul>
+                                <div style="margin-top:8px;background:#dbeafe;border-radius:6px;padding:5px 8px;font-size:10px;color:#1d4ed8"><strong>Desafio:</strong> backbone entre andares e data center</div>
+                            </div>
+
+                            <!-- Cenário C — Hospital -->
+                            <div style="border:2px solid #10b981;border-radius:12px;padding:1rem;background:#f0fdf4;text-align:center">
+                                <svg viewBox="0 0 90 80" width="90" height="80" style="display:block;margin:0 auto 8px">
+                                    <!-- prédio -->
+                                    <rect x="14" y="28" width="62" height="48" rx="2" fill="#d1fae5" stroke="#059669" stroke-width="2"/>
+                                    <!-- cruz (símbolo hospital) -->
+                                    <rect x="35" y="6"  width="20" height="40" rx="3" fill="#10b981"/>
+                                    <rect x="22" y="18" width="46" height="18" rx="3" fill="#10b981"/>
+                                    <rect x="38" y="9"  width="14" height="34" rx="2" fill="#34d399"/>
+                                    <rect x="25" y="21" width="40" height="12" rx="2" fill="#34d399"/>
+                                    <!-- janelas -->
+                                    <rect x="18" y="40" width="12" height="10" rx="1" fill="#a7f3d0" stroke="#059669" stroke-width="1"/>
+                                    <rect x="60" y="40" width="12" height="10" rx="1" fill="#a7f3d0" stroke="#059669" stroke-width="1"/>
+                                    <!-- porta com acesso -->
+                                    <rect x="33" y="57" width="24" height="19" rx="2" fill="#059669"/>
+                                    <rect x="37" y="61" width="7" height="11" rx="1" fill="#a7f3d0"/>
+                                    <rect x="46" y="61" width="7" height="11" rx="1" fill="#a7f3d0"/>
+                                    <!-- sinal de emergência -->
+                                    <circle cx="72" cy="34" r="6" fill="#ef4444"/>
+                                    <text x="72" y="38" text-anchor="middle" fill="#fff" font-size="8" font-weight="bold">!</text>
+                                </svg>
+                                <div style="font-weight:700;color:#059669;font-size:13px;margin-bottom:4px">Cen&aacute;rio C</div>
+                                <div style="font-size:12px;color:#1e293b;font-weight:600;margin-bottom:6px">Hospital</div>
+                                <ul style="text-align:left;font-size:11px;color:#475569;margin:0;padding-left:14px;line-height:1.7">
+                                    <li>Alta disponibilidade</li>
+                                    <li>Zero interfer&ecirc;ncia EMI</li>
+                                    <li>Ambiente cr&iacute;tico 24/7</li>
+                                    <li>Redund&acirc;ncia obrigat&oacute;ria</li>
+                                </ul>
+                                <div style="margin-top:8px;background:#dcfce7;border-radius:6px;padding:5px 8px;font-size:10px;color:#065f46"><strong>Desafio:</strong> imunidade a EMI e redund&acirc;ncia de links</div>
+                            </div>
+                        </div>
+
+                        O grupo deve elaborar uma proposta com: tipo de cabo, categoria, justificativa t&eacute;cnica, diagrama simplificado e estimativa de custo. Cada grupo apresenta em 3 minutos e a turma debate os trade-offs de cada solu&ccedil;&atilde;o. <em>Discutam: um cliente com or&ccedil;amento apertado deve abrir m&atilde;o de Cat 6A para Cat 5e? Quais as consequ&ecirc;ncias a longo prazo?</em>
+                    </div>
                 </div>
             </div>
         </div>
@@ -759,64 +870,6 @@
 
         <div class="ex-actions">
             <button class="btn-print" onclick="printPractical('prat-rc05-crimp', 'Aula 5 \u2014 Pr\u00e1tica de Crimpagem Cat 5e')">&#x1F5A8;&#xFE0F; Imprimir roteiro</button>
-        </div>
-    </div>
-
-    <!-- ATIVIDADE PRÁTICA 3 — Crimpagem T568A / Crossover -->
-    <div class="content-card exercise-card" id="prat-rc05-crimp-a">
-        <h2>&#x1F527; Pr&aacute;tica de Bancada &mdash; Crimpagem T568A e Cabo Crossover</h2>
-        <p class="prat-intro">Confeccionar um cabo crossover Cat 5e crimpando uma ponta em T568A e a outra em T568B, e verificar a diferen&ccedil;a no testador.</p>
-
-        <div class="alert-box" style="margin-bottom:1.25rem">
-            <p>&#x1F4CB; <strong>Materiais:</strong> os mesmos da atividade anterior. Use o cabo j&aacute; crimpado em T568B como refer&ecirc;ncia visual para comparar as ordens lado a lado.</p>
-        </div>
-
-        <div class="prat-steps">
-            <div class="prat-step">
-                <div class="step-num">1</div>
-                <div class="step-body">
-                    <div class="step-label">Preparar e crimpar a primeira ponta em T568B</div>
-                    <div class="step-desc">Siga os passos 1 a 5 da atividade anterior para crimpar <strong>uma extremidade do cabo no padr&atilde;o T568B</strong> (essa ponta &eacute; id&ecirc;ntica ao cabo direto que voc&ecirc; j&aacute; fez). Guarde essa ponta — ela ser&aacute; o lado &ldquo;B&rdquo; do crossover.</div>
-                </div>
-            </div>
-            <div class="prat-step">
-                <div class="step-num">2</div>
-                <div class="step-body">
-                    <div class="step-label">Ordenar a segunda ponta em T568A</div>
-                    <div class="step-desc">Na outra extremidade, ap&oacute;s remover a casca e destran&ccedil;ar, organize os 8 fios na ordem <strong>T568A</strong> — a diferen&ccedil;a em rela&ccedil;&atilde;o ao T568B est&aacute; nos pares verde e laranja, que trocam de posi&ccedil;&atilde;o:<br><br>
-                    <strong>Pino 1:</strong> Branco/Verde &bull; <strong>Pino 2:</strong> Verde &bull; <strong>Pino 3:</strong> Branco/Laranja &bull; <strong>Pino 4:</strong> Azul &bull; <strong>Pino 5:</strong> Branco/Azul &bull; <strong>Pino 6:</strong> Laranja &bull; <strong>Pino 7:</strong> Branco/Marrom &bull; <strong>Pino 8:</strong> Marrom.<br><br>
-                    Compare visualmente com a ponta T568B: pinos 1 e 2 passam de laranja para verde; pinos 3 e 6 passam de verde para laranja. Os pares azul e marrom ficam id&ecirc;nticos.</div>
-                </div>
-            </div>
-            <div class="prat-step">
-                <div class="step-num">3</div>
-                <div class="step-body">
-                    <div class="step-label">Cortar, inserir e crimpar o conector T568A</div>
-                    <div class="step-desc">Com os fios na ordem T568A, repita os passos de corte reto (~1,2 cm exposto), inser&ccedil;&atilde;o no RJ-45 com trava para baixo e crimpagem at&eacute; o clique final. Verifique visualmente que a cor do pino 1 &eacute; <strong>branco/verde</strong> e do pino 2 &eacute; <strong>verde</strong> — se voc&ecirc; ver branco/laranja no pino 1, est&aacute; na ordem T568B e precisa refazer.</div>
-                </div>
-            </div>
-            <div class="prat-step">
-                <div class="step-num">4</div>
-                <div class="step-body">
-                    <div class="step-label">Testar o cabo crossover no testador</div>
-                    <div class="step-desc">Conecte as duas pontas ao testador e observe os LEDs. Num cabo crossover <strong>o acendimento ser&aacute; cruzado</strong>: o LED 1 do lado A acende o LED 3 do lado B; o LED 2 acende o LED 6; o LED 3 acende o LED 1; o LED 6 acende o LED 2 — os demais (4, 5, 7, 8) acendem diretos. Esse padr&atilde;o &eacute; o esperado e correto para um crossover. Testadores mais avan&ccedil;ados possuem modo &ldquo;crossover&rdquo; e indicam OK automaticamente.</div>
-                </div>
-            </div>
-            <div class="prat-step">
-                <div class="step-num">5</div>
-                <div class="step-body">
-                    <div class="step-label">Comparar os dois cabos e identificar o uso de cada um</div>
-                    <div class="step-desc">Coloque os dois cabos lado a lado (direto T568B e crossover T568A+T568B) e responda: (a) qual usar para ligar um computador a um switch? (b) qual usar para ligar dois computadores diretamente sem switch? (c) por que switches modernos com Auto-MDI-X funcionam com qualquer um dos dois? Discuta com o professor ou com a turma.</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="prat-observe">
-            <strong>&#x1F4CC; Crit&eacute;rios de avalia&ccedil;&atilde;o:</strong> ordem T568A correta e vis&iacute;vel nos pinos &bull; testador mostrando cruzamento 1↔3 e 2↔6 &bull; casca presa sem folga &bull; saber identificar oralmente qual cabo &eacute; direto e qual &eacute; crossover. <em>Aten&ccedil;&atilde;o: um crossover crimpado errado parece funcionar parcialmente — pode fazer o link acender mas derrubar a transfer&ecirc;ncia de dados.</em>
-        </div>
-
-        <div class="ex-actions">
-            <button class="btn-print" onclick="printPractical('prat-rc05-crimp-a', 'Aula 5 \u2014 Pr\u00e1tica de Crimpagem T568A e Crossover')">&#x1F5A8;&#xFE0F; Imprimir roteiro</button>
         </div>
     </div>
 
