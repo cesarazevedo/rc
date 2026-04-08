@@ -762,6 +762,64 @@
         </div>
     </div>
 
+    <!-- ATIVIDADE PRÁTICA 3 — Crimpagem T568A / Crossover -->
+    <div class="content-card exercise-card" id="prat-rc05-crimp-a">
+        <h2>&#x1F527; Pr&aacute;tica de Bancada &mdash; Crimpagem T568A e Cabo Crossover</h2>
+        <p class="prat-intro">Confeccionar um cabo crossover Cat 5e crimpando uma ponta em T568A e a outra em T568B, e verificar a diferen&ccedil;a no testador.</p>
+
+        <div class="alert-box" style="margin-bottom:1.25rem">
+            <p>&#x1F4CB; <strong>Materiais:</strong> os mesmos da atividade anterior. Use o cabo j&aacute; crimpado em T568B como refer&ecirc;ncia visual para comparar as ordens lado a lado.</p>
+        </div>
+
+        <div class="prat-steps">
+            <div class="prat-step">
+                <div class="step-num">1</div>
+                <div class="step-body">
+                    <div class="step-label">Preparar e crimpar a primeira ponta em T568B</div>
+                    <div class="step-desc">Siga os passos 1 a 5 da atividade anterior para crimpar <strong>uma extremidade do cabo no padr&atilde;o T568B</strong> (essa ponta &eacute; id&ecirc;ntica ao cabo direto que voc&ecirc; j&aacute; fez). Guarde essa ponta — ela ser&aacute; o lado &ldquo;B&rdquo; do crossover.</div>
+                </div>
+            </div>
+            <div class="prat-step">
+                <div class="step-num">2</div>
+                <div class="step-body">
+                    <div class="step-label">Ordenar a segunda ponta em T568A</div>
+                    <div class="step-desc">Na outra extremidade, ap&oacute;s remover a casca e destran&ccedil;ar, organize os 8 fios na ordem <strong>T568A</strong> — a diferen&ccedil;a em rela&ccedil;&atilde;o ao T568B est&aacute; nos pares verde e laranja, que trocam de posi&ccedil;&atilde;o:<br><br>
+                    <strong>Pino 1:</strong> Branco/Verde &bull; <strong>Pino 2:</strong> Verde &bull; <strong>Pino 3:</strong> Branco/Laranja &bull; <strong>Pino 4:</strong> Azul &bull; <strong>Pino 5:</strong> Branco/Azul &bull; <strong>Pino 6:</strong> Laranja &bull; <strong>Pino 7:</strong> Branco/Marrom &bull; <strong>Pino 8:</strong> Marrom.<br><br>
+                    Compare visualmente com a ponta T568B: pinos 1 e 2 passam de laranja para verde; pinos 3 e 6 passam de verde para laranja. Os pares azul e marrom ficam id&ecirc;nticos.</div>
+                </div>
+            </div>
+            <div class="prat-step">
+                <div class="step-num">3</div>
+                <div class="step-body">
+                    <div class="step-label">Cortar, inserir e crimpar o conector T568A</div>
+                    <div class="step-desc">Com os fios na ordem T568A, repita os passos de corte reto (~1,2 cm exposto), inser&ccedil;&atilde;o no RJ-45 com trava para baixo e crimpagem at&eacute; o clique final. Verifique visualmente que a cor do pino 1 &eacute; <strong>branco/verde</strong> e do pino 2 &eacute; <strong>verde</strong> — se voc&ecirc; ver branco/laranja no pino 1, est&aacute; na ordem T568B e precisa refazer.</div>
+                </div>
+            </div>
+            <div class="prat-step">
+                <div class="step-num">4</div>
+                <div class="step-body">
+                    <div class="step-label">Testar o cabo crossover no testador</div>
+                    <div class="step-desc">Conecte as duas pontas ao testador e observe os LEDs. Num cabo crossover <strong>o acendimento ser&aacute; cruzado</strong>: o LED 1 do lado A acende o LED 3 do lado B; o LED 2 acende o LED 6; o LED 3 acende o LED 1; o LED 6 acende o LED 2 — os demais (4, 5, 7, 8) acendem diretos. Esse padr&atilde;o &eacute; o esperado e correto para um crossover. Testadores mais avan&ccedil;ados possuem modo &ldquo;crossover&rdquo; e indicam OK automaticamente.</div>
+                </div>
+            </div>
+            <div class="prat-step">
+                <div class="step-num">5</div>
+                <div class="step-body">
+                    <div class="step-label">Comparar os dois cabos e identificar o uso de cada um</div>
+                    <div class="step-desc">Coloque os dois cabos lado a lado (direto T568B e crossover T568A+T568B) e responda: (a) qual usar para ligar um computador a um switch? (b) qual usar para ligar dois computadores diretamente sem switch? (c) por que switches modernos com Auto-MDI-X funcionam com qualquer um dos dois? Discuta com o professor ou com a turma.</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="prat-observe">
+            <strong>&#x1F4CC; Crit&eacute;rios de avalia&ccedil;&atilde;o:</strong> ordem T568A correta e vis&iacute;vel nos pinos &bull; testador mostrando cruzamento 1↔3 e 2↔6 &bull; casca presa sem folga &bull; saber identificar oralmente qual cabo &eacute; direto e qual &eacute; crossover. <em>Aten&ccedil;&atilde;o: um crossover crimpado errado parece funcionar parcialmente — pode fazer o link acender mas derrubar a transfer&ecirc;ncia de dados.</em>
+        </div>
+
+        <div class="ex-actions">
+            <button class="btn-print" onclick="printPractical('prat-rc05-crimp-a', 'Aula 5 \u2014 Pr\u00e1tica de Crimpagem T568A e Crossover')">&#x1F5A8;&#xFE0F; Imprimir roteiro</button>
+        </div>
+    </div>
+
     <!-- MÚLTIPLA ESCOLHA -->
     <div class="content-card exercise-card">
         <h2>&#x2753; Verifique seu Conhecimento</h2>
