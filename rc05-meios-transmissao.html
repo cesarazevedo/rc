@@ -274,33 +274,33 @@
 
         <div class="viz-wrap">
             <div class="viz-title">Estrutura do cabo coaxial — corte transversal e sinal elétrico (animado)</div>
-            <svg viewBox="0 0 570 130" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block">
-                <!-- Cross section -->
+            <svg viewBox="0 0 590 150" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block">
+                <!-- ─── Longitudinal section renderizado PRIMEIRO (fundo) ─── -->
+                <rect x="295" y="10"  width="285" height="110" rx="8" fill="#475569"/>
+                <rect x="295" y="22"  width="285" height="86"  rx="4" fill="#334155"/>
+                <rect x="295" y="38"  width="285" height="54"  rx="0" fill="#f1f5f9"/>
+                <rect x="295" y="55"  width="285" height="20"  rx="0" fill="#d97706"/>
+                <!-- Animated signal dot -->
+                <circle cx="301" cy="65" r="5.5" fill="#fbbf24">
+                    <animate attributeName="cx" from="301" to="574" dur="1.8s" repeatCount="indefinite"/>
+                    <animate attributeName="opacity" values="1;1;0" keyTimes="0;0.82;1" dur="1.8s" repeatCount="indefinite"/>
+                </circle>
+                <text x="437" y="134" text-anchor="middle" fill="#475569" font-size="10" font-family="monospace">sinal elétrico viaja pelo condutor central</text>
+                <!-- ─── Cross section renderizado POR CIMA ─── -->
                 <circle cx="75" cy="65" r="58" fill="#475569"/>
                 <circle cx="75" cy="65" r="47" fill="#334155"/>
                 <circle cx="75" cy="65" r="31" fill="#f1f5f9"/>
                 <circle cx="75" cy="65" r="11" fill="#d97706"/>
                 <!-- Labels -->
-                <text x="75" y="128" text-anchor="middle" fill="#475569" font-size="10" font-family="monospace">corte transversal</text>
+                <text x="75" y="143" text-anchor="middle" fill="#475569" font-size="10" font-family="monospace">corte transversal</text>
                 <line x1="145" y1="22" x2="122" y2="32" stroke="#475569" stroke-width="1"/>
                 <text x="148" y="25" fill="#94a3b8" font-size="10" font-family="monospace">Casca PVC</text>
                 <line x1="145" y1="43" x2="119" y2="48" stroke="#475569" stroke-width="1"/>
                 <text x="148" y="46" fill="#94a3b8" font-size="10" font-family="monospace">Malha (blindagem)</text>
                 <line x1="145" y1="64" x2="106" y2="64" stroke="#475569" stroke-width="1"/>
-                <text x="148" y="67" fill="#94a3b8" font-size="10" font-family="monospace">Dielétrico</text>
+                <text x="148" y="67" fill="#94a3b8" font-size="10" font-family="monospace">Diel&#233;trico</text>
                 <line x1="145" y1="85" x2="120" y2="73" stroke="#475569" stroke-width="1"/>
                 <text x="148" y="88" fill="#d97706" font-size="10" font-family="monospace">Condutor central (Cu)</text>
-                <!-- Longitudinal section -->
-                <rect x="200" y="10" width="358" height="110" rx="8" fill="#475569"/>
-                <rect x="200" y="22" width="358" height="86" rx="4" fill="#334155"/>
-                <rect x="200" y="38" width="358" height="54" rx="0" fill="#f1f5f9"/>
-                <rect x="200" y="55" width="358" height="20" rx="0" fill="#d97706"/>
-                <!-- Animated signal dot -->
-                <circle cx="206" cy="65" r="5.5" fill="#fbbf24">
-                    <animate attributeName="cx" from="206" to="552" dur="1.8s" repeatCount="indefinite"/>
-                    <animate attributeName="opacity" values="1;1;0" keyTimes="0;0.82;1" dur="1.8s" repeatCount="indefinite"/>
-                </circle>
-                <text x="379" y="122" text-anchor="middle" fill="#475569" font-size="10" font-family="monospace">sinal elétrico viaja pelo condutor central</text>
             </svg>
         </div>
 
@@ -341,8 +341,23 @@
 
         <div class="viz-wrap">
             <div class="viz-title">Estrutura da fibra óptica — reflexão total interna (animado)</div>
-            <svg viewBox="0 0 590 155" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block">
-                <!-- Cross section -->
+            <svg viewBox="0 0 596 168" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block">
+                <!-- ─── Longitudinal renderizado PRIMEIRO (fundo) ─── -->
+                <rect x="262" y="10"  width="326" height="130" rx="8" fill="#475569"/>
+                <rect x="262" y="23"  width="326" height="104" rx="4" fill="#334155"/>
+                <rect x="262" y="40"  width="326" height="70"  rx="0" fill="#94a3b8"/>
+                <rect x="262" y="57"  width="326" height="36"  rx="0" fill="#f8fafc"/>
+                <text x="425" y="52"  text-anchor="middle" fill="#64748b" font-size="9" font-family="monospace">cladding</text>
+                <text x="425" y="78"  text-anchor="middle" fill="#94a3b8" font-size="9" font-family="monospace">core</text>
+                <!-- Light beams -->
+                <path d="M267,75 L304,58 L350,92 L396,58 L442,92 L488,58 L534,92 L578,68"
+                      stroke="#fbbf24" stroke-width="2.5" fill="none" stroke-linecap="round"
+                      class="light-beam"/>
+                <path d="M267,75 L304,58 L350,92 L396,58 L442,92 L488,58 L534,92 L578,68"
+                      stroke="#fde68a" stroke-width="1.5" fill="none" stroke-linecap="round"
+                      class="light-beam light-beam-b"/>
+                <text x="425" y="155" text-anchor="middle" fill="#475569" font-size="10" font-family="monospace">reflex&#227;o total interna &#8212; luz n&#227;o escapa para o cladding</text>
+                <!-- ─── Cross section renderizado POR CIMA ─── -->
                 <circle cx="75" cy="75" r="67" fill="#475569"/>
                 <circle cx="75" cy="75" r="56" fill="#334155"/>
                 <circle cx="75" cy="75" r="39" fill="#94a3b8"/>
@@ -353,7 +368,7 @@
                     <animate attributeName="cy" values="65;85;65" dur="2s" repeatCount="indefinite"/>
                 </circle>
                 <!-- Labels -->
-                <text x="75" y="150" text-anchor="middle" fill="#475569" font-size="10" font-family="monospace">corte transversal</text>
+                <text x="75" y="163" text-anchor="middle" fill="#475569" font-size="10" font-family="monospace">corte transversal</text>
                 <line x1="152" y1="20" x2="131" y2="30" stroke="#475569" stroke-width="1"/>
                 <text x="155" y="23" fill="#94a3b8" font-size="10" font-family="monospace">Jacket</text>
                 <line x1="152" y1="42" x2="127" y2="48" stroke="#475569" stroke-width="1"/>
@@ -362,21 +377,6 @@
                 <text x="155" y="67" fill="#94a3b8" font-size="10" font-family="monospace">Cladding</text>
                 <line x1="152" y1="86" x2="94"  y2="80" stroke="#475569" stroke-width="1"/>
                 <text x="155" y="89" fill="#fbbf24" font-size="10" font-family="monospace">Core (luz aqui)</text>
-                <!-- Longitudinal — light bouncing (total internal reflection) -->
-                <rect x="200" y="10" width="378" height="130" rx="8" fill="#475569"/>
-                <rect x="200" y="23" width="378" height="104" rx="4" fill="#334155"/>
-                <rect x="200" y="40" width="378" height="70"  rx="0" fill="#94a3b8"/>
-                <rect x="200" y="57" width="378" height="36"  rx="0" fill="#f8fafc"/>
-                <text x="389" y="52"  text-anchor="middle" fill="#64748b" font-size="9" font-family="monospace">cladding</text>
-                <text x="389" y="78"  text-anchor="middle" fill="#94a3b8" font-size="9" font-family="monospace">core</text>
-                <!-- Light beam path — bouncing = total internal reflection -->
-                <path d="M206,75 L243,58 L290,92 L337,58 L384,92 L431,58 L478,92 L525,58 L568,72"
-                      stroke="#fbbf24" stroke-width="2.5" fill="none" stroke-linecap="round"
-                      class="light-beam"/>
-                <path d="M206,75 L243,58 L290,92 L337,58 L384,92 L431,58 L478,92 L525,58 L568,72"
-                      stroke="#fde68a" stroke-width="1.5" fill="none" stroke-linecap="round"
-                      class="light-beam light-beam-b"/>
-                <text x="389" y="145" text-anchor="middle" fill="#475569" font-size="10" font-family="monospace">reflexão total interna — luz não escapa para o cladding</text>
             </svg>
             <!-- SMF vs MMF mini-comparison -->
             <div style="display:flex;gap:1.5rem;margin-top:1rem;flex-wrap:wrap">
