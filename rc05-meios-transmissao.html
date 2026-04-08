@@ -14,6 +14,58 @@
             --bg-light:  #f4f7fe;
             --text-dark: #2d3748;
         }
+
+        /* ── Cable & Network Visualizations ───────────────── */
+        .viz-wrap {
+            background: #0f172a;
+            border-radius: 10px;
+            padding: 1.25rem 1.25rem 1rem;
+            margin: 1rem 0;
+            overflow: hidden;
+        }
+        .viz-title {
+            color: #64748b;
+            font-size: 0.71rem;
+            text-transform: uppercase;
+            letter-spacing: .09em;
+            margin-bottom: .75rem;
+            font-family: 'Courier New', monospace;
+        }
+        @keyframes draw-path {
+            from { stroke-dashoffset: 900; }
+            to   { stroke-dashoffset: 0;   }
+        }
+        .tw-wire {
+            stroke-dasharray: 900;
+            stroke-dashoffset: 900;
+            animation: draw-path 2s ease forwards;
+        }
+        @keyframes light-travel {
+            0%   { stroke-dashoffset: 700; opacity: 0.1; }
+            45%  { opacity: 1; }
+            100% { stroke-dashoffset: 0;   opacity: 0.1; }
+        }
+        .light-beam  { stroke-dasharray: 700; animation: light-travel 2.4s ease-in-out infinite; }
+        .light-beam-b { animation-delay: 1.2s; }
+        @keyframes dash-flow { from { stroke-dashoffset: 18; } to { stroke-dashoffset: 0; } }
+        .flow-line { stroke-dasharray: 9 5; animation: dash-flow .7s linear infinite; }
+        /* RJ-45 pins */
+        .rj45-wrap  { display:flex; gap:2.5rem; flex-wrap:wrap; justify-content:center; margin-top:.5rem; }
+        .rj45-std   { text-align:center; }
+        .rj45-label { color:#fbbf24; font-family:monospace; font-size:11px; margin-bottom:7px; }
+        .rj45-pins  { display:flex; gap:4px; justify-content:center; }
+        .rj45-pin   { width:22px; height:50px; border-radius:3px 3px 8px 8px; cursor:default; transition:transform .15s; }
+        .rj45-pin:hover { transform:translateY(-4px); }
+        .rj45-nums  { display:flex; gap:4px; justify-content:center; margin-top:4px; }
+        .rj45-nums span { width:22px; text-align:center; font-size:9px; font-family:monospace; color:#64748b; }
+        .rj45-note  { color:#94a3b8; font-size:11px; font-family:monospace; margin-top:.75rem; padding:.5rem .75rem; background:#1e293b; border-radius:6px; line-height:1.7; }
+        /* Comparison bars */
+        .bar-section h4 { font-size:.78rem; color:#64748b; text-transform:uppercase; letter-spacing:.07em; margin:1rem 0 .45rem; font-weight:600; }
+        .bar-row  { display:flex; align-items:center; gap:.6rem; margin:.35rem 0; }
+        .bar-lbl  { font-size:11px; font-family:monospace; color:var(--text-dark); min-width:150px; }
+        .bar-track { flex:1; background:#e2e8f0; border-radius:4px; height:11px; overflow:hidden; }
+        .bar-fill  { height:100%; border-radius:4px; width:0; transition:width 1.4s cubic-bezier(.4,0,.2,1); }
+        .bar-val   { font-size:10px; font-family:monospace; color:#64748b; min-width:80px; text-align:right; }
     </style>
 </head>
 <body>
@@ -63,21 +115,58 @@
         <h2>&#x1F7E1; Par Tran&ccedil;ado (UTP e STP)</h2>
         <p>O cabo de par tran&ccedil;ado &eacute; o mais comum em redes locais. &Eacute; composto por <strong>pares de fios de cobre entrelaçados</strong> &mdash; o tran&ccedil;ado cancela interfer&ecirc;ncias eletromagn&eacute;ticas entre os fios (ru&iacute;do crosstalk).</p>
 
-        <div class="terminal-block">
-            <div class="terminal-header">Estrutura do cabo UTP (corte transversal)</div>
-<pre>
-        Casca externa (PVC)
-              │
-    ┌─────────┴──────────┐
-    │  Par 1  ════  Par 2 │   Cada par é formado por
-    │  Par 3  ════  Par 4 │   2 fios trançados entre si
-    └────────────────────┘
-         (8 fios / 4 pares)
-
-  UTP — Unshielded Twisted Pair  →  sem blindagem extra
-  STP — Shielded Twisted Pair    →  blindagem metálica ao redor dos pares
-  FTP — Foiled Twisted Pair      →  folha de alumínio envolvendo todos os pares
-</pre>
+        <div class="viz-wrap">
+            <div class="viz-title">Estrutura do cabo UTP — corte transversal e trançamento (animado)</div>
+            <svg viewBox="0 0 590 162" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block">
+                <!-- Cross section -->
+                <circle cx="80" cy="81" r="72" fill="#475569"/>
+                <circle cx="80" cy="81" r="63" fill="#1e293b"/>
+                <!-- Par 1 – Azul -->
+                <circle cx="56"  cy="57"  r="13" fill="#2563eb" opacity=".9"/>
+                <circle cx="56"  cy="57"  r="6"  fill="#93c5fd"/>
+                <circle cx="76"  cy="57"  r="13" fill="#cbd5e1" opacity=".5"/>
+                <circle cx="76"  cy="57"  r="6"  fill="#2563eb" opacity=".65"/>
+                <!-- Par 2 – Laranja -->
+                <circle cx="96"  cy="57"  r="13" fill="#ea580c" opacity=".9"/>
+                <circle cx="96"  cy="57"  r="6"  fill="#fed7aa"/>
+                <circle cx="116" cy="57"  r="13" fill="#cbd5e1" opacity=".5"/>
+                <circle cx="116" cy="57"  r="6"  fill="#ea580c" opacity=".65"/>
+                <!-- Par 3 – Verde -->
+                <circle cx="56"  cy="105" r="13" fill="#16a34a" opacity=".9"/>
+                <circle cx="56"  cy="105" r="6"  fill="#86efac"/>
+                <circle cx="76"  cy="105" r="13" fill="#cbd5e1" opacity=".5"/>
+                <circle cx="76"  cy="105" r="6"  fill="#16a34a" opacity=".65"/>
+                <!-- Par 4 – Marrom -->
+                <circle cx="96"  cy="105" r="13" fill="#92400e" opacity=".9"/>
+                <circle cx="96"  cy="105" r="6"  fill="#d6d3d1"/>
+                <circle cx="116" cy="105" r="13" fill="#cbd5e1" opacity=".5"/>
+                <circle cx="116" cy="105" r="6"  fill="#92400e" opacity=".65"/>
+                <!-- Label arrows -->
+                <line x1="155" y1="27" x2="138" y2="38"  stroke="#475569" stroke-width="1"/>
+                <text x="158" y="30" fill="#94a3b8" font-size="10" font-family="monospace">Casca PVC</text>
+                <line x1="155" y1="81" x2="144" y2="81"  stroke="#475569" stroke-width="1"/>
+                <text x="158" y="84" fill="#94a3b8" font-size="10" font-family="monospace">4 pares · 8 fios</text>
+                <text x="80"  y="155" text-anchor="middle" fill="#475569" font-size="10" font-family="monospace">corte transversal</text>
+                <!-- Longitudinal twisted view -->
+                <rect x="225" y="22" width="350" height="118" rx="8" fill="#1e293b"/>
+                <text x="400" y="155" text-anchor="middle" fill="#475569" font-size="10" font-family="monospace">vista longitudinal — par azul · trançamento cancela crosstalk</text>
+                <text x="400" y="38" text-anchor="middle" fill="#334155" font-size="9" font-family="monospace">← cada volta cancela a interferência do par vizinho →</text>
+                <!-- Wire A animated draw -->
+                <path class="tw-wire"
+                      d="M233,81 C246,53 261,53 274,81 C287,109 302,109 315,81 C328,53 343,53 356,81 C369,109 384,109 397,81 C410,53 425,53 438,81 C451,109 466,109 479,81 C492,53 507,53 520,81 C533,109 548,109 561,81 C568,67 570,64 572,62"
+                      stroke="#60a5fa" stroke-width="3" fill="none" style="animation-delay:0s"/>
+                <!-- Wire B animated draw (opposite phase) -->
+                <path class="tw-wire"
+                      d="M233,81 C246,109 261,109 274,81 C287,53 302,53 315,81 C328,109 343,109 356,81 C369,53 384,53 397,81 C410,109 425,109 438,81 C451,53 466,53 479,81 C492,109 507,109 520,81 C533,53 548,53 561,81 C568,95 570,98 572,100"
+                      stroke="#e2e8f0" stroke-width="3" fill="none" style="animation-delay:.35s"/>
+            </svg>
+            <div style="display:flex;gap:.75rem;margin-top:.6rem;flex-wrap:wrap">
+                <span style="display:flex;align-items:center;gap:5px"><span style="width:12px;height:12px;border-radius:50%;background:#2563eb;display:inline-block"></span><span style="color:#94a3b8;font-size:11px;font-family:monospace">Azul</span></span>
+                <span style="display:flex;align-items:center;gap:5px"><span style="width:12px;height:12px;border-radius:50%;background:#ea580c;display:inline-block"></span><span style="color:#94a3b8;font-size:11px;font-family:monospace">Laranja</span></span>
+                <span style="display:flex;align-items:center;gap:5px"><span style="width:12px;height:12px;border-radius:50%;background:#16a34a;display:inline-block"></span><span style="color:#94a3b8;font-size:11px;font-family:monospace">Verde</span></span>
+                <span style="display:flex;align-items:center;gap:5px"><span style="width:12px;height:12px;border-radius:50%;background:#92400e;display:inline-block"></span><span style="color:#94a3b8;font-size:11px;font-family:monospace">Marrom</span></span>
+                <span style="display:flex;align-items:center;gap:5px"><span style="width:12px;height:12px;border-radius:50%;background:#475569;display:inline-block"></span><span style="color:#94a3b8;font-size:11px;font-family:monospace">Casca PVC (UTP = sem blindagem)</span></span>
+            </div>
         </div>
 
         <h3>Categorias de Par Tran&ccedil;ado</h3>
@@ -133,19 +222,44 @@
         <h3>Conector RJ-45 e Padr&otilde;es de Crimpagem</h3>
         <p>O par tran&ccedil;ado usa o conector <strong>RJ-45</strong> (8 pinos). A ordem dos fios segue dois padr&otilde;es definidos pela norma <strong>TIA/EIA-568</strong>:</p>
 
-        <div class="terminal-block">
-            <div class="terminal-header">Ordem dos fios no RJ-45 (visão frontal, trava para baixo)</div>
-<pre>
-  Pino:  1       2       3       4       5       6       7       8
-
-  T568A: Br/Ve   Verde   Br/Lj   Azul    Br/Az   Laranja Br/Ma   Marrom
-  T568B: Br/Lj   Laranja Br/Ve   Azul    Br/Az   Verde   Br/Ma   Marrom
-
-  Cabo DIRETO (straight):  mesmo padrão nas duas pontas (T568B + T568B)
-                           → PC para switch/hub
-  Cabo CROSSOVER (cross):  padrões diferentes (T568A + T568B)
-                           → PC para PC (legacy; switches modernos usam Auto-MDI-X)
-</pre>
+        <div class="viz-wrap">
+            <div class="viz-title">Padrões de crimpagem RJ-45 — pinos 1 a 8 (trava para baixo) · passe o mouse para ver o nome</div>
+            <div class="rj45-wrap">
+                <!-- T568A -->
+                <div class="rj45-std">
+                    <div class="rj45-label">T568A</div>
+                    <div class="rj45-pins">
+                        <div class="rj45-pin" style="background:#86efac" title="Pino 1 — Branco/Verde"></div>
+                        <div class="rj45-pin" style="background:#16a34a" title="Pino 2 — Verde"></div>
+                        <div class="rj45-pin" style="background:#fed7aa" title="Pino 3 — Branco/Laranja"></div>
+                        <div class="rj45-pin" style="background:#1d4ed8" title="Pino 4 — Azul"></div>
+                        <div class="rj45-pin" style="background:#93c5fd" title="Pino 5 — Branco/Azul"></div>
+                        <div class="rj45-pin" style="background:#ea580c" title="Pino 6 — Laranja"></div>
+                        <div class="rj45-pin" style="background:#e7e5e4" title="Pino 7 — Branco/Marrom"></div>
+                        <div class="rj45-pin" style="background:#78350f" title="Pino 8 — Marrom"></div>
+                    </div>
+                    <div class="rj45-nums"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span></div>
+                </div>
+                <!-- T568B -->
+                <div class="rj45-std">
+                    <div class="rj45-label">T568B <span style="color:#64748b;font-size:10px">(mais comum)</span></div>
+                    <div class="rj45-pins">
+                        <div class="rj45-pin" style="background:#fed7aa" title="Pino 1 — Branco/Laranja"></div>
+                        <div class="rj45-pin" style="background:#ea580c" title="Pino 2 — Laranja"></div>
+                        <div class="rj45-pin" style="background:#86efac" title="Pino 3 — Branco/Verde"></div>
+                        <div class="rj45-pin" style="background:#1d4ed8" title="Pino 4 — Azul"></div>
+                        <div class="rj45-pin" style="background:#93c5fd" title="Pino 5 — Branco/Azul"></div>
+                        <div class="rj45-pin" style="background:#16a34a" title="Pino 6 — Verde"></div>
+                        <div class="rj45-pin" style="background:#e7e5e4" title="Pino 7 — Branco/Marrom"></div>
+                        <div class="rj45-pin" style="background:#78350f" title="Pino 8 — Marrom"></div>
+                    </div>
+                    <div class="rj45-nums"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span></div>
+                </div>
+            </div>
+            <div class="rj45-note">
+                <strong style="color:#fbbf24">Cabo DIRETO (straight)</strong> — mesmo padrão nas duas pontas (T568B + T568B) → PC para switch/hub<br>
+                <strong style="color:#c084fc">Cabo CROSSOVER (cross)</strong> — padrões diferentes (T568A + T568B) → PC para PC · switches modernos usam Auto-MDI-X
+            </div>
         </div>
 
         <div class="tip-box">
@@ -158,17 +272,36 @@
         <h2>&#x1F7E0; Cabo Coaxial</h2>
         <p>O cabo coaxial tem um <strong>condutor central</strong> de cobre rodeado por um isolante diel&eacute;trico, uma malha met&aacute;lica de blindagem e uma casca externa. A blindagem o torna mais resistente a interfer&ecirc;ncias que o UTP, mas ele &eacute; mais r&iacute;gido e caro.</p>
 
-        <div class="terminal-block">
-            <div class="terminal-header">Estrutura do cabo coaxial</div>
-<pre>
-    ┌─────── Casca externa (PVC) ───────────────────┐
-    │   ┌──── Malha metálica (blindagem/terra) ──┐  │
-    │   │  ┌── Dielétrico (isolante) ──────────┐ │  │
-    │   │  │   ● Condutor central (cobre)      │ │  │
-    │   │  └───────────────────────────────────┘ │  │
-    │   └────────────────────────────────────────┘  │
-    └───────────────────────────────────────────────┘
-</pre>
+        <div class="viz-wrap">
+            <div class="viz-title">Estrutura do cabo coaxial — corte transversal e sinal elétrico (animado)</div>
+            <svg viewBox="0 0 570 130" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block">
+                <!-- Cross section -->
+                <circle cx="75" cy="65" r="58" fill="#475569"/>
+                <circle cx="75" cy="65" r="47" fill="#334155"/>
+                <circle cx="75" cy="65" r="31" fill="#f1f5f9"/>
+                <circle cx="75" cy="65" r="11" fill="#d97706"/>
+                <!-- Labels -->
+                <text x="75" y="128" text-anchor="middle" fill="#475569" font-size="10" font-family="monospace">corte transversal</text>
+                <line x1="145" y1="22" x2="122" y2="32" stroke="#475569" stroke-width="1"/>
+                <text x="148" y="25" fill="#94a3b8" font-size="10" font-family="monospace">Casca PVC</text>
+                <line x1="145" y1="43" x2="119" y2="48" stroke="#475569" stroke-width="1"/>
+                <text x="148" y="46" fill="#94a3b8" font-size="10" font-family="monospace">Malha (blindagem)</text>
+                <line x1="145" y1="64" x2="106" y2="64" stroke="#475569" stroke-width="1"/>
+                <text x="148" y="67" fill="#94a3b8" font-size="10" font-family="monospace">Dielétrico</text>
+                <line x1="145" y1="85" x2="120" y2="73" stroke="#475569" stroke-width="1"/>
+                <text x="148" y="88" fill="#d97706" font-size="10" font-family="monospace">Condutor central (Cu)</text>
+                <!-- Longitudinal section -->
+                <rect x="200" y="10" width="358" height="110" rx="8" fill="#475569"/>
+                <rect x="200" y="22" width="358" height="86" rx="4" fill="#334155"/>
+                <rect x="200" y="38" width="358" height="54" rx="0" fill="#f1f5f9"/>
+                <rect x="200" y="55" width="358" height="20" rx="0" fill="#d97706"/>
+                <!-- Animated signal dot -->
+                <circle cx="206" cy="65" r="5.5" fill="#fbbf24">
+                    <animate attributeName="cx" from="206" to="552" dur="1.8s" repeatCount="indefinite"/>
+                    <animate attributeName="opacity" values="1;1;0" keyTimes="0;0.82;1" dur="1.8s" repeatCount="indefinite"/>
+                </circle>
+                <text x="379" y="122" text-anchor="middle" fill="#475569" font-size="10" font-family="monospace">sinal elétrico viaja pelo condutor central</text>
+            </svg>
         </div>
 
         <table>
@@ -206,21 +339,69 @@
         <h2>&#x1F7E3; Fibra &Oacute;ptica</h2>
         <p>A fibra &oacute;ptica transmite dados na forma de <strong>pulsos de luz</strong> atrav&eacute;s de um fio de vidro ou pl&aacute;stico ultra-puro. &Eacute; o meio mais r&aacute;pido, com maior alcance e totalmente imune a interfer&ecirc;ncias eletromagn&eacute;ticas. &Eacute; a tecnologia que sustenta a espinha dorsal da internet global.</p>
 
-        <div class="terminal-block">
-            <div class="terminal-header">Estrutura da fibra óptica</div>
-<pre>
-    ┌──── Jacket (casca protetora externa) ────────────────┐
-    │  ┌── Buffer (camada de proteção) ─────────────────┐  │
-    │  │  ┌── Cladding (revestimento óptico) ────────┐  │  │
-    │  │  │   ●●● Core (núcleo de vidro/plástico) ●●● │  │  │
-    │  │  │       ↑ a luz viaja refletindo aqui        │  │  │
-    │  │  └──────────────────────────────────────────┘  │  │
-    │  └─────────────────────────────────────────────────┘  │
-    └────────────────────────────────────────────────────────┘
-
-  A diferença de índice de refração entre core e cladding
-  faz a luz se refletir internamente (reflexão total interna).
-</pre>
+        <div class="viz-wrap">
+            <div class="viz-title">Estrutura da fibra óptica — reflexão total interna (animado)</div>
+            <svg viewBox="0 0 590 155" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block">
+                <!-- Cross section -->
+                <circle cx="75" cy="75" r="67" fill="#475569"/>
+                <circle cx="75" cy="75" r="56" fill="#334155"/>
+                <circle cx="75" cy="75" r="39" fill="#94a3b8"/>
+                <circle cx="75" cy="75" r="19" fill="#f8fafc"/>
+                <!-- Animated light in core -->
+                <circle r="5" fill="#fbbf24" opacity=".95">
+                    <animate attributeName="cx" values="62;88;62" dur="2s" repeatCount="indefinite"/>
+                    <animate attributeName="cy" values="65;85;65" dur="2s" repeatCount="indefinite"/>
+                </circle>
+                <!-- Labels -->
+                <text x="75" y="150" text-anchor="middle" fill="#475569" font-size="10" font-family="monospace">corte transversal</text>
+                <line x1="152" y1="20" x2="131" y2="30" stroke="#475569" stroke-width="1"/>
+                <text x="155" y="23" fill="#94a3b8" font-size="10" font-family="monospace">Jacket</text>
+                <line x1="152" y1="42" x2="127" y2="48" stroke="#475569" stroke-width="1"/>
+                <text x="155" y="45" fill="#94a3b8" font-size="10" font-family="monospace">Buffer</text>
+                <line x1="152" y1="64" x2="114" y2="66" stroke="#475569" stroke-width="1"/>
+                <text x="155" y="67" fill="#94a3b8" font-size="10" font-family="monospace">Cladding</text>
+                <line x1="152" y1="86" x2="94"  y2="80" stroke="#475569" stroke-width="1"/>
+                <text x="155" y="89" fill="#fbbf24" font-size="10" font-family="monospace">Core (luz aqui)</text>
+                <!-- Longitudinal — light bouncing (total internal reflection) -->
+                <rect x="200" y="10" width="378" height="130" rx="8" fill="#475569"/>
+                <rect x="200" y="23" width="378" height="104" rx="4" fill="#334155"/>
+                <rect x="200" y="40" width="378" height="70"  rx="0" fill="#94a3b8"/>
+                <rect x="200" y="57" width="378" height="36"  rx="0" fill="#f8fafc"/>
+                <text x="389" y="52"  text-anchor="middle" fill="#64748b" font-size="9" font-family="monospace">cladding</text>
+                <text x="389" y="78"  text-anchor="middle" fill="#94a3b8" font-size="9" font-family="monospace">core</text>
+                <!-- Light beam path — bouncing = total internal reflection -->
+                <path d="M206,75 L243,58 L290,92 L337,58 L384,92 L431,58 L478,92 L525,58 L568,72"
+                      stroke="#fbbf24" stroke-width="2.5" fill="none" stroke-linecap="round"
+                      class="light-beam"/>
+                <path d="M206,75 L243,58 L290,92 L337,58 L384,92 L431,58 L478,92 L525,58 L568,72"
+                      stroke="#fde68a" stroke-width="1.5" fill="none" stroke-linecap="round"
+                      class="light-beam light-beam-b"/>
+                <text x="389" y="145" text-anchor="middle" fill="#475569" font-size="10" font-family="monospace">reflexão total interna — luz não escapa para o cladding</text>
+            </svg>
+            <!-- SMF vs MMF mini-comparison -->
+            <div style="display:flex;gap:1.5rem;margin-top:1rem;flex-wrap:wrap">
+                <div style="flex:1;min-width:190px">
+                    <div style="color:#fbbf24;font-family:monospace;font-size:11px;margin-bottom:5px">Monomodo (SMF) — cabo amarelo</div>
+                    <svg viewBox="0 0 220 34" style="width:100%;max-width:220px;display:block">
+                        <rect x="0" y="0"  width="220" height="34" rx="5" fill="#334155"/>
+                        <rect x="0" y="8"  width="220" height="18" rx="0" fill="#94a3b8"/>
+                        <rect x="0" y="13" width="220" height="8"  rx="0" fill="#f8fafc"/>
+                        <path d="M4,17 L216,17" stroke="#fbbf24" stroke-width="1.5" fill="none"/>
+                    </svg>
+                    <div style="color:#475569;font-size:9px;font-family:monospace;margin-top:3px">núcleo 8–10 µm · laser · até 100 km</div>
+                </div>
+                <div style="flex:1;min-width:190px">
+                    <div style="color:#22d3ee;font-family:monospace;font-size:11px;margin-bottom:5px">Multimodo (MMF) — aquá/laranja</div>
+                    <svg viewBox="0 0 220 34" style="width:100%;max-width:220px;display:block">
+                        <rect x="0" y="0"  width="220" height="34" rx="5" fill="#334155"/>
+                        <rect x="0" y="5"  width="220" height="24" rx="0" fill="#94a3b8"/>
+                        <rect x="0" y="10" width="220" height="14" rx="0" fill="#f8fafc"/>
+                        <path d="M4,17 L44,12 L88,22 L132,12 L176,22 L216,17" stroke="#22d3ee" stroke-width="1.5" fill="none" opacity=".9"/>
+                        <path d="M4,17 L44,22 L88,12 L132,22 L176,12 L216,17" stroke="#67e8f9" stroke-width="1.5" fill="none" opacity=".55"/>
+                    </svg>
+                    <div style="color:#475569;font-size:9px;font-family:monospace;margin-top:3px">núcleo 50–62,5 µm · LED/VCSEL · até 550 m</div>
+                </div>
+            </div>
         </div>
 
         <h3>Monomodo vs. Multimodo</h3>
@@ -361,6 +542,46 @@
             </tbody>
         </table>
 
+        <div class="bar-section">
+            <h4>Distância sem repetidor</h4>
+            <div class="bar-row">
+                <span class="bar-lbl">UTP Cat 6A</span>
+                <div class="bar-track"><div class="bar-fill" style="background:#3b82f6" data-w="0.1%"></div></div>
+                <span class="bar-val">100 m</span>
+            </div>
+            <div class="bar-row">
+                <span class="bar-lbl">Coaxial RG-8</span>
+                <div class="bar-track"><div class="bar-fill" style="background:#f97316" data-w="0.5%"></div></div>
+                <span class="bar-val">500 m</span>
+            </div>
+            <div class="bar-row">
+                <span class="bar-lbl">Fibra MMF (OM4)</span>
+                <div class="bar-track"><div class="bar-fill" style="background:#22c55e" data-w="0.55%"></div></div>
+                <span class="bar-val">550 m</span>
+            </div>
+            <div class="bar-row">
+                <span class="bar-lbl">Fibra SMF</span>
+                <div class="bar-track"><div class="bar-fill" style="background:#a855f7" data-w="100%"></div></div>
+                <span class="bar-val">100 km</span>
+            </div>
+            <h4>Velocidade m&aacute;xima</h4>
+            <div class="bar-row">
+                <span class="bar-lbl">Coaxial (DOCSIS 3.1)</span>
+                <div class="bar-track"><div class="bar-fill" style="background:#f97316" data-w="1%"></div></div>
+                <span class="bar-val">10 Gbps</span>
+            </div>
+            <div class="bar-row">
+                <span class="bar-lbl">UTP Cat 8</span>
+                <div class="bar-track"><div class="bar-fill" style="background:#3b82f6" data-w="4%"></div></div>
+                <span class="bar-val">40 Gbps</span>
+            </div>
+            <div class="bar-row">
+                <span class="bar-lbl">Fibra &oacute;ptica</span>
+                <div class="bar-track"><div class="bar-fill" style="background:#a855f7" data-w="100%"></div></div>
+                <span class="bar-val">Tbps+</span>
+            </div>
+        </div>
+
         <div class="tip-box">
             <p>&#x2705; <strong>Regra pr&aacute;tica:</strong> use <strong>UTP Cat 6A</strong> para os pontos de rede horizontal (at&eacute; 100 m); use <strong>fibra monomodo</strong> para interligar pr&eacute;dios ou conectar ao provedor; use <strong>fibra multimodo</strong> dentro do data center entre switches e servidores.</p>
         </div>
@@ -396,29 +617,53 @@
         </div>
 
         <h3>Hierarquia do Cabeamento Estruturado</h3>
-        <div class="terminal-block">
-            <div class="terminal-header">Subsistemas do cabeamento estruturado</div>
-<pre>
-  ┌──────────────────────────────────────────────────────────┐
-  │  ENTRADA DO EDIFÍCIO (EF — Entrance Facility)            │
-  │  Ponto de demarcação entre a rede pública e a interna    │
-  └────────────────────┬─────────────────────────────────────┘
-                       │  Backbone de campus (fibra)
-  ┌────────────────────▼─────────────────────────────────────┐
-  │  SALA DE EQUIPAMENTOS (ER — Equipment Room)               │
-  │  Servidores, roteadores, firewalls, switches core        │
-  └────────────────────┬─────────────────────────────────────┘
-                       │  Backbone vertical (fibra ou UTP)
-  ┌────────────────────▼─────────────────────────────────────┐
-  │  ARMÁRIO DE TELECOMUNICAÇÕES (TC — Telecom Closet)        │
-  │  Patch panel, switch de distribuição, patch cords        │
-  └────────────────────┬─────────────────────────────────────┘
-                       │  Cabeamento horizontal (UTP Cat 6A — máx. 90 m)
-  ┌────────────────────▼─────────────────────────────────────┐
-  │  ÁREA DE TRABALHO (WA — Work Area)                        │
-  │  Tomada RJ-45, patch cord (até 5 m), computador          │
-  └──────────────────────────────────────────────────────────┘
-</pre>
+        <div class="viz-wrap">
+            <div class="viz-title">Subsistemas do cabeamento estruturado — fluxo animado</div>
+            <svg viewBox="0 0 520 352" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:520px;display:block;margin:0 auto">
+                <!-- EF -->
+                <rect x="28" y="8"   width="464" height="58" rx="8" fill="#1e3a5f" stroke="#3b82f6" stroke-width="2"/>
+                <text x="260" y="30" text-anchor="middle" fill="#93c5fd" font-size="13" font-weight="bold" font-family="monospace">ENTRADA DO EDIFÍCIO (EF)</text>
+                <text x="260" y="50" text-anchor="middle" fill="#64748b" font-size="10" font-family="monospace">Demarcação entre a rede pública e a interna</text>
+                <!-- EF→ER line -->
+                <line x1="260" y1="66" x2="260" y2="108" stroke="#3b82f6" stroke-width="2.5" class="flow-line"/>
+                <text x="278" y="91" fill="#64748b" font-size="9" font-family="monospace">backbone de campus (fibra)</text>
+                <circle r="4" fill="#60a5fa">
+                    <animateMotion dur="1.5s" repeatCount="indefinite" begin="0s">
+                        <mpath href="#pef"/>
+                    </animateMotion>
+                </circle>
+                <path id="pef" d="M260,66 L260,108" fill="none"/>
+                <!-- ER -->
+                <rect x="28" y="108" width="464" height="58" rx="8" fill="#1a3a2a" stroke="#22c55e" stroke-width="2"/>
+                <text x="260" y="130" text-anchor="middle" fill="#86efac" font-size="13" font-weight="bold" font-family="monospace">SALA DE EQUIPAMENTOS (ER)</text>
+                <text x="260" y="150" text-anchor="middle" fill="#64748b" font-size="10" font-family="monospace">Servidores · roteadores · firewalls · switches core</text>
+                <!-- ER→TC line -->
+                <line x1="260" y1="166" x2="260" y2="208" stroke="#22c55e" stroke-width="2.5" class="flow-line" style="animation-delay:.4s"/>
+                <text x="278" y="191" fill="#64748b" font-size="9" font-family="monospace">backbone vertical (fibra ou UTP)</text>
+                <circle r="4" fill="#4ade80">
+                    <animateMotion dur="1.5s" repeatCount="indefinite" begin="0.5s">
+                        <mpath href="#per"/>
+                    </animateMotion>
+                </circle>
+                <path id="per" d="M260,166 L260,208" fill="none"/>
+                <!-- TC -->
+                <rect x="28" y="208" width="464" height="58" rx="8" fill="#2d1a4a" stroke="#a855f7" stroke-width="2"/>
+                <text x="260" y="230" text-anchor="middle" fill="#d8b4fe" font-size="13" font-weight="bold" font-family="monospace">ARMÁRIO DE TELECOM. (TC)</text>
+                <text x="260" y="250" text-anchor="middle" fill="#64748b" font-size="10" font-family="monospace">Patch panel · switch de distribuição · patch cords</text>
+                <!-- TC→WA line -->
+                <line x1="260" y1="266" x2="260" y2="308" stroke="#a855f7" stroke-width="2.5" class="flow-line" style="animation-delay:.8s"/>
+                <text x="278" y="291" fill="#64748b" font-size="9" font-family="monospace">horizontal UTP Cat 6A (máx. 90 m)</text>
+                <circle r="4" fill="#c084fc">
+                    <animateMotion dur="1.5s" repeatCount="indefinite" begin="1s">
+                        <mpath href="#ptc"/>
+                    </animateMotion>
+                </circle>
+                <path id="ptc" d="M260,266 L260,308" fill="none"/>
+                <!-- WA -->
+                <rect x="28" y="308" width="464" height="40" rx="8" fill="#2d2a1a" stroke="#fbbf24" stroke-width="2"/>
+                <text x="260" y="325" text-anchor="middle" fill="#fde68a" font-size="13" font-weight="bold" font-family="monospace">ÁREA DE TRABALHO (WA)</text>
+                <text x="260" y="342" text-anchor="middle" fill="#64748b" font-size="10" font-family="monospace">Tomada RJ-45 · patch cord ≤ 5 m · computador</text>
+            </svg>
         </div>
 
         <p>O cabeamento horizontal usa sempre <strong>no m&aacute;ximo 90 m</strong> de cabo fixo na parede + at&eacute; 10 m de patch cords (5 m no armário + 5 m na &aacute;rea de trabalho) = <strong>100 m totais</strong>.</p>
@@ -547,5 +792,20 @@
 <script src="exercise-drag.js"></script>
 <script src="exercise-print.js"></script>
 <script src="exercise-mc.js"></script>
+<script>
+(function () {
+    var fills = document.querySelectorAll('.bar-fill');
+    if (!fills.length) return;
+    var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+            if (e.isIntersecting) {
+                e.target.style.width = e.target.dataset.w;
+                io.unobserve(e.target);
+            }
+        });
+    }, { threshold: 0.3 });
+    fills.forEach(function (el) { io.observe(el); });
+}());
+</script>
 </body>
 </html>
