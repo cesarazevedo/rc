@@ -242,6 +242,61 @@ li { margin-bottom: 8px; }
 .yaml-hl    { color: #fbd38d; font-weight: bold; }
 
 /* ── TABELA ── */
+
+/* Wrapper para scroll horizontal em telas pequenas */
+.content-card table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin: 18px 0;
+    font-size: .875em;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,.08), 0 0 0 1px #e2e8f0;
+}
+
+/* Cabeçalho */
+.content-card table thead tr th {
+    background: var(--primary);
+    color: #fff;
+    padding: 11px 16px;
+    text-align: left;
+    font-weight: 600;
+    letter-spacing: .02em;
+    white-space: nowrap;
+    border-bottom: 2px solid rgba(255,255,255,.15);
+}
+.content-card table thead tr th:first-child { border-radius: 10px 0 0 0; }
+.content-card table thead tr th:last-child  { border-radius: 0 10px 0 0; }
+
+/* Células */
+.content-card table tbody tr td {
+    padding: 10px 16px;
+    border-bottom: 1px solid #e9edf5;
+    color: #374151;
+    vertical-align: middle;
+    transition: background .15s;
+}
+
+/* Listras alternadas */
+.content-card table tbody tr:nth-child(even) td { background: #f5f7ff; }
+.content-card table tbody tr:nth-child(odd)  td { background: #ffffff; }
+
+/* Hover na linha */
+.content-card table tbody tr:hover td {
+    background: #eef2ff;
+    cursor: default;
+}
+
+/* Última linha sem border */
+.content-card table tbody tr:last-child td { border-bottom: none; }
+.content-card table tbody tr:last-child td:first-child { border-radius: 0 0 0 10px; }
+.content-card table tbody tr:last-child td:last-child  { border-radius: 0 0 10px 0; }
+
+/* Coluna de destaque (strong na primeira coluna) */
+.content-card table tbody tr td:first-child strong { color: var(--primary); }
+
+/* Classes legacy mantidas para compatibilidade */
 .info-table,
 .cmp-table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: .88em; }
 .info-table th,
