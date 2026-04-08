@@ -14,6 +14,33 @@
             --bg-light:  #f4f7fe;
             --text-dark: #2d3748;
         }
+
+        /* ── Viz Wrappers ── */
+        .viz-wrap{background:#0f172a;border-radius:10px;padding:1.25rem;margin:1rem 0;overflow:hidden}
+        .viz-title{color:#64748b;font-size:.71rem;text-transform:uppercase;letter-spacing:.09em;margin-bottom:.75rem;font-family:'Courier New',monospace}
+        @keyframes draw-path{from{stroke-dashoffset:900}to{stroke-dashoffset:0}}
+        .tw-wire{stroke-dasharray:900;stroke-dashoffset:900;animation:draw-path 2s ease forwards}
+        @keyframes dash-flow{from{stroke-dashoffset:18}to{stroke-dashoffset:0}}
+        .flow-line{stroke-dasharray:9 5;animation:dash-flow .7s linear infinite}
+        @keyframes node-active{0%,100%{fill:rgba(99,102,241,.3);r:8}50%{fill:rgba(99,102,241,.9);r:10}}
+        .topo-node{animation:node-active 2s ease-in-out infinite}
+        .topo-node:nth-child(2n){animation-delay:.4s}
+        .topo-node:nth-child(3n){animation-delay:.8s}
+        .topo-node:nth-child(4n){animation-delay:1.2s}
+        @keyframes ring-travel{0%{stroke-dashoffset:600}100%{stroke-dashoffset:0}}
+        .ring-data{stroke-dasharray:40 560;animation:ring-travel 3s linear infinite}
+        @keyframes bus-travel{0%{transform:translateX(-10px);opacity:0}20%{opacity:1}80%{opacity:1}100%{transform:translateX(310px);opacity:0}}
+        .bus-pkt{animation:bus-travel 2s linear infinite}
+        @keyframes star-blink{0%,100%{stroke:rgba(251,191,36,.3)}50%{stroke:rgba(251,191,36,.9)}}
+        .star-link{animation:star-blink 1.5s ease-in-out infinite}
+        /* ── Comparison Bars ── */
+        .bar-section{margin:1.5rem 0}
+        .bar-section h4{font-size:.78rem;color:#64748b;text-transform:uppercase;letter-spacing:.07em;margin:1rem 0 .45rem;font-weight:600}
+        .bar-row{display:flex;align-items:center;gap:.6rem;margin:.35rem 0}
+        .bar-lbl{font-size:11px;font-family:monospace;color:var(--text-dark);min-width:150px}
+        .bar-track{flex:1;background:#e2e8f0;border-radius:4px;height:11px;overflow:hidden}
+        .bar-fill{height:100%;border-radius:4px;width:0;transition:width 1.4s cubic-bezier(.4,0,.2,1)}
+        .bar-val{font-size:10px;font-family:monospace;color:#64748b;min-width:80px;text-align:right}
     </style>
 </head>
 <body>
@@ -60,15 +87,40 @@
         <h3>&#x2B50; Estrela (Star)</h3>
         <p>A topologia dominante nas LANs modernas. Veja por que ela &eacute; t&atilde;o usada &mdash; e qual &eacute; seu ponto fr&aacute;gil:</p>
 
-        <div class="terminal-block">
-            <div class="terminal-header">Diagrama &mdash; Topologia Estrela</div>
-<pre>
-        [PC-1]
-           |
-[PC-2] --[SWITCH]-- [PC-3]
-           |
-        [PC-4]
-</pre>
+        <div class="viz-wrap">
+            <div class="viz-title">Diagrama &mdash; Topologia Estrela (switch central com links animados)</div>
+            <svg viewBox="0 0 420 220" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block">
+                <!-- Switch central -->
+                <rect x="170" y="90" width="80" height="38" rx="7" fill="#1e3a5f" stroke="#fbbf24" stroke-width="2"/>
+                <text x="210" y="114" text-anchor="middle" fill="#fbbf24" font-size="11" font-family="monospace" font-weight="bold">SWITCH</text>
+                <!-- Links animados -->
+                <line x1="210" y1="90" x2="210" y2="30" stroke="#fbbf24" stroke-width="2" class="star-link" style="animation-delay:0s"/>
+                <line x1="170" y1="109" x2="70" y2="80" stroke="#fbbf24" stroke-width="2" class="star-link" style="animation-delay:.3s"/>
+                <line x1="250" y1="109" x2="350" y2="80" stroke="#fbbf24" stroke-width="2" class="star-link" style="animation-delay:.6s"/>
+                <line x1="210" y1="128" x2="210" y2="188" stroke="#fbbf24" stroke-width="2" class="star-link" style="animation-delay:.9s"/>
+                <!-- PC nodes -->
+                <rect x="175" y="10" width="70" height="26" rx="5" fill="#1e293b" stroke="#60a5fa" stroke-width="1.5"/>
+                <text x="210" y="28" text-anchor="middle" fill="#93c5fd" font-size="10" font-family="monospace">PC-1</text>
+                <rect x="20" y="64" width="70" height="26" rx="5" fill="#1e293b" stroke="#60a5fa" stroke-width="1.5"/>
+                <text x="55" y="82" text-anchor="middle" fill="#93c5fd" font-size="10" font-family="monospace">PC-2</text>
+                <rect x="330" y="64" width="70" height="26" rx="5" fill="#1e293b" stroke="#60a5fa" stroke-width="1.5"/>
+                <text x="365" y="82" text-anchor="middle" fill="#93c5fd" font-size="10" font-family="monospace">PC-3</text>
+                <rect x="175" y="188" width="70" height="26" rx="5" fill="#1e293b" stroke="#60a5fa" stroke-width="1.5"/>
+                <text x="210" y="206" text-anchor="middle" fill="#93c5fd" font-size="10" font-family="monospace">PC-4</text>
+                <!-- Pacotes fluindo -->
+                <circle r="5" fill="#fbbf24" opacity=".9">
+                    <animateMotion dur="1.2s" repeatCount="indefinite" begin="0s">
+                        <mpath xlink:href="#path-s1"/>
+                    </animateMotion>
+                </circle>
+                <path id="path-s1" d="M210,23 L210,90" fill="none"/>
+                <circle r="5" fill="#34d399" opacity=".9">
+                    <animateMotion dur="1.4s" repeatCount="indefinite" begin=".5s">
+                        <mpath xlink:href="#path-s2"/>
+                    </animateMotion>
+                </circle>
+                <path id="path-s2" d="M70,80 L170,109" fill="none"/>
+            </svg>
         </div>
 
         <table class="info-table">
@@ -92,13 +144,43 @@
         <h3>&#x1F6A6; Barramento (Bus)</h3>
         <p>Todos compartilham um &uacute;nico cabo. Tecnologia legada &mdash; entender seus limites explica por que foi abandonada:</p>
 
-        <div class="terminal-block">
-            <div class="terminal-header">Diagrama &mdash; Topologia Barramento</div>
-<pre>
-[PC-1]--[PC-2]--[PC-3]--[PC-4]
-|___________________________|
-       Cabo coaxial
-</pre>
+        <div class="viz-wrap">
+            <div class="viz-title">Diagrama &mdash; Topologia Barramento (pacote se propagando pelo cabo)</div>
+            <svg viewBox="0 0 480 140" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block">
+                <!-- Cabo coaxial central -->
+                <rect x="40" y="70" width="400" height="8" rx="4" fill="#334155"/>
+                <text x="240" y="95" text-anchor="middle" fill="#475569" font-size="9" font-family="monospace">cabo coaxial compartilhado</text>
+                <!-- Terminadores -->
+                <rect x="20" y="64" width="14" height="20" rx="3" fill="#f97316"/>
+                <rect x="446" y="64" width="14" height="20" rx="3" fill="#f97316"/>
+                <!-- Nós conectados ao barramento -->
+                <line x1="95" y1="70" x2="95" y2="28" stroke="#475569" stroke-width="2"/>
+                <rect x="60" y="8" width="70" height="26" rx="5" fill="#1e293b" stroke="#60a5fa" stroke-width="1.5"/>
+                <text x="95" y="26" text-anchor="middle" fill="#93c5fd" font-size="10" font-family="monospace">PC-1</text>
+
+                <line x1="190" y1="70" x2="190" y2="28" stroke="#475569" stroke-width="2"/>
+                <rect x="155" y="8" width="70" height="26" rx="5" fill="#1e293b" stroke="#60a5fa" stroke-width="1.5"/>
+                <text x="190" y="26" text-anchor="middle" fill="#93c5fd" font-size="10" font-family="monospace">PC-2</text>
+
+                <line x1="290" y1="70" x2="290" y2="28" stroke="#475569" stroke-width="2"/>
+                <rect x="255" y="8" width="70" height="26" rx="5" fill="#1e293b" stroke="#60a5fa" stroke-width="1.5"/>
+                <text x="290" y="26" text-anchor="middle" fill="#93c5fd" font-size="10" font-family="monospace">PC-3</text>
+
+                <line x1="385" y1="70" x2="385" y2="28" stroke="#475569" stroke-width="2"/>
+                <rect x="350" y="8" width="70" height="26" rx="5" fill="#1e293b" stroke="#60a5fa" stroke-width="1.5"/>
+                <text x="385" y="26" text-anchor="middle" fill="#93c5fd" font-size="10" font-family="monospace">PC-4</text>
+
+                <!-- Pacote viajando pelo barramento -->
+                <g class="bus-pkt">
+                    <rect x="40" y="65" width="30" height="18" rx="3" fill="#fbbf24" opacity=".9"/>
+                    <text x="55" y="78" text-anchor="middle" fill="#1e293b" font-size="8" font-family="monospace" font-weight="bold">PKT</text>
+                </g>
+                <!-- Segundo pacote com delay (colisão visual) -->
+                <g class="bus-pkt" style="animation-delay:.9s">
+                    <rect x="40" y="65" width="30" height="18" rx="3" fill="#ef4444" opacity=".8"/>
+                    <text x="55" y="78" text-anchor="middle" fill="#fff" font-size="8" font-family="monospace" font-weight="bold">PKT</text>
+                </g>
+            </svg>
         </div>
 
         <table class="info-table">
@@ -122,15 +204,30 @@
         <h3>&#x1F501; Anel (Ring)</h3>
         <p>Cada n&oacute; recebe e regenera o sinal antes de pass&aacute;-lo adiante. Base do Token Ring (legado) e ainda presente em redes SONET/SDH de alta disponibilidade:</p>
 
-        <div class="terminal-block">
-            <div class="terminal-header">Diagrama &mdash; Topologia Anel</div>
-<pre>
-   [PC-1]
-   /     \
-[PC-4] [PC-2]
-   \     /
-   [PC-3]
-</pre>
+        <div class="viz-wrap">
+            <div class="viz-title">Diagrama &mdash; Topologia Anel (token circulando em sentido horário)</div>
+            <svg viewBox="0 0 320 240" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block">
+                <!-- Anel (eixo central 160,120, raio 90) -->
+                <circle cx="160" cy="120" r="90" fill="none" stroke="#334155" stroke-width="8"/>
+                <!-- Token circulando -->
+                <circle cx="160" cy="120" r="90" fill="none" stroke="#fbbf24" stroke-width="4" class="ring-data"/>
+                <!-- Nós nos 4 pontos cardeais -->
+                <!-- PC-1 topo -->
+                <rect x="125" y="12" width="70" height="26" rx="5" fill="#1e293b" stroke="#60a5fa" stroke-width="1.5"/>
+                <text x="160" y="30" text-anchor="middle" fill="#93c5fd" font-size="10" font-family="monospace">PC-1</text>
+                <!-- PC-2 direita -->
+                <rect x="232" y="108" width="70" height="26" rx="5" fill="#1e293b" stroke="#60a5fa" stroke-width="1.5"/>
+                <text x="267" y="126" text-anchor="middle" fill="#93c5fd" font-size="10" font-family="monospace">PC-2</text>
+                <!-- PC-3 baixo -->
+                <rect x="125" y="203" width="70" height="26" rx="5" fill="#1e293b" stroke="#60a5fa" stroke-width="1.5"/>
+                <text x="160" y="221" text-anchor="middle" fill="#93c5fd" font-size="10" font-family="monospace">PC-3</text>
+                <!-- PC-4 esquerda -->
+                <rect x="18" y="108" width="70" height="26" rx="5" fill="#1e293b" stroke="#60a5fa" stroke-width="1.5"/>
+                <text x="53" y="126" text-anchor="middle" fill="#93c5fd" font-size="10" font-family="monospace">PC-4</text>
+                <!-- Seta de direção -->
+                <text x="160" y="125" text-anchor="middle" fill="#64748b" font-size="9" font-family="monospace">TOKEN</text>
+                <text x="160" y="138" text-anchor="middle" fill="#64748b" font-size="8" font-family="monospace">&#x21BB; sentido horário</text>
+            </svg>
         </div>
 
         <table class="info-table">
@@ -154,15 +251,28 @@
         <h3>&#x1F9F6; Malha (Mesh)</h3>
         <p>Conex&otilde;es diretas entre m&uacute;ltiplos n&oacute;s. Agora vamos al&eacute;m da defini&ccedil;&atilde;o &mdash; com a f&oacute;rmula que explica por que a malha <em>completa</em> n&atilde;o existe em LANs:</p>
 
-        <div class="terminal-block">
-            <div class="terminal-header">Diagrama &mdash; Malha Completa (4 n&oacute;s)</div>
-<pre>
-[A]---[B]
- | \ / |
- |  X  |
- | / \ |
-[D]---[C]
-</pre>
+        <div class="viz-wrap">
+            <div class="viz-title">Diagrama &mdash; Malha Completa (4 nós — múltiplos caminhos animados)</div>
+            <svg viewBox="0 0 320 220" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block">
+                <!-- Conexões cruzadas — 6 links -->
+                <line x1="80" y1="50" x2="240" y2="50"  stroke="#4ade80" stroke-width="2" class="flow-line"/>
+                <line x1="80" y1="50" x2="80"  y2="170" stroke="#4ade80" stroke-width="2" class="flow-line" style="animation-delay:.2s"/>
+                <line x1="80" y1="50" x2="240" y2="170" stroke="#818cf8" stroke-width="2" class="flow-line" style="animation-delay:.4s"/>
+                <line x1="240" y1="50" x2="240" y2="170" stroke="#4ade80" stroke-width="2" class="flow-line" style="animation-delay:.1s"/>
+                <line x1="240" y1="50" x2="80"  y2="170" stroke="#818cf8" stroke-width="2" class="flow-line" style="animation-delay:.6s"/>
+                <line x1="80"  y1="170" x2="240" y2="170" stroke="#4ade80" stroke-width="2" class="flow-line" style="animation-delay:.3s"/>
+                <!-- Nós -->
+                <rect x="45" y="30" width="70" height="26" rx="5" fill="#1e293b" stroke="#818cf8" stroke-width="1.5"/>
+                <text x="80" y="48" text-anchor="middle" fill="#a5b4fc" font-size="11" font-family="monospace" font-weight="bold">Roteador A</text>
+                <rect x="205" y="30" width="70" height="26" rx="5" fill="#1e293b" stroke="#818cf8" stroke-width="1.5"/>
+                <text x="240" y="48" text-anchor="middle" fill="#a5b4fc" font-size="11" font-family="monospace" font-weight="bold">Roteador B</text>
+                <rect x="45" y="150" width="70" height="26" rx="5" fill="#1e293b" stroke="#818cf8" stroke-width="1.5"/>
+                <text x="80" y="168" text-anchor="middle" fill="#a5b4fc" font-size="11" font-family="monospace" font-weight="bold">Roteador D</text>
+                <rect x="205" y="150" width="70" height="26" rx="5" fill="#1e293b" stroke="#818cf8" stroke-width="1.5"/>
+                <text x="240" y="168" text-anchor="middle" fill="#a5b4fc" font-size="11" font-family="monospace" font-weight="bold">Roteador C</text>
+                <!-- Legenda -->
+                <text x="160" y="210" text-anchor="middle" fill="#64748b" font-size="9" font-family="monospace">n(n-1)/2 = 4×3/2 = 6 conexões</text>
+            </svg>
         </div>
 
         <div class="tip-box">
@@ -172,17 +282,131 @@
         <h3>&#x1F331; Estrela Estendida (Hier&aacute;rquica)</h3>
         <p>Na pr&aacute;tica, a maioria das redes corporativas e escolares usa uma <strong>estrela estendida</strong>: switches conectados a outros switches, formando camadas (acesso, distribui&ccedil;&atilde;o e n&uacute;cleo).</p>
 
-        <div class="terminal-block">
-            <div class="terminal-header">Diagrama &mdash; Estrela Estendida (modelo real)</div>
-<pre>
-              [Switch N&uacute;cleo]
-              /              \
-   [Switch Dist. A]    [Switch Dist. B]
-    /         \           /         \
-[SW Acesso] [SW Acesso] [SW Acesso] [SW Acesso]
-   |  |         |  |       |  |        |  |
-  PCs PCs      PCs PCs    PCs PCs    PCs PCs
-</pre>
+        <div class="viz-wrap">
+            <div class="viz-title">Diagrama &mdash; Estrela Estendida / Hierárquica (dados fluindo do núcleo para acesso)</div>
+            <svg viewBox="0 0 520 240" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block">
+                <!-- Nível Núcleo -->
+                <rect x="190" y="8" width="140" height="28" rx="6" fill="#1e3a5f" stroke="#fbbf24" stroke-width="2"/>
+                <text x="260" y="27" text-anchor="middle" fill="#fbbf24" font-size="10" font-family="monospace" font-weight="bold">Switch Núcleo</text>
+                <!-- Links Núcleo → Distribuição -->
+                <line x1="210" y1="36" x2="130" y2="80" stroke="#60a5fa" stroke-width="2" class="flow-line"/>
+                <line x1="310" y1="36" x2="390" y2="80" stroke="#60a5fa" stroke-width="2" class="flow-line" style="animation-delay:.3s"/>
+                <!-- Nível Distribuição -->
+                <rect x="70" y="80" width="120" height="26" rx="5" fill="#1e293b" stroke="#60a5fa" stroke-width="1.5"/>
+                <text x="130" y="98" text-anchor="middle" fill="#93c5fd" font-size="9" font-family="monospace">SW Distribuição A</text>
+                <rect x="330" y="80" width="120" height="26" rx="5" fill="#1e293b" stroke="#60a5fa" stroke-width="1.5"/>
+                <text x="390" y="98" text-anchor="middle" fill="#93c5fd" font-size="9" font-family="monospace">SW Distribuição B</text>
+                <!-- Links Distribuição → Acesso -->
+                <line x1="110" y1="106" x2="75"  y2="148" stroke="#4ade80" stroke-width="1.5" class="flow-line" style="animation-delay:.1s"/>
+                <line x1="150" y1="106" x2="185" y2="148" stroke="#4ade80" stroke-width="1.5" class="flow-line" style="animation-delay:.4s"/>
+                <line x1="370" y1="106" x2="335" y2="148" stroke="#4ade80" stroke-width="1.5" class="flow-line" style="animation-delay:.2s"/>
+                <line x1="410" y1="106" x2="445" y2="148" stroke="#4ade80" stroke-width="1.5" class="flow-line" style="animation-delay:.5s"/>
+                <!-- Nível Acesso -->
+                <rect x="30"  y="148" width="90" height="22" rx="4" fill="#0f2027" stroke="#4ade80" stroke-width="1.2"/>
+                <text x="75"  y="163" text-anchor="middle" fill="#86efac" font-size="8" font-family="monospace">SW Acesso</text>
+                <rect x="140" y="148" width="90" height="22" rx="4" fill="#0f2027" stroke="#4ade80" stroke-width="1.2"/>
+                <text x="185" y="163" text-anchor="middle" fill="#86efac" font-size="8" font-family="monospace">SW Acesso</text>
+                <rect x="290" y="148" width="90" height="22" rx="4" fill="#0f2027" stroke="#4ade80" stroke-width="1.2"/>
+                <text x="335" y="163" text-anchor="middle" fill="#86efac" font-size="8" font-family="monospace">SW Acesso</text>
+                <rect x="400" y="148" width="90" height="22" rx="4" fill="#0f2027" stroke="#4ade80" stroke-width="1.2"/>
+                <text x="445" y="163" text-anchor="middle" fill="#86efac" font-size="8" font-family="monospace">SW Acesso</text>
+                <!-- PCs simbólicos -->
+                <text x="75"  y="204" text-anchor="middle" fill="#475569" font-size="8" font-family="monospace">PCs</text>
+                <text x="185" y="204" text-anchor="middle" fill="#475569" font-size="8" font-family="monospace">PCs</text>
+                <text x="335" y="204" text-anchor="middle" fill="#475569" font-size="8" font-family="monospace">PCs</text>
+                <text x="445" y="204" text-anchor="middle" fill="#475569" font-size="8" font-family="monospace">PCs</text>
+                <line x1="55"  y1="170" x2="55"  y2="192" stroke="#334155" stroke-width="1.5"/>
+                <line x1="95"  y1="170" x2="95"  y2="192" stroke="#334155" stroke-width="1.5"/>
+                <line x1="165" y1="170" x2="165" y2="192" stroke="#334155" stroke-width="1.5"/>
+                <line x1="205" y1="170" x2="205" y2="192" stroke="#334155" stroke-width="1.5"/>
+                <line x1="315" y1="170" x2="315" y2="192" stroke="#334155" stroke-width="1.5"/>
+                <line x1="355" y1="170" x2="355" y2="192" stroke="#334155" stroke-width="1.5"/>
+                <line x1="425" y1="170" x2="425" y2="192" stroke="#334155" stroke-width="1.5"/>
+                <line x1="465" y1="170" x2="465" y2="192" stroke="#334155" stroke-width="1.5"/>
+            </svg>
+        </div>
+
+        <div class="bar-section">
+            <h4>Tolerância a falhas por topologia</h4>
+            <div class="bar-row">
+                <span class="bar-lbl">Barramento (Bus)</span>
+                <div class="bar-track"><div class="bar-fill" style="background:#ef4444" data-w="10%"></div></div>
+                <span class="bar-val">Muito baixa</span>
+            </div>
+            <div class="bar-row">
+                <span class="bar-lbl">Anel (Ring)</span>
+                <div class="bar-track"><div class="bar-fill" style="background:#f97316" data-w="30%"></div></div>
+                <span class="bar-val">Baixa</span>
+            </div>
+            <div class="bar-row">
+                <span class="bar-lbl">Estrela (Star)</span>
+                <div class="bar-track"><div class="bar-fill" style="background:#fbbf24" data-w="55%"></div></div>
+                <span class="bar-val">Média</span>
+            </div>
+            <div class="bar-row">
+                <span class="bar-lbl">Estrela Estendida</span>
+                <div class="bar-track"><div class="bar-fill" style="background:#60a5fa" data-w="70%"></div></div>
+                <span class="bar-val">Média-alta</span>
+            </div>
+            <div class="bar-row">
+                <span class="bar-lbl">Malha (Mesh)</span>
+                <div class="bar-track"><div class="bar-fill" style="background:#4ade80" data-w="100%"></div></div>
+                <span class="bar-val">Muito alta</span>
+            </div>
+
+            <h4>Custo de implementação</h4>
+            <div class="bar-row">
+                <span class="bar-lbl">Barramento (Bus)</span>
+                <div class="bar-track"><div class="bar-fill" style="background:#4ade80" data-w="10%"></div></div>
+                <span class="bar-val">Muito baixo</span>
+            </div>
+            <div class="bar-row">
+                <span class="bar-lbl">Anel (Ring)</span>
+                <div class="bar-track"><div class="bar-fill" style="background:#60a5fa" data-w="35%"></div></div>
+                <span class="bar-val">Baixo</span>
+            </div>
+            <div class="bar-row">
+                <span class="bar-lbl">Estrela (Star)</span>
+                <div class="bar-track"><div class="bar-fill" style="background:#fbbf24" data-w="50%"></div></div>
+                <span class="bar-val">Médio</span>
+            </div>
+            <div class="bar-row">
+                <span class="bar-lbl">Estrela Estendida</span>
+                <div class="bar-track"><div class="bar-fill" style="background:#f97316" data-w="70%"></div></div>
+                <span class="bar-val">Alto</span>
+            </div>
+            <div class="bar-row">
+                <span class="bar-lbl">Malha (Mesh)</span>
+                <div class="bar-track"><div class="bar-fill" style="background:#ef4444" data-w="100%"></div></div>
+                <span class="bar-val">Muito alto</span>
+            </div>
+
+            <h4>Facilidade de expansão</h4>
+            <div class="bar-row">
+                <span class="bar-lbl">Barramento (Bus)</span>
+                <div class="bar-track"><div class="bar-fill" style="background:#ef4444" data-w="15%"></div></div>
+                <span class="bar-val">Difícil</span>
+            </div>
+            <div class="bar-row">
+                <span class="bar-lbl">Anel (Ring)</span>
+                <div class="bar-track"><div class="bar-fill" style="background:#f97316" data-w="25%"></div></div>
+                <span class="bar-val">Difícil</span>
+            </div>
+            <div class="bar-row">
+                <span class="bar-lbl">Estrela (Star)</span>
+                <div class="bar-track"><div class="bar-fill" style="background:#4ade80" data-w="85%"></div></div>
+                <span class="bar-val">Fácil</span>
+            </div>
+            <div class="bar-row">
+                <span class="bar-lbl">Estrela Estendida</span>
+                <div class="bar-track"><div class="bar-fill" style="background:#4ade80" data-w="100%"></div></div>
+                <span class="bar-val">Muito fácil</span>
+            </div>
+            <div class="bar-row">
+                <span class="bar-lbl">Malha (Mesh)</span>
+                <div class="bar-track"><div class="bar-fill" style="background:#fbbf24" data-w="40%"></div></div>
+                <span class="bar-val">Moderada</span>
+            </div>
         </div>
     </div>
 
@@ -194,15 +418,52 @@
         <h3>&#x1F4E1; Barramento L&oacute;gico</h3>
         <p>Todos os dispositivos compartilham o mesmo meio de transmiss&atilde;o logicamente. Quando um envia, <strong>todos recebem</strong> &mdash; e cada um verifica se o pacote &eacute; destinado a ele. O protocolo <strong>CSMA/CD</strong> (Carrier Sense Multiple Access with Collision Detection) gerencia o acesso para evitar colis&otilde;es.</p>
 
-        <div class="terminal-block">
-            <div class="terminal-header">Fluxo &mdash; Barramento L&oacute;gico (Ethernet com hub)</div>
-<pre>
-PC-A envia dado para PC-C:
-
-PC-A ──broadcast──&gt; [HUB] ──&gt; PC-B (descarta, n&atilde;o &eacute; para mim)
-                           ──&gt; PC-C (aceita, &eacute; para mim!)
-                           ──&gt; PC-D (descarta, n&atilde;o &eacute; para mim)
-</pre>
+        <div class="viz-wrap">
+            <div class="viz-title">Fluxo &mdash; Barramento Lógico: PC-A faz broadcast pelo HUB (animado)</div>
+            <svg viewBox="0 0 480 200" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block">
+                <!-- HUB central -->
+                <rect x="195" y="83" width="90" height="34" rx="6" fill="#1e3a5f" stroke="#f97316" stroke-width="2"/>
+                <text x="240" y="105" text-anchor="middle" fill="#f97316" font-size="11" font-family="monospace" font-weight="bold">HUB</text>
+                <!-- Links -->
+                <line x1="195" y1="100" x2="80"  y2="60"  stroke="#475569" stroke-width="1.5"/>
+                <line x1="240" y1="83"  x2="240" y2="30"  stroke="#475569" stroke-width="1.5"/>
+                <line x1="285" y1="100" x2="400" y2="60"  stroke="#475569" stroke-width="1.5"/>
+                <line x1="240" y1="117" x2="240" y2="170" stroke="#475569" stroke-width="1.5"/>
+                <!-- PCs -->
+                <rect x="25"  y="40"  width="60" height="24" rx="4" fill="#1e293b" stroke="#f97316" stroke-width="1.5"/>
+                <text x="55"  y="57"  text-anchor="middle" fill="#fed7aa" font-size="9" font-family="monospace">PC-A ✉</text>
+                <rect x="210" y="8"   width="60" height="24" rx="4" fill="#1e293b" stroke="#60a5fa" stroke-width="1"/>
+                <text x="240" y="25"  text-anchor="middle" fill="#93c5fd" font-size="9" font-family="monospace">PC-B ✕</text>
+                <rect x="350" y="40"  width="70" height="24" rx="4" fill="#1e293b" stroke="#4ade80" stroke-width="1.5"/>
+                <text x="385" y="57"  text-anchor="middle" fill="#86efac" font-size="9" font-family="monospace">PC-C ✓</text>
+                <rect x="210" y="170" width="60" height="24" rx="4" fill="#1e293b" stroke="#60a5fa" stroke-width="1"/>
+                <text x="240" y="187" text-anchor="middle" fill="#93c5fd" font-size="9" font-family="monospace">PC-D ✕</text>
+                <!-- Broadcast packets -->
+                <circle r="5" fill="#f97316" opacity=".9">
+                    <animateMotion dur="1.0s" repeatCount="indefinite" begin="0s" keyTimes="0;1" keyPoints="0;1" calcMode="linear">
+                        <mpath xlink:href="#path-hub1"/>
+                    </animateMotion>
+                </circle>
+                <path id="path-hub1" d="M55,52 L195,100" fill="none"/>
+                <circle r="4" fill="#fbbf24" opacity=".8">
+                    <animateMotion dur="0.9s" repeatCount="indefinite" begin=".4s">
+                        <mpath xlink:href="#path-hub2"/>
+                    </animateMotion>
+                </circle>
+                <path id="path-hub2" d="M240,100 L385,52" fill="none"/>
+                <circle r="4" fill="#fbbf24" opacity=".8">
+                    <animateMotion dur="0.9s" repeatCount="indefinite" begin=".4s">
+                        <mpath xlink:href="#path-hub3"/>
+                    </animateMotion>
+                </circle>
+                <path id="path-hub3" d="M240,100 L240,20" fill="none"/>
+                <circle r="4" fill="#fbbf24" opacity=".8">
+                    <animateMotion dur="0.9s" repeatCount="indefinite" begin=".4s">
+                        <mpath xlink:href="#path-hub4"/>
+                    </animateMotion>
+                </circle>
+                <path id="path-hub4" d="M240,100 L240,170" fill="none"/>
+            </svg>
         </div>
 
         <div class="highlight-box">
@@ -220,17 +481,25 @@ PC-A ──broadcast──&gt; [HUB] ──&gt; PC-B (descarta, n&atilde;o &eacu
         <h3>&#x1F501; Anel L&oacute;gico</h3>
         <p>Os dados circulam em uma s&oacute; dire&ccedil;&atilde;o passando por todos os n&oacute;s. Um <strong>token</strong> (ficha) circula continuamente: apenas o dispositivo que est&aacute; com o token pode transmitir, eliminando colis&otilde;es por controle de acesso.</p>
 
-        <div class="terminal-block">
-            <div class="terminal-header">Fluxo &mdash; Anel L&oacute;gico (Token Ring)</div>
-<pre>
-Token circula: PC-A &rarr; PC-B &rarr; PC-C &rarr; PC-D &rarr; PC-A ...
-
-PC-B quer transmitir:
-  1. Aguarda o token chegar
-  2. Captura o token
-  3. Transmite o dado (passa por PC-C e PC-D at&eacute; chegar ao destino)
-  4. Libera o token para o pr&oacute;ximo n&oacute;
-</pre>
+        <div class="viz-wrap">
+            <div class="viz-title">Fluxo &mdash; Anel Lógico: token circulando (PC-B captura e transmite)</div>
+            <svg viewBox="0 0 340 240" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block">
+                <!-- Anel -->
+                <circle cx="170" cy="120" r="80" fill="none" stroke="#334155" stroke-width="6"/>
+                <circle cx="170" cy="120" r="80" fill="none" stroke="#fbbf24" stroke-width="3" class="ring-data"/>
+                <!-- Nós -->
+                <rect x="135" y="18" width="70" height="24" rx="4" fill="#1e293b" stroke="#60a5fa" stroke-width="1.5"/>
+                <text x="170" y="35" text-anchor="middle" fill="#93c5fd" font-size="9" font-family="monospace">PC-A</text>
+                <rect x="232" y="108" width="70" height="24" rx="4" fill="#1e3a5f" stroke="#fbbf24" stroke-width="2"/>
+                <text x="267" y="125" text-anchor="middle" fill="#fbbf24" font-size="9" font-family="monospace">PC-B ✉</text>
+                <rect x="135" y="200" width="70" height="24" rx="4" fill="#1e293b" stroke="#60a5fa" stroke-width="1.5"/>
+                <text x="170" y="217" text-anchor="middle" fill="#93c5fd" font-size="9" font-family="monospace">PC-C</text>
+                <rect x="38"  y="108" width="70" height="24" rx="4" fill="#1e293b" stroke="#60a5fa" stroke-width="1.5"/>
+                <text x="73"  y="125" text-anchor="middle" fill="#93c5fd" font-size="9" font-family="monospace">PC-D</text>
+                <!-- Caption -->
+                <text x="170" y="120" text-anchor="middle" fill="#64748b" font-size="8" font-family="monospace">TOKEN</text>
+                <text x="170" y="132" text-anchor="middle" fill="#64748b" font-size="7" font-family="monospace">A→B→C→D→A</text>
+            </svg>
         </div>
 
         <div class="alert-box">
@@ -240,13 +509,28 @@ PC-B quer transmitir:
         <h3>&#x1F517; Ponto a Ponto L&oacute;gico</h3>
         <p>Uma conex&atilde;o dedicada e exclusiva entre dois n&oacute;s. Os dados n&atilde;o passam por outros dispositivos intermediariamente &mdash; o canal &eacute; privado. Muito usado em enlaces WAN e VPNs.</p>
 
-        <div class="terminal-block">
-            <div class="terminal-header">Exemplos &mdash; Ponto a Ponto L&oacute;gico</div>
-<pre>
-Filial A ════════════════════ Matriz  (link MPLS dedicado)
-   |                             |
-Filial B ── VPN criptografada ── Matriz  (t&uacute;nel sobre internet)
-</pre>
+        <div class="viz-wrap">
+            <div class="viz-title">Exemplos &mdash; Ponto a Ponto Lógico (MPLS dedicado e VPN)</div>
+            <svg viewBox="0 0 480 160" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block">
+                <!-- MPLS link -->
+                <rect x="20"  y="20" width="90" height="26" rx="5" fill="#1e293b" stroke="#818cf8" stroke-width="1.5"/>
+                <text x="65"  y="38" text-anchor="middle" fill="#a5b4fc" font-size="9" font-family="monospace">Filial A</text>
+                <rect x="370" y="20" width="90" height="26" rx="5" fill="#1e293b" stroke="#818cf8" stroke-width="1.5"/>
+                <text x="415" y="38" text-anchor="middle" fill="#a5b4fc" font-size="9" font-family="monospace">Matriz</text>
+                <line x1="110" y1="33" x2="370" y2="33" stroke="#818cf8" stroke-width="3" class="flow-line"/>
+                <text x="240" y="52" text-anchor="middle" fill="#64748b" font-size="8" font-family="monospace">link MPLS dedicado</text>
+                <!-- VPN link -->
+                <rect x="20"  y="100" width="90" height="26" rx="5" fill="#1e293b" stroke="#4ade80" stroke-width="1.5"/>
+                <text x="65"  y="118" text-anchor="middle" fill="#86efac" font-size="9" font-family="monospace">Filial B</text>
+                <rect x="370" y="100" width="90" height="26" rx="5" fill="#1e293b" stroke="#4ade80" stroke-width="1.5"/>
+                <text x="415" y="118" text-anchor="middle" fill="#86efac" font-size="9" font-family="monospace">Matriz</text>
+                <!-- VPN dashed encrypted -->
+                <line x1="110" y1="113" x2="370" y2="113" stroke="#4ade80" stroke-width="2" stroke-dasharray="8 5" class="flow-line" style="animation-delay:.3s"/>
+                <text x="240" y="134" text-anchor="middle" fill="#64748b" font-size="8" font-family="monospace">VPN criptografada (túnel sobre internet)</text>
+                <!-- Lock icon -->
+                <rect x="224" y="103" width="32" height="22" rx="3" fill="#0f2027" stroke="#4ade80" stroke-width="1"/>
+                <text x="240" y="119" text-anchor="middle" fill="#4ade80" font-size="11">🔒</text>
+            </svg>
         </div>
 
         <h3>&#x1F4CB; Resumo: F&iacute;sica &times; L&oacute;gica</h3>
@@ -300,16 +584,41 @@ Filial B ── VPN criptografada ── Matriz  (t&uacute;nel sobre internet)
             </div>
         </div>
 
-        <div class="terminal-block">
-            <div class="terminal-header">Como o switch aprende endere&ccedil;os MAC</div>
-<pre>
-1. PC-A envia quadro para PC-B
-2. Switch recebe na porta 1 e registra: "MAC de A = porta 1"
-3. Switch ainda n&atilde;o sabe onde est&aacute; B: envia para TODAS as portas (flooding)
-4. PC-B responde: switch registra "MAC de B = porta 2"
-5. Pr&oacute;xima vez: switch envia diretamente porta 1 &rarr; porta 2
-   (sem flooding, sem colis&atilde;o com os demais)
-</pre>
+        <div class="viz-wrap">
+            <div class="viz-title">Como o switch aprende endereços MAC (flooding → tabela → unicast)</div>
+            <svg viewBox="0 0 500 200" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block">
+                <!-- Switch -->
+                <rect x="185" y="80" width="130" height="40" rx="7" fill="#1e3a5f" stroke="#fbbf24" stroke-width="2"/>
+                <text x="250" y="96"  text-anchor="middle" fill="#fbbf24" font-size="9"  font-family="monospace" font-weight="bold">SWITCH</text>
+                <text x="250" y="112" text-anchor="middle" fill="#94a3b8" font-size="7.5" font-family="monospace">Tabela MAC dinâmica</text>
+                <!-- Portas / PCs -->
+                <line x1="185" y1="100" x2="80"  y2="60"  stroke="#475569" stroke-width="1.5"/>
+                <line x1="250" y1="80"  x2="250" y2="22"  stroke="#475569" stroke-width="1.5"/>
+                <line x1="315" y1="100" x2="420" y2="60"  stroke="#475569" stroke-width="1.5"/>
+                <line x1="250" y1="120" x2="250" y2="178" stroke="#475569" stroke-width="1.5"/>
+                <rect x="20"  y="40"  width="68" height="24" rx="4" fill="#1e293b" stroke="#f97316" stroke-width="1.5"/>
+                <text x="54"  y="57"  text-anchor="middle" fill="#fed7aa" font-size="9" font-family="monospace">PC-A P1</text>
+                <rect x="216" y="2"   width="68" height="24" rx="4" fill="#1e293b" stroke="#60a5fa" stroke-width="1"/>
+                <text x="250" y="19"  text-anchor="middle" fill="#93c5fd" font-size="9" font-family="monospace">PC-C P3</text>
+                <rect x="412" y="40"  width="68" height="24" rx="4" fill="#1e293b" stroke="#4ade80" stroke-width="1.5"/>
+                <text x="446" y="57"  text-anchor="middle" fill="#86efac" font-size="9" font-family="monospace">PC-B P2</text>
+                <rect x="216" y="178" width="68" height="24" rx="4" fill="#1e293b" stroke="#60a5fa" stroke-width="1"/>
+                <text x="250" y="195" text-anchor="middle" fill="#93c5fd" font-size="9" font-family="monospace">PC-D P4</text>
+                <!-- Animated: A→switch (learning) -->
+                <circle r="5" fill="#f97316" opacity=".9">
+                    <animateMotion dur="1s" repeatCount="indefinite" begin="0s">
+                        <mpath xlink:href="#path-mac1"/>
+                    </animateMotion>
+                </circle>
+                <path id="path-mac1" d="M54,52 L185,100" fill="none"/>
+                <!-- Animated: switch→B (unicast after learning) -->
+                <circle r="5" fill="#4ade80" opacity=".9">
+                    <animateMotion dur="0.9s" repeatCount="indefinite" begin=".7s">
+                        <mpath xlink:href="#path-mac2"/>
+                    </animateMotion>
+                </circle>
+                <path id="path-mac2" d="M315,100 L446,52" fill="none"/>
+            </svg>
         </div>
 
         <h3>Roteador &mdash; Router</h3>
@@ -379,41 +688,6 @@ Filial B ── VPN criptografada ── Matriz  (t&uacute;nel sobre internet)
         </table>
     </div>
 
-    <!-- ATIVIDADE PRÁTICA -->
-    <div class="content-card exercise-card" id="prat-rc02">
-        <h2>&#x1F4DD; Atividade Pr&aacute;tica</h2>
-        <p class="prat-intro">An&aacute;lise de topologias e cria&ccedil;&atilde;o de diagrama de rede.</p>
-
-        <div class="prat-steps">
-            <div class="prat-step">
-                <div class="step-num">1</div>
-                <div class="step-body">
-                    <div class="step-label">&#x26A0;&#xFE0F; An&aacute;lise de toler&acirc;ncia a falhas por topologia</div>
-                    <div class="step-desc"><strong>(Aprendizagem Baseada em Problemas)</strong> Analise cada situa&ccedil;&atilde;o abaixo e responda: o que acontece com a rede quando o componente indicado falha? Quantos dispositivos perdem conex&atilde;o? A rede continua funcionando parcialmente? Como poderia ser resolvido?<br><br>
-                    &bull; <strong>Situa&ccedil;&atilde;o A &mdash; Topologia Estrela:</strong> o switch central para de funcionar.<br>
-                    &bull; <strong>Situa&ccedil;&atilde;o B &mdash; Topologia Anel:</strong> o cabo entre dois n&oacute;s &eacute; cortado.<br>
-                    &bull; <strong>Situa&ccedil;&atilde;o C &mdash; Topologia Malha parcial:</strong> um dos roteadores intermedi&aacute;rios &eacute; desligado.<br><br>
-                    Ap&oacute;s responder individualmente, compare com um colega e discutam: qual topologia oferece maior toler&acirc;ncia a falhas? Por que empresas de miss&atilde;o cr&iacute;tica (bancos, hospitais) usam malha?</div>
-                </div>
-            </div>
-            <div class="prat-step">
-                <div class="step-num">2</div>
-                <div class="step-body">
-                    <div class="step-label">&#x1F5A5;&#xFE0F; Diagrama de rede no draw.io</div>
-                    <div class="step-desc">Acesse <strong>diagrams.net</strong> (gratuito, sem cadastro). Crie um diagrama representando a topologia <strong>estrela</strong> com: 1 switch central, 4 PCs, 1 impressora de rede e 1 roteador conectado &agrave; internet. Use as formas da categoria <strong>Network</strong> dispon&iacute;veis na ferramenta. Ao terminar, exporte como PNG e salve no seu computador.</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="prat-observe">
-            <strong>&#x1F4CC; Para refletir:</strong> a escolha entre hub e switch pode parecer simples hoje, mas no final dos anos 90 switches eram caros e hubs eram comuns. Entender <em>por qu&ecirc;</em> o switch venceu &eacute; entender um dos princ&iacute;pios mais importantes de redes: eliminar colis&otilde;es aumenta dramaticamente o desempenho.
-        </div>
-
-        <div class="ex-actions">
-            <button class="btn-print" onclick="printPractical('prat-rc02', 'Aula 2 \u2014 Topologias e Componentes de Rede')">&#x1F5A8;&#xFE0F; Imprimir roteiro</button>
-        </div>
-    </div>
-
     <!-- MÚLTIPLA ESCOLHA -->
     <div class="content-card exercise-card">
         <h2>&#x2753; Verifique seu Conhecimento</h2>
@@ -452,6 +726,41 @@ Filial B ── VPN criptografada ── Matriz  (t&uacute;nel sobre internet)
         </div>
     </div>
 
+    <!-- ATIVIDADE PRÁTICA -->
+    <div class="content-card exercise-card" id="prat-rc02">
+        <h2>&#x1F4DD; Atividade Pr&aacute;tica</h2>
+        <p class="prat-intro">An&aacute;lise de topologias e cria&ccedil;&atilde;o de diagrama de rede.</p>
+
+        <div class="prat-steps">
+            <div class="prat-step">
+                <div class="step-num">1</div>
+                <div class="step-body">
+                    <div class="step-label">&#x26A0;&#xFE0F; An&aacute;lise de toler&acirc;ncia a falhas por topologia</div>
+                    <div class="step-desc"><strong>(Aprendizagem Baseada em Problemas)</strong> Analise cada situa&ccedil;&atilde;o abaixo e responda: o que acontece com a rede quando o componente indicado falha? Quantos dispositivos perdem conex&atilde;o? A rede continua funcionando parcialmente? Como poderia ser resolvido?<br><br>
+                    &bull; <strong>Situa&ccedil;&atilde;o A &mdash; Topologia Estrela:</strong> o switch central para de funcionar.<br>
+                    &bull; <strong>Situa&ccedil;&atilde;o B &mdash; Topologia Anel:</strong> o cabo entre dois n&oacute;s &eacute; cortado.<br>
+                    &bull; <strong>Situa&ccedil;&atilde;o C &mdash; Topologia Malha parcial:</strong> um dos roteadores intermedi&aacute;rios &eacute; desligado.<br><br>
+                    Ap&oacute;s responder individualmente, compare com um colega e discutam: qual topologia oferece maior toler&acirc;ncia a falhas? Por que empresas de miss&atilde;o cr&iacute;tica (bancos, hospitais) usam malha?</div>
+                </div>
+            </div>
+            <div class="prat-step">
+                <div class="step-num">2</div>
+                <div class="step-body">
+                    <div class="step-label">&#x1F5A5;&#xFE0F; Diagrama de rede no draw.io</div>
+                    <div class="step-desc">Acesse <strong>diagrams.net</strong> (gratuito, sem cadastro). Crie um diagrama representando a topologia <strong>estrela</strong> com: 1 switch central, 4 PCs, 1 impressora de rede e 1 roteador conectado &agrave; internet. Use as formas da categoria <strong>Network</strong> dispon&iacute;veis na ferramenta. Ao terminar, exporte como PNG e salve no seu computador.</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="prat-observe">
+            <strong>&#x1F4CC; Para refletir:</strong> a escolha entre hub e switch pode parecer simples hoje, mas no final dos anos 90 switches eram caros e hubs eram comuns. Entender <em>por qu&ecirc;</em> o switch venceu &eacute; entender um dos princ&iacute;pios mais importantes de redes: eliminar colis&otilde;es aumenta dramaticamente o desempenho.
+        </div>
+
+        <div class="ex-actions">
+            <button class="btn-print" onclick="printPractical('prat-rc02', 'Aula 2 \u2014 Topologias e Componentes de Rede')">&#x1F5A8;&#xFE0F; Imprimir roteiro</button>
+        </div>
+    </div>
+
     <div class="nav-footer">
         <a href="rc01-introducao.html" class="nav-link">&#x2B05; Anterior: Introdu&ccedil;&atilde;o &agrave;s Redes</a>
         <a href="rc03-modelo-osi.html" class="nav-link">Pr&oacute;xima: Modelo OSI &#x27A1;</a>
@@ -463,5 +772,20 @@ Filial B ── VPN criptografada ── Matriz  (t&uacute;nel sobre internet)
 <script src="exercise-drag.js"></script>
 <script src="exercise-print.js"></script>
 <script src="exercise-mc.js"></script>
+<script>
+(function(){
+  var bars = document.querySelectorAll('.bar-fill');
+  if(!bars.length) return;
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){
+        e.target.style.width = e.target.dataset.w;
+        io.unobserve(e.target);
+      }
+    });
+  },{threshold:.3});
+  bars.forEach(function(b){ io.observe(b); });
+})();
+</script>
 </body>
 </html>
