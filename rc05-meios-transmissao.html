@@ -49,6 +49,26 @@
         .light-beam-b { animation-delay: 1.2s; }
         @keyframes dash-flow { from { stroke-dashoffset: 18; } to { stroke-dashoffset: 0; } }
         .flow-line { stroke-dasharray: 9 5; animation: dash-flow .7s linear infinite; }
+        /* Crimping activity */
+        @keyframes crimp-press {
+            0%,30%  { transform: translateY(0); }
+            50%,65% { transform: translateY(-16px); }
+            85%,100%{ transform: translateY(0); }
+        }
+        .crimp-jaw { animation: crimp-press 2.2s ease-in-out infinite; transform-box: fill-box; transform-origin: top center; }
+        @keyframes led-seq {
+            0%,8%    { opacity: .15; }
+            15%,88%  { opacity: 1; }
+            96%,100% { opacity: .15; }
+        }
+        .led-1 { animation: led-seq 3.2s infinite; animation-delay: 0s; }
+        .led-2 { animation: led-seq 3.2s infinite; animation-delay: .35s; }
+        .led-3 { animation: led-seq 3.2s infinite; animation-delay: .7s; }
+        .led-4 { animation: led-seq 3.2s infinite; animation-delay: 1.05s; }
+        .led-5 { animation: led-seq 3.2s infinite; animation-delay: 1.4s; }
+        .led-6 { animation: led-seq 3.2s infinite; animation-delay: 1.75s; }
+        .led-7 { animation: led-seq 3.2s infinite; animation-delay: 2.1s; }
+        .led-8 { animation: led-seq 3.2s infinite; animation-delay: 2.45s; }
         /* RJ-45 pins */
         .rj45-wrap  { display:flex; gap:2.5rem; flex-wrap:wrap; justify-content:center; margin-top:.5rem; }
         .rj45-std   { text-align:center; }
@@ -673,199 +693,329 @@
         </div>
     </div>
 
-    <!-- ATIVIDADE PRÁTICA -->
-    <div class="content-card exercise-card" id="prat-rc05">
-        <h2>&#x1F4DD; Atividade Pr&aacute;tica</h2>
-        <p class="prat-intro">Proposta de infraestrutura de rede para cen&aacute;rios reais.</p>
-
-        <div class="prat-steps">
-            <div class="prat-step">
-                <div class="step-num">1</div>
-                <div class="step-body">
-                    <div class="step-label">&#x1F465; Trabalho em grupo &mdash; Proposta de infraestrutura de rede</div>
-                    <div class="step-desc">
-                        <strong>(Aprendizagem Baseada em Projetos &mdash; grupos de 3&ndash;4 alunos)</strong> Cada grupo sorteia um dos cen&aacute;rios abaixo e elabora uma proposta com: tipo de cabo, categoria, justificativa t&eacute;cnica, diagrama simplificado e estimativa de custo. Cada grupo apresenta em 3 minutos e a turma debate os trade-offs.
-
-                        <!-- Cenários ilustrados -->
-                        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin:1.25rem 0">
-
-                            <!-- Cenário A — Escola -->
-                            <div style="border:2px solid #f59e0b;border-radius:12px;padding:1rem;background:#fffbeb;text-align:center">
-                                <svg viewBox="0 0 90 80" width="90" height="80" style="display:block;margin:0 auto 8px">
-                                    <!-- sombra do prédio -->
-                                    <rect x="12" y="38" width="66" height="38" rx="2" fill="#fde68a" stroke="#d97706" stroke-width="2"/>
-                                    <!-- telhado -->
-                                    <polygon points="8,40 45,8 82,40" fill="#d97706"/>
-                                    <!-- janela esq -->
-                                    <rect x="18" y="46" width="14" height="13" rx="1" fill="#fff" stroke="#d97706" stroke-width="1.5"/>
-                                    <line x1="25" y1="46" x2="25" y2="59" stroke="#d97706" stroke-width="1"/>
-                                    <line x1="18" y1="52.5" x2="32" y2="52.5" stroke="#d97706" stroke-width="1"/>
-                                    <!-- janela dir -->
-                                    <rect x="58" y="46" width="14" height="13" rx="1" fill="#fff" stroke="#d97706" stroke-width="1.5"/>
-                                    <line x1="65" y1="46" x2="65" y2="59" stroke="#d97706" stroke-width="1"/>
-                                    <line x1="58" y1="52.5" x2="72" y2="52.5" stroke="#d97706" stroke-width="1"/>
-                                    <!-- porta -->
-                                    <rect x="34" y="57" width="22" height="19" rx="2" fill="#b45309"/>
-                                    <circle cx="53" cy="67" r="2" fill="#fde68a"/>
-                                    <!-- mastro + bandeira -->
-                                    <line x1="45" y1="8" x2="45" y2="2" stroke="#92400e" stroke-width="2"/>
-                                    <polygon points="45,2 55,5 45,8" fill="#dc2626"/>
-                                </svg>
-                                <div style="font-weight:700;color:#d97706;font-size:13px;margin-bottom:4px">Cen&aacute;rio A</div>
-                                <div style="font-size:12px;color:#1e293b;font-weight:600;margin-bottom:6px">Escola P&uacute;blica</div>
-                                <ul style="text-align:left;font-size:11px;color:#475569;margin:0;padding-left:14px;line-height:1.7">
-                                    <li>5 salas + laborat&oacute;rio</li>
-                                    <li>Or&ccedil;amento limitado</li>
-                                    <li>~30 pontos de rede</li>
-                                    <li>1 andar</li>
-                                </ul>
-                                <div style="margin-top:8px;background:#fef3c7;border-radius:6px;padding:5px 8px;font-size:10px;color:#92400e"><strong>Desafio:</strong> m&aacute;ximo de custo-benef&iacute;cio</div>
-                            </div>
-
-                            <!-- Cenário B — Empresa -->
-                            <div style="border:2px solid #3b82f6;border-radius:12px;padding:1rem;background:#eff6ff;text-align:center">
-                                <svg viewBox="0 0 90 80" width="90" height="80" style="display:block;margin:0 auto 8px">
-                                    <!-- prédio principal -->
-                                    <rect x="18" y="10" width="54" height="66" rx="2" fill="#bfdbfe" stroke="#2563eb" stroke-width="2"/>
-                                    <!-- andares (linhas) -->
-                                    <line x1="18" y1="32" x2="72" y2="32" stroke="#93c5fd" stroke-width="1.5"/>
-                                    <line x1="18" y1="54" x2="72" y2="54" stroke="#93c5fd" stroke-width="1.5"/>
-                                    <!-- janelas andar 1 -->
-                                    <rect x="24" y="14" width="10" height="10" rx="1" fill="#dbeafe" stroke="#3b82f6" stroke-width="1"/>
-                                    <rect x="40" y="14" width="10" height="10" rx="1" fill="#dbeafe" stroke="#3b82f6" stroke-width="1"/>
-                                    <rect x="56" y="14" width="10" height="10" rx="1" fill="#dbeafe" stroke="#3b82f6" stroke-width="1"/>
-                                    <!-- janelas andar 2 -->
-                                    <rect x="24" y="36" width="10" height="10" rx="1" fill="#dbeafe" stroke="#3b82f6" stroke-width="1"/>
-                                    <rect x="40" y="36" width="10" height="10" rx="1" fill="#dbeafe" stroke="#3b82f6" stroke-width="1"/>
-                                    <rect x="56" y="36" width="10" height="10" rx="1" fill="#dbeafe" stroke="#3b82f6" stroke-width="1"/>
-                                    <!-- data center (rack) andar 3 -->
-                                    <rect x="28" y="58" width="34" height="14" rx="2" fill="#1d4ed8"/>
-                                    <rect x="31" y="61" width="6" height="3" rx="1" fill="#60a5fa"/>
-                                    <rect x="39" y="61" width="6" height="3" rx="1" fill="#60a5fa"/>
-                                    <rect x="47" y="61" width="6" height="3" rx="1" fill="#34d399"/>
-                                    <rect x="55" y="61" width="4" height="3" rx="1" fill="#f87171"/>
-                                    <!-- antena -->
-                                    <line x1="45" y1="10" x2="45" y2="4" stroke="#1d4ed8" stroke-width="1.5"/>
-                                    <line x1="42" y1="6" x2="45" y2="4" stroke="#1d4ed8" stroke-width="1.5"/>
-                                    <line x1="48" y1="6" x2="45" y2="4" stroke="#1d4ed8" stroke-width="1.5"/>
-                                </svg>
-                                <div style="font-weight:700;color:#2563eb;font-size:13px;margin-bottom:4px">Cen&aacute;rio B</div>
-                                <div style="font-size:12px;color:#1e293b;font-weight:600;margin-bottom:6px">Empresa Corporativa</div>
-                                <ul style="text-align:left;font-size:11px;color:#475569;margin:0;padding-left:14px;line-height:1.7">
-                                    <li>3 andares</li>
-                                    <li>Data center pr&oacute;prio</li>
-                                    <li>Alta performance</li>
-                                    <li>~80 pontos de rede</li>
-                                </ul>
-                                <div style="margin-top:8px;background:#dbeafe;border-radius:6px;padding:5px 8px;font-size:10px;color:#1d4ed8"><strong>Desafio:</strong> backbone entre andares e data center</div>
-                            </div>
-
-                            <!-- Cenário C — Hospital -->
-                            <div style="border:2px solid #10b981;border-radius:12px;padding:1rem;background:#f0fdf4;text-align:center">
-                                <svg viewBox="0 0 90 80" width="90" height="80" style="display:block;margin:0 auto 8px">
-                                    <!-- prédio -->
-                                    <rect x="14" y="28" width="62" height="48" rx="2" fill="#d1fae5" stroke="#059669" stroke-width="2"/>
-                                    <!-- cruz (símbolo hospital) -->
-                                    <rect x="35" y="6"  width="20" height="40" rx="3" fill="#10b981"/>
-                                    <rect x="22" y="18" width="46" height="18" rx="3" fill="#10b981"/>
-                                    <rect x="38" y="9"  width="14" height="34" rx="2" fill="#34d399"/>
-                                    <rect x="25" y="21" width="40" height="12" rx="2" fill="#34d399"/>
-                                    <!-- janelas -->
-                                    <rect x="18" y="40" width="12" height="10" rx="1" fill="#a7f3d0" stroke="#059669" stroke-width="1"/>
-                                    <rect x="60" y="40" width="12" height="10" rx="1" fill="#a7f3d0" stroke="#059669" stroke-width="1"/>
-                                    <!-- porta com acesso -->
-                                    <rect x="33" y="57" width="24" height="19" rx="2" fill="#059669"/>
-                                    <rect x="37" y="61" width="7" height="11" rx="1" fill="#a7f3d0"/>
-                                    <rect x="46" y="61" width="7" height="11" rx="1" fill="#a7f3d0"/>
-                                    <!-- sinal de emergência -->
-                                    <circle cx="72" cy="34" r="6" fill="#ef4444"/>
-                                    <text x="72" y="38" text-anchor="middle" fill="#fff" font-size="8" font-weight="bold">!</text>
-                                </svg>
-                                <div style="font-weight:700;color:#059669;font-size:13px;margin-bottom:4px">Cen&aacute;rio C</div>
-                                <div style="font-size:12px;color:#1e293b;font-weight:600;margin-bottom:6px">Hospital</div>
-                                <ul style="text-align:left;font-size:11px;color:#475569;margin:0;padding-left:14px;line-height:1.7">
-                                    <li>Alta disponibilidade</li>
-                                    <li>Zero interfer&ecirc;ncia EMI</li>
-                                    <li>Ambiente cr&iacute;tico 24/7</li>
-                                    <li>Redund&acirc;ncia obrigat&oacute;ria</li>
-                                </ul>
-                                <div style="margin-top:8px;background:#dcfce7;border-radius:6px;padding:5px 8px;font-size:10px;color:#065f46"><strong>Desafio:</strong> imunidade a EMI e redund&acirc;ncia de links</div>
-                            </div>
-                        </div>
-
-                        O grupo deve elaborar uma proposta com: tipo de cabo, categoria, justificativa t&eacute;cnica, diagrama simplificado e estimativa de custo. Cada grupo apresenta em 3 minutos e a turma debate os trade-offs de cada solu&ccedil;&atilde;o. <em>Discutam: um cliente com or&ccedil;amento apertado deve abrir m&atilde;o de Cat 6A para Cat 5e? Quais as consequ&ecirc;ncias a longo prazo?</em>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="prat-observe">
-            <strong>&#x1F4CC; Para refletir:</strong> o cabeamento estruturado &eacute; frequentemente negligenciado em projetos de rede, mas &eacute; um dos investimentos mais duradouros de uma infraestrutura. Um cabeamento mal feito gera problemas por anos: conex&otilde;es inst&aacute;veis, perda de velocidade, dificuldade de manuten&ccedil;&atilde;o. Um cabeamento bem feito, dentro das normas, dura mais de 15 anos e suporta as tecnologias futuras sem necessidade de repassar cabos.
-        </div>
-
-        <div class="ex-actions">
-            <button class="btn-print" onclick="printPractical('prat-rc05', 'Aula 5 \u2014 Meios de Transmiss\u00e3o e Cabeamento')">&#x1F5A8;&#xFE0F; Imprimir roteiro</button>
-        </div>
-    </div>
-
-    <!-- ATIVIDADE PRÁTICA 2 — Crimpagem -->
+    <!-- ATIVIDADE PRÁTICA — Crimpagem -->
     <div class="content-card exercise-card" id="prat-rc05-crimp">
-        <h2>&#x1F527; Pr&aacute;tica de Bancada &mdash; Crimpagem de Cabo Cat 5e</h2>
+        <h2>&#x1F527; Atividade Pr&aacute;tica &mdash; Crimpagem de Cabo Cat 5e</h2>
         <p class="prat-intro">Confeccionar um cabo de rede Cat 5e com conector RJ-45, seguindo o padr&atilde;o T568B, e testar a continuidade.</p>
 
-        <div class="alert-box" style="margin-bottom:1.25rem">
-            <p>&#x1F4CB; <strong>Materiais por aluno/dupla:</strong> 1 trecho de cabo UTP Cat 5e (aprox. 50 cm) &bull; 2 conectores RJ-45 &bull; 1 alicate de crimpar (RJ-45) &bull; 1 desencapador de cabo ou estilete &bull; 1 testador de cabos (opcional, mas recomendado) &bull; r&eacute;gua ou fita m&eacute;trica.</p>
+        <div style="display:flex;gap:1.25rem;flex-wrap:wrap;align-items:flex-start;margin-bottom:1.25rem">
+            <div class="alert-box" style="flex:1;min-width:220px;margin:0">
+                <p>&#x1F4CB; <strong>Materiais por aluno/dupla:</strong> 1 trecho de cabo UTP Cat 5e (~50 cm) &bull; 2 conectores RJ-45 &bull; 1 alicate de crimpar (RJ-45) &bull; 1 desencapador ou estilete &bull; 1 testador de cabos &bull; r&eacute;gua ou fita m&eacute;trica.</p>
+            </div>
+            <div style="flex-shrink:0;border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.15)">
+                <iframe width="200" height="356"
+                    src="https://www.youtube.com/embed/aV6G4WTckSw"
+                    title="Crimpagem de cabo de rede"
+                    frameborder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowfullscreen
+                    style="display:block">
+                </iframe>
+            </div>
         </div>
 
         <div class="prat-steps">
+
+            <!-- PASSO 1 -->
             <div class="prat-step">
                 <div class="step-num">1</div>
                 <div class="step-body">
-                    <div class="step-label">Preparar o cabo</div>
-                    <div class="step-desc">Meça e corte o cabo no comprimento desejado. Com o desencapador ou estilete, remova <strong>aproximadamente 3 cm</strong> da casca externa (PVC) de cada extremidade — cuidado para n&atilde;o cortar o isolamento dos fios internos. N&atilde;o remova mais do que 3 cm: o excesso de cabo exposto fora do conector &eacute; um erro que compromete o desempenho e pode reprovar na certifica&ccedil;&atilde;o.</div>
+                    <div class="step-label">Preparar o cabo &mdash; remover ~3 cm da casca</div>
+                    <div class="viz-wrap" style="margin:.75rem 0 .25rem">
+                        <svg viewBox="0 0 430 72" style="width:100%;display:block">
+                            <!-- cabo completo -->
+                            <rect x="6" y="26" width="185" height="20" rx="6" fill="#475569"/>
+                            <text x="98" y="39" text-anchor="middle" fill="#94a3b8" font-size="9" font-family="monospace">casca PVC</text>
+                            <!-- linha de corte -->
+                            <line x1="191" y1="18" x2="191" y2="54" stroke="#ef4444" stroke-width="2" stroke-dasharray="4,2"/>
+                            <text x="191" y="13" text-anchor="middle" fill="#ef4444" font-size="8" font-family="monospace">corte</text>
+                            <!-- 8 fios expostos -->
+                            <rect x="193" y="27" width="145" height="2.5" rx="1" fill="#fed7aa"/>
+                            <rect x="193" y="30" width="145" height="2.5" rx="1" fill="#ea580c"/>
+                            <rect x="193" y="33" width="145" height="2.5" rx="1" fill="#86efac"/>
+                            <rect x="193" y="36" width="145" height="2.5" rx="1" fill="#16a34a"/>
+                            <rect x="193" y="39" width="145" height="2.5" rx="1" fill="#93c5fd"/>
+                            <rect x="193" y="42" width="145" height="2.5" rx="1" fill="#1d4ed8"/>
+                            <rect x="193" y="45" width="145" height="2.5" rx="1" fill="#e7e5e4"/>
+                            <rect x="193" y="48" width="145" height="2.5" rx="1" fill="#78350f"/>
+                            <!-- seta de medição -->
+                            <line x1="193" y1="60" x2="338" y2="60" stroke="#fbbf24" stroke-width="1.5"/>
+                            <line x1="193" y1="55" x2="193" y2="65" stroke="#fbbf24" stroke-width="1.5"/>
+                            <line x1="338" y1="55" x2="338" y2="65" stroke="#fbbf24" stroke-width="1.5"/>
+                            <text x="265" y="71" text-anchor="middle" fill="#fbbf24" font-size="10" font-family="monospace">~3 cm (casca removida)</text>
+                            <!-- aviso -->
+                            <rect x="348" y="22" width="76" height="28" rx="5" fill="#fef2f2" stroke="#ef4444" stroke-width="1.5"/>
+                            <text x="386" y="34" text-anchor="middle" fill="#ef4444" font-size="9" font-family="monospace">&#9888; n&#227;o</text>
+                            <text x="386" y="45" text-anchor="middle" fill="#ef4444" font-size="9" font-family="monospace">cortar fios</text>
+                        </svg>
+                    </div>
+                    <div class="step-desc">Com o desencapador ou estilete, remova <strong>~3 cm</strong> da casca externa de cada extremidade sem cortar o isolamento dos fios. N&atilde;o remova mais que 3 cm — o excesso exposto fora do conector compromete o desempenho.</div>
                 </div>
             </div>
+
+            <!-- PASSO 2 -->
             <div class="prat-step">
                 <div class="step-num">2</div>
                 <div class="step-body">
-                    <div class="step-label">Destran&ccedil;ar e ordenar os pares</div>
-                    <div class="step-desc">Separe os 4 pares e destran&ccedil;e apenas o suficiente para conseguir alinhar os fios (mantenha o tran&ccedil;ado o mais pr&oacute;ximo poss&iacute;vel da extremidade). Organize os 8 fios na ordem <strong>T568B</strong>:<br><br>
-                    <strong>Pino 1:</strong> Branco/Laranja &bull; <strong>Pino 2:</strong> Laranja &bull; <strong>Pino 3:</strong> Branco/Verde &bull; <strong>Pino 4:</strong> Azul &bull; <strong>Pino 5:</strong> Branco/Azul &bull; <strong>Pino 6:</strong> Verde &bull; <strong>Pino 7:</strong> Branco/Marrom &bull; <strong>Pino 8:</strong> Marrom.<br><br>
-                    Mantenha os fios paralelos e na ordem correta com o polegar e o &iacute;ndice, como um &ldquo;leque&rdquo; achatado.</div>
+                    <div class="step-label">Destran&ccedil;ar e ordenar &mdash; padr&atilde;o T568B</div>
+                    <div class="viz-wrap" style="margin:.75rem 0 .25rem">
+                        <div style="display:flex;gap:4px;justify-content:center;flex-wrap:nowrap;overflow-x:auto;padding:4px 2px">
+                            <div style="text-align:center;flex-shrink:0">
+                                <div style="width:32px;height:58px;border-radius:3px 3px 8px 8px;background:linear-gradient(160deg,#fff3e0 45%,#ea580c 45%);border:1.5px solid #475569"></div>
+                                <div style="color:#fbbf24;font-size:10px;font-family:monospace;margin-top:3px;font-weight:700">1</div>
+                                <div style="color:#94a3b8;font-size:8px;font-family:monospace">Br/Lj</div>
+                            </div>
+                            <div style="text-align:center;flex-shrink:0">
+                                <div style="width:32px;height:58px;border-radius:3px 3px 8px 8px;background:#ea580c;border:1.5px solid #475569"></div>
+                                <div style="color:#fbbf24;font-size:10px;font-family:monospace;margin-top:3px;font-weight:700">2</div>
+                                <div style="color:#94a3b8;font-size:8px;font-family:monospace">Laranja</div>
+                            </div>
+                            <div style="text-align:center;flex-shrink:0">
+                                <div style="width:32px;height:58px;border-radius:3px 3px 8px 8px;background:linear-gradient(160deg,#f0fdf4 45%,#16a34a 45%);border:1.5px solid #475569"></div>
+                                <div style="color:#fbbf24;font-size:10px;font-family:monospace;margin-top:3px;font-weight:700">3</div>
+                                <div style="color:#94a3b8;font-size:8px;font-family:monospace">Br/Ve</div>
+                            </div>
+                            <div style="text-align:center;flex-shrink:0">
+                                <div style="width:32px;height:58px;border-radius:3px 3px 8px 8px;background:#1d4ed8;border:1.5px solid #475569"></div>
+                                <div style="color:#fbbf24;font-size:10px;font-family:monospace;margin-top:3px;font-weight:700">4</div>
+                                <div style="color:#94a3b8;font-size:8px;font-family:monospace">Azul</div>
+                            </div>
+                            <div style="text-align:center;flex-shrink:0">
+                                <div style="width:32px;height:58px;border-radius:3px 3px 8px 8px;background:linear-gradient(160deg,#eff6ff 45%,#1d4ed8 45%);border:1.5px solid #475569"></div>
+                                <div style="color:#fbbf24;font-size:10px;font-family:monospace;margin-top:3px;font-weight:700">5</div>
+                                <div style="color:#94a3b8;font-size:8px;font-family:monospace">Br/Az</div>
+                            </div>
+                            <div style="text-align:center;flex-shrink:0">
+                                <div style="width:32px;height:58px;border-radius:3px 3px 8px 8px;background:#16a34a;border:1.5px solid #475569"></div>
+                                <div style="color:#fbbf24;font-size:10px;font-family:monospace;margin-top:3px;font-weight:700">6</div>
+                                <div style="color:#94a3b8;font-size:8px;font-family:monospace">Verde</div>
+                            </div>
+                            <div style="text-align:center;flex-shrink:0">
+                                <div style="width:32px;height:58px;border-radius:3px 3px 8px 8px;background:linear-gradient(160deg,#fafaf9 45%,#78350f 45%);border:1.5px solid #475569"></div>
+                                <div style="color:#fbbf24;font-size:10px;font-family:monospace;margin-top:3px;font-weight:700">7</div>
+                                <div style="color:#94a3b8;font-size:8px;font-family:monospace">Br/Ma</div>
+                            </div>
+                            <div style="text-align:center;flex-shrink:0">
+                                <div style="width:32px;height:58px;border-radius:3px 3px 8px 8px;background:#78350f;border:1.5px solid #475569"></div>
+                                <div style="color:#fbbf24;font-size:10px;font-family:monospace;margin-top:3px;font-weight:700">8</div>
+                                <div style="color:#94a3b8;font-size:8px;font-family:monospace">Marrom</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="step-desc">Separe os 4 pares e destran&ccedil;e s&oacute; o suficiente para alinhar os fios. Organize na ordem T568B exibida acima &mdash; pino 1 &agrave; esquerda. Mantenha o leque paralelo e firme entre polegar e &iacute;ndice antes de inserir.</div>
                 </div>
             </div>
+
+            <!-- PASSO 3 -->
             <div class="prat-step">
                 <div class="step-num">3</div>
                 <div class="step-body">
-                    <div class="step-label">Cortar em linha reta</div>
-                    <div class="step-desc">Sem soltar a ordem dos fios, use o pr&oacute;prio alicate de crimpar (a parte cortante) ou um alicate de corte para nivelar as pontas em linha reta, deixando <strong>aproximadamente 1,2 cm</strong> de fio exposto a partir da casca. Esse comprimento &eacute; calculado para que os fios cheguem at&eacute; o fundo do conector e a casca seja fixada pela trava interna do RJ-45.</div>
+                    <div class="step-label">Cortar em linha reta &mdash; ~1,2 cm expostos</div>
+                    <div class="viz-wrap" style="margin:.75rem 0 .25rem">
+                        <svg viewBox="0 0 380 72" style="width:100%;display:block">
+                            <!-- casca -->
+                            <rect x="8" y="22" width="80" height="28" rx="5" fill="#475569"/>
+                            <text x="48" y="39" text-anchor="middle" fill="#94a3b8" font-size="9" font-family="monospace">casca</text>
+                            <!-- 8 fios -->
+                            <rect x="88" y="24" width="125" height="3" rx="1" fill="#fed7aa"/>
+                            <rect x="88" y="28" width="125" height="3" rx="1" fill="#ea580c"/>
+                            <rect x="88" y="32" width="125" height="3" rx="1" fill="#86efac"/>
+                            <rect x="88" y="36" width="125" height="3" rx="1" fill="#16a34a"/>
+                            <rect x="88" y="40" width="125" height="3" rx="1" fill="#93c5fd"/>
+                            <rect x="88" y="44" width="125" height="3" rx="1" fill="#1d4ed8"/>
+                            <rect x="88" y="48" width="125" height="3" rx="1" fill="#e7e5e4"/>
+                            <rect x="88" y="52" width="125" height="3" rx="1" fill="#78350f"/>
+                            <!-- linha de corte -->
+                            <line x1="213" y1="14" x2="213" y2="62" stroke="#ef4444" stroke-width="2" stroke-dasharray="4,2"/>
+                            <text x="224" y="18" fill="#ef4444" font-size="13">&#9988;</text>
+                            <!-- medição -->
+                            <line x1="88"  y1="62" x2="213" y2="62" stroke="#fbbf24" stroke-width="1.5"/>
+                            <line x1="88"  y1="57" x2="88"  y2="67" stroke="#fbbf24" stroke-width="1.5"/>
+                            <line x1="213" y1="57" x2="213" y2="67" stroke="#fbbf24" stroke-width="1.5"/>
+                            <text x="150" y="72" text-anchor="middle" fill="#fbbf24" font-size="10" font-family="monospace">~1,2 cm</text>
+                            <!-- resultado -->
+                            <rect x="248" y="20" width="120" height="32" rx="6" fill="#052e161a" stroke="#16a34a" stroke-width="1.5"/>
+                            <text x="308" y="34" text-anchor="middle" fill="#4ade80" font-size="10" font-family="monospace">&#10003; pontas</text>
+                            <text x="308" y="46" text-anchor="middle" fill="#4ade80" font-size="10" font-family="monospace">niveladas</text>
+                        </svg>
+                    </div>
+                    <div class="step-desc">Sem soltar a ordem, use o alicate de crimpar para nivelar as pontas em linha reta deixando <strong>~1,2 cm</strong> de fio exposto a partir da casca. Esse comprimento garante que os fios alcancem o fundo do conector e a casca seja travada.</div>
                 </div>
             </div>
+
+            <!-- PASSO 4 -->
             <div class="prat-step">
                 <div class="step-num">4</div>
                 <div class="step-body">
-                    <div class="step-label">Inserir no conector RJ-45</div>
-                    <div class="step-desc">Segure o conector RJ-45 com a <strong>trava voltada para baixo e os pinos voltados para voc&ecirc;</strong>. Insira os fios com firmeza at&eacute; que cada um encoste no fundo do canal metálico (pino 1 &agrave; esquerda, pino 8 &agrave; direita). Verifique: (a) todos os 8 fios est&atilde;o visivelmente no fundo; (b) a casca PVC entrou pelo menos 0,5 cm dentro do conector para ser travada; (c) a ordem das cores est&aacute; correta olhando pelos pinos.</div>
+                    <div class="step-label">Inserir no conector RJ-45 &mdash; trava para baixo</div>
+                    <div class="viz-wrap" style="margin:.75rem 0 .25rem">
+                        <svg viewBox="0 0 440 95" style="width:100%;display:block">
+                            <!-- fios chegando (animados) -->
+                            <g>
+                                <animateTransform attributeName="transform" type="translate"
+                                    values="-18,0;0,0;0,0;-18,0" keyTimes="0;0.3;0.7;1"
+                                    dur="2.8s" repeatCount="indefinite"/>
+                                <rect x="8"  y="35" width="115" height="3" rx="1" fill="#fed7aa"/>
+                                <rect x="8"  y="39" width="115" height="3" rx="1" fill="#ea580c"/>
+                                <rect x="8"  y="43" width="115" height="3" rx="1" fill="#86efac"/>
+                                <rect x="8"  y="47" width="115" height="3" rx="1" fill="#16a34a"/>
+                                <rect x="8"  y="51" width="115" height="3" rx="1" fill="#93c5fd"/>
+                                <rect x="8"  y="55" width="115" height="3" rx="1" fill="#1d4ed8"/>
+                                <rect x="8"  y="59" width="115" height="3" rx="1" fill="#e7e5e4"/>
+                                <rect x="8"  y="63" width="115" height="3" rx="1" fill="#78350f"/>
+                            </g>
+                            <!-- seta -->
+                            <text x="128" y="54" fill="#fbbf24" font-size="20" font-family="monospace">&#8594;</text>
+                            <!-- conector RJ-45 body -->
+                            <rect x="152" y="18" width="88" height="62" rx="5" fill="#334155" stroke="#64748b" stroke-width="2"/>
+                            <!-- 8 canais coloridos -->
+                            <rect x="156" y="23" width="9" height="46" rx="1" fill="#fed7aa"/>
+                            <rect x="167" y="23" width="9" height="46" rx="1" fill="#ea580c"/>
+                            <rect x="178" y="23" width="9" height="46" rx="1" fill="#86efac"/>
+                            <rect x="189" y="23" width="9" height="46" rx="1" fill="#16a34a"/>
+                            <rect x="200" y="23" width="9" height="46" rx="1" fill="#93c5fd"/>
+                            <rect x="211" y="23" width="9" height="46" rx="1" fill="#1d4ed8"/>
+                            <rect x="222" y="23" width="9" height="46" rx="1" fill="#e7e5e4"/>
+                            <rect x="233" y="23" width="9" height="46" rx="1" fill="#78350f"/>
+                            <!-- pinos metálicos (topo) -->
+                            <rect x="156" y="18" width="9"  height="8" rx="1" fill="#94a3b8"/>
+                            <rect x="167" y="18" width="9"  height="8" rx="1" fill="#94a3b8"/>
+                            <rect x="178" y="18" width="9"  height="8" rx="1" fill="#94a3b8"/>
+                            <rect x="189" y="18" width="9"  height="8" rx="1" fill="#94a3b8"/>
+                            <rect x="200" y="18" width="9"  height="8" rx="1" fill="#94a3b8"/>
+                            <rect x="211" y="18" width="9"  height="8" rx="1" fill="#94a3b8"/>
+                            <rect x="222" y="18" width="9"  height="8" rx="1" fill="#94a3b8"/>
+                            <rect x="233" y="18" width="9"  height="8" rx="1" fill="#94a3b8"/>
+                            <!-- números dos pinos -->
+                            <text x="160" y="14" text-anchor="middle" fill="#64748b" font-size="7" font-family="monospace">1</text>
+                            <text x="171" y="14" text-anchor="middle" fill="#64748b" font-size="7" font-family="monospace">2</text>
+                            <text x="182" y="14" text-anchor="middle" fill="#64748b" font-size="7" font-family="monospace">3</text>
+                            <text x="193" y="14" text-anchor="middle" fill="#64748b" font-size="7" font-family="monospace">4</text>
+                            <text x="204" y="14" text-anchor="middle" fill="#64748b" font-size="7" font-family="monospace">5</text>
+                            <text x="215" y="14" text-anchor="middle" fill="#64748b" font-size="7" font-family="monospace">6</text>
+                            <text x="226" y="14" text-anchor="middle" fill="#64748b" font-size="7" font-family="monospace">7</text>
+                            <text x="237" y="14" text-anchor="middle" fill="#64748b" font-size="7" font-family="monospace">8</text>
+                            <!-- trava (latch) -->
+                            <rect x="172" y="78" width="48" height="9" rx="3" fill="#475569" stroke="#64748b" stroke-width="1.5"/>
+                            <text x="196" y="86" text-anchor="middle" fill="#94a3b8" font-size="7" font-family="monospace">TRAVA &#8595;</text>
+                            <!-- checklist -->
+                            <text x="262" y="34" fill="#4ade80" font-size="10" font-family="monospace">&#10003; 8 fios no fundo</text>
+                            <text x="262" y="50" fill="#4ade80" font-size="10" font-family="monospace">&#10003; casca 0,5 cm dentro</text>
+                            <text x="262" y="66" fill="#4ade80" font-size="10" font-family="monospace">&#10003; cores na ordem</text>
+                            <text x="196" y="95" text-anchor="middle" fill="#64748b" font-size="9" font-family="monospace">trava voltada para BAIXO</text>
+                        </svg>
+                    </div>
+                    <div class="step-desc">Segure o RJ-45 com a <strong>trava para baixo e pinos voltados para voc&ecirc;</strong> (pino 1 &agrave; esquerda). Insira firme at&eacute; os fios tocarem o fundo. Confirme os 3 itens do checklist antes de crimpar.</div>
                 </div>
             </div>
+
+            <!-- PASSO 5 -->
             <div class="prat-step">
                 <div class="step-num">5</div>
                 <div class="step-body">
-                    <div class="step-label">Crimpar</div>
-                    <div class="step-desc">Encaixe o conector no slot correto do alicate de crimpar (slot RJ-45 = 8 vias). Pressione o alicate com firmeza e uniformidade at&eacute; o final do curso — voc&ecirc; dever&aacute; ouvir um <em>clique</em> ou sentir a resist&ecirc;ncia cessar. O processo &eacute; irrevers&iacute;vel: os pinos metálicos perfuram o isolamento de cada fio (conex&atilde;o IDC) e a trava plástica prende a casca. Repita o processo na outra extremidade com o <strong>mesmo padr&atilde;o T568B</strong> para obter um cabo direto (straight-through).</div>
+                    <div class="step-label">Crimpar &mdash; pressionar at&eacute; o clique</div>
+                    <div class="viz-wrap" style="margin:.75rem 0 .25rem">
+                        <svg viewBox="0 0 340 105" style="width:100%;display:block">
+                            <!-- cabo chegando -->
+                            <rect x="8" y="56" width="85" height="14" rx="4" fill="#475569"/>
+                            <!-- cabo striped section -->
+                            <rect x="90" y="57" width="40" height="2.5" rx="1" fill="#fed7aa"/>
+                            <rect x="90" y="60" width="40" height="2.5" rx="1" fill="#ea580c"/>
+                            <rect x="90" y="63" width="40" height="2.5" rx="1" fill="#86efac"/>
+                            <rect x="90" y="66" width="40" height="2.5" rx="1" fill="#16a34a"/>
+                            <!-- conector RJ-45 no slot -->
+                            <rect x="130" y="50" width="52" height="30" rx="4" fill="#1e293b" stroke="#64748b" stroke-width="1.5"/>
+                            <!-- pinos no topo do conector -->
+                            <rect x="133" y="46" width="5" height="6" rx="1" fill="#94a3b8"/>
+                            <rect x="140" y="46" width="5" height="6" rx="1" fill="#94a3b8"/>
+                            <rect x="147" y="46" width="5" height="6" rx="1" fill="#94a3b8"/>
+                            <rect x="154" y="46" width="5" height="6" rx="1" fill="#94a3b8"/>
+                            <rect x="161" y="46" width="5" height="6" rx="1" fill="#94a3b8"/>
+                            <rect x="168" y="46" width="5" height="6" rx="1" fill="#94a3b8"/>
+                            <!-- alicate — parte superior (estática) -->
+                            <rect x="110" y="8"  width="92" height="16" rx="6" fill="#475569"/>
+                            <text x="156" y="20" text-anchor="middle" fill="#94a3b8" font-size="9" font-family="monospace">alicate de crimpar</text>
+                            <rect x="126" y="24" width="60" height="12" rx="3" fill="#334155" stroke="#64748b" stroke-width="1.5"/>
+                            <!-- alicate — mandíbula inferior (animada subindo) -->
+                            <g class="crimp-jaw">
+                                <rect x="126" y="84" width="60" height="12" rx="3" fill="#334155" stroke="#64748b" stroke-width="1.5"/>
+                            </g>
+                            <!-- seta de ação -->
+                            <text x="215" y="52" fill="#fbbf24" font-size="22">&#x21A7;</text>
+                            <text x="248" y="46" fill="#fbbf24" font-size="10" font-family="monospace">pressione</text>
+                            <text x="248" y="60" fill="#4ade80" font-size="10" font-family="monospace">at&#233; o clique</text>
+                            <!-- IDC label -->
+                            <text x="170" y="100" text-anchor="middle" fill="#64748b" font-size="9" font-family="monospace">pinos IDC perfuram o isolamento</text>
+                        </svg>
+                    </div>
+                    <div class="step-desc">Encaixe o conector no slot RJ-45 do alicate. Pressione firmemente at&eacute; ouvir o <em>clique</em> &mdash; os pinos IDC perfuram cada fio e a trava prende a casca. Processo irrevers&iacute;vel. Repita na outra ponta com o mesmo padr&atilde;o T568B.</div>
                 </div>
             </div>
+
+            <!-- PASSO 6 -->
             <div class="prat-step">
                 <div class="step-num">6</div>
                 <div class="step-body">
-                    <div class="step-label">Testar a continuidade</div>
-                    <div class="step-desc">Conecte as duas pontas do cabo ao testador. Um testador b&aacute;sico acende LEDs numerados de 1 a 8 em sequ&ecirc;ncia em ambos os lados — todos devem acender na <strong>mesma ordem</strong> (1-1, 2-2, … 8-8) para um cabo direto correto. <strong>Erros comuns:</strong> LED que n&atilde;o acende = fio n&atilde;o chegou ao pino (crimpar novamente); LEDs trocados = ordem errada (refazer); LED intermitente = conex&atilde;o fr&aacute;gil (refazer). Sem testador: conecte o cabo entre dois switches e verifique se os LEDs de link acendem.</div>
+                    <div class="step-label">Testar a continuidade &mdash; LEDs 1&#8594;1 at&eacute; 8&#8594;8</div>
+                    <div class="viz-wrap" style="margin:.75rem 0 .25rem">
+                        <svg viewBox="0 0 320 118" style="width:100%;display:block">
+                            <!-- testador lado A -->
+                            <rect x="15" y="8"  width="90" height="102" rx="8" fill="#1e293b" stroke="#475569" stroke-width="2"/>
+                            <text x="60" y="25" text-anchor="middle" fill="#94a3b8" font-size="10" font-family="monospace">Lado A</text>
+                            <rect x="28" y="29" width="64" height="10" rx="2" fill="#334155" stroke="#64748b" stroke-width="1"/>
+                            <text x="60" y="38" text-anchor="middle" fill="#64748b" font-size="8" font-family="monospace">RJ-45</text>
+                            <!-- LEDs lado A -->
+                            <circle class="led-1" cx="38" cy="56"  r="6" fill="#22c55e"/>
+                            <circle class="led-2" cx="38" cy="68"  r="6" fill="#22c55e"/>
+                            <circle class="led-3" cx="38" cy="80"  r="6" fill="#22c55e"/>
+                            <circle class="led-4" cx="38" cy="92"  r="6" fill="#22c55e"/>
+                            <circle class="led-5" cx="82" cy="56"  r="6" fill="#22c55e"/>
+                            <circle class="led-6" cx="82" cy="68"  r="6" fill="#22c55e"/>
+                            <circle class="led-7" cx="82" cy="80"  r="6" fill="#22c55e"/>
+                            <circle class="led-8" cx="82" cy="92"  r="6" fill="#22c55e"/>
+                            <text x="50"  cy="59" y="59" fill="#64748b" font-size="8" font-family="monospace">1</text>
+                            <text x="50"  y="71" fill="#64748b" font-size="8" font-family="monospace">2</text>
+                            <text x="50"  y="83" fill="#64748b" font-size="8" font-family="monospace">3</text>
+                            <text x="50"  y="95" fill="#64748b" font-size="8" font-family="monospace">4</text>
+                            <text x="71"  y="59" fill="#64748b" font-size="8" font-family="monospace">5</text>
+                            <text x="71"  y="71" fill="#64748b" font-size="8" font-family="monospace">6</text>
+                            <text x="71"  y="83" fill="#64748b" font-size="8" font-family="monospace">7</text>
+                            <text x="71"  y="95" fill="#64748b" font-size="8" font-family="monospace">8</text>
+                            <!-- cabo entre testadores -->
+                            <line x1="105" y1="68" x2="215" y2="68" stroke="#475569" stroke-width="3.5" stroke-dasharray="6,4"/>
+                            <text x="160" y="62" text-anchor="middle" fill="#64748b" font-size="9" font-family="monospace">cabo Cat 5e</text>
+                            <!-- testador lado B -->
+                            <rect x="215" y="8" width="90" height="102" rx="8" fill="#1e293b" stroke="#475569" stroke-width="2"/>
+                            <text x="260" y="25" text-anchor="middle" fill="#94a3b8" font-size="10" font-family="monospace">Lado B</text>
+                            <rect x="228" y="29" width="64" height="10" rx="2" fill="#334155" stroke="#64748b" stroke-width="1"/>
+                            <text x="260" y="38" text-anchor="middle" fill="#64748b" font-size="8" font-family="monospace">RJ-45</text>
+                            <!-- LEDs lado B (mesmo delay = acendem junto) -->
+                            <circle class="led-1" cx="238" cy="56"  r="6" fill="#22c55e"/>
+                            <circle class="led-2" cx="238" cy="68"  r="6" fill="#22c55e"/>
+                            <circle class="led-3" cx="238" cy="80"  r="6" fill="#22c55e"/>
+                            <circle class="led-4" cx="238" cy="92"  r="6" fill="#22c55e"/>
+                            <circle class="led-5" cx="282" cy="56"  r="6" fill="#22c55e"/>
+                            <circle class="led-6" cx="282" cy="68"  r="6" fill="#22c55e"/>
+                            <circle class="led-7" cx="282" cy="80"  r="6" fill="#22c55e"/>
+                            <circle class="led-8" cx="282" cy="92"  r="6" fill="#22c55e"/>
+                            <text x="250" y="59" fill="#64748b" font-size="8" font-family="monospace">1</text>
+                            <text x="250" y="71" fill="#64748b" font-size="8" font-family="monospace">2</text>
+                            <text x="250" y="83" fill="#64748b" font-size="8" font-family="monospace">3</text>
+                            <text x="250" y="95" fill="#64748b" font-size="8" font-family="monospace">4</text>
+                            <text x="271" y="59" fill="#64748b" font-size="8" font-family="monospace">5</text>
+                            <text x="271" y="71" fill="#64748b" font-size="8" font-family="monospace">6</text>
+                            <text x="271" y="83" fill="#64748b" font-size="8" font-family="monospace">7</text>
+                            <text x="271" y="95" fill="#64748b" font-size="8" font-family="monospace">8</text>
+                        </svg>
+                    </div>
+                    <div class="step-desc">Conecte as duas pontas ao testador. Os LEDs devem acender em sequ&ecirc;ncia na mesma ordem (1&#8594;1, 2&#8594;2 … 8&#8594;8). <strong>Falhas:</strong> LED apagado = fio n&atilde;o chegou ao pino; LEDs trocados = ordem errada; LED intermitente = conex&atilde;o fr&aacute;gil. Refazer o conector com problema.</div>
                 </div>
             </div>
-        </div>
+
+        </div><!-- fim prat-steps -->
 
         <div class="prat-observe">
-            <strong>&#x1F4CC; Crit&eacute;rios de avalia&ccedil;&atilde;o:</strong> cabo com continuidade correta nos 8 pinos (testador) &bull; casca presa pelo conector (sem folga) &bull; ordem T568B vis&iacute;vel nos pinos &bull; acabamento sem fios expostos fora do conector. <em>Erros de crimpagem s&atilde;o a principal causa de falhas intermitentes em redes — um cabo visualmente perfeito pode ter um pino mal crimpado que s&oacute; falha sob carga ou flex&atilde;o.</em>
+            <strong>&#x1F4CC; Crit&eacute;rios de avalia&ccedil;&atilde;o:</strong> continuidade correta nos 8 pinos &bull; casca presa sem folga &bull; ordem T568B vis&iacute;vel nos pinos &bull; acabamento sem fios expostos. <em>Erros de crimpagem s&atilde;o a principal causa de falhas intermitentes — um cabo visualmente perfeito pode ter um pino mal crimpado que s&oacute; falha sob carga ou flex&atilde;o.</em>
         </div>
 
         <div class="ex-actions">
