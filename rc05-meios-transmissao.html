@@ -693,6 +693,55 @@
         </div>
     </div>
 
+    <!-- MÚLTIPLA ESCOLHA -->
+    <div class="content-card exercise-card">
+        <h2>&#x2753; Verifique seu Conhecimento</h2>
+
+        <div class="mc-question" data-correct="c">
+            <p class="mc-q-text">Qual categoria de cabo UTP suporta 10 Gbps em at&eacute; 100 metros e &eacute; considerada o padr&atilde;o atual para instala&ccedil;&otilde;es corporativas de alta performance?</p>
+            <div class="mc-options">
+                <div class="mc-option" data-option="a"><span class="mc-letter">A</span><span>Cat 5e</span></div>
+                <div class="mc-option" data-option="b"><span class="mc-letter">B</span><span>Cat 6</span></div>
+                <div class="mc-option" data-option="c"><span class="mc-letter">C</span><span>Cat 6A</span></div>
+                <div class="mc-option" data-option="d"><span class="mc-letter">D</span><span>Cat 8</span></div>
+            </div>
+            <div class="mc-explanation">&#x2713; O Cat 6A (Augmented) suporta 10 Gbps at&eacute; 100 m com frequ&ecirc;ncia de 500 MHz. O Cat 5e suporta apenas 1 Gbps; o Cat 6 suporta 10 Gbps somente at&eacute; 55 m; o Cat 8 suporta 25&ndash;40 Gbps mas apenas at&eacute; 30 m (uso restrito a data centers).</div>
+        </div>
+        <hr class="mc-sep">
+        <div class="mc-question" data-correct="a">
+            <p class="mc-q-text">Qual &eacute; a principal vantagem da fibra &oacute;ptica monomodo (SMF) em rela&ccedil;&atilde;o &agrave; multimodo (MMF)?</p>
+            <div class="mc-options">
+                <div class="mc-option" data-option="a"><span class="mc-letter">A</span><span>Alcance muito maior, chegando a dezenas de quil&ocirc;metros sem repetidor</span></div>
+                <div class="mc-option" data-option="b"><span class="mc-letter">B</span><span>Custo de instala&ccedil;&atilde;o significativamente menor</span></div>
+                <div class="mc-option" data-option="c"><span class="mc-letter">C</span><span>N&uacute;cleo maior que facilita o alinhamento dos conectores</span></div>
+                <div class="mc-option" data-option="d"><span class="mc-letter">D</span><span>Compatibilidade com fontes de luz LED comuns</span></div>
+            </div>
+            <div class="mc-explanation">&#x2713; A fibra monomodo (n&uacute;cleo de 8&ndash;10 &micro;m, cor amarela) transmite apenas um modo de luz e pode alcan&ccedil;ar at&eacute; 100 km sem repetidor. A multimodo (n&uacute;cleo de 50&ndash;62,5 &micro;m) &eacute; limitada a ~550 m mas &eacute; mais barata para curtas dist&acirc;ncias. A SMF usa laser, n&atilde;o LED.</div>
+        </div>
+        <hr class="mc-sep">
+        <div class="mc-question" data-correct="d">
+            <p class="mc-q-text">No cabeamento estruturado, qual &eacute; o comprimento m&aacute;ximo permitido para o cabo horizontal fixo (dentro da parede/forro), excluindo os patch cords?</p>
+            <div class="mc-options">
+                <div class="mc-option" data-option="a"><span class="mc-letter">A</span><span>50 metros</span></div>
+                <div class="mc-option" data-option="b"><span class="mc-letter">B</span><span>100 metros</span></div>
+                <div class="mc-option" data-option="c"><span class="mc-letter">C</span><span>120 metros</span></div>
+                <div class="mc-option" data-option="d"><span class="mc-letter">D</span><span>90 metros</span></div>
+            </div>
+            <div class="mc-explanation">&#x2713; A norma TIA/EIA-568 define 90 m para o cabo horizontal fixo + at&eacute; 10 m de patch cords (5 m no armário + 5 m na &aacute;rea de trabalho), totalizando 100 m. Ultrapassar 90 m no trecho fixo viola a norma e pode causar quedas de desempenho.</div>
+        </div>
+        <hr class="mc-sep">
+        <div class="mc-question" data-correct="b">
+            <p class="mc-q-text">Um t&eacute;cnico precisa conectar dois computadores diretamente (sem switch) numa bancada de testes usando cabo UTP. Qual tipo de cabo deve usar, considerando que os switches modernos n&atilde;o est&atilde;o envolvidos?</p>
+            <div class="mc-options">
+                <div class="mc-option" data-option="a"><span class="mc-letter">A</span><span>Cabo direto (straight-through) com padr&atilde;o T568B nas duas pontas</span></div>
+                <div class="mc-option" data-option="b"><span class="mc-letter">B</span><span>Cabo crossover com T568A em uma ponta e T568B na outra</span></div>
+                <div class="mc-option" data-option="c"><span class="mc-letter">C</span><span>Cabo rollover (console), usado para acesso serial</span></div>
+                <div class="mc-option" data-option="d"><span class="mc-letter">D</span><span>Qualquer cabo serve, pois as placas de rede detectam automaticamente</span></div>
+            </div>
+            <div class="mc-explanation">&#x2713; Para conectar dois dispositivos do mesmo tipo sem switch, usa-se o <strong>cabo crossover</strong> (T568A + T568B), que cruza os pares de transmiss&atilde;o e recep&ccedil;&atilde;o. Placas modernas com Auto-MDI-X fazem isso automaticamente, mas em bancadas de testes com hardware legado ou para fins did&aacute;ticos o crossover ainda &eacute; necess&aacute;rio.</div>
+        </div>
+    </div>
+
     <!-- ATIVIDADE PRÁTICA — Crimpagem -->
     <div class="content-card exercise-card" id="prat-rc05-crimp">
         <h2>&#x1F527; Atividade Pr&aacute;tica &mdash; Crimpagem de Cabo Cat 5e</h2>
@@ -1020,55 +1069,6 @@
 
         <div class="ex-actions">
             <button class="btn-print" onclick="printPractical('prat-rc05-crimp', 'Aula 5 \u2014 Pr\u00e1tica de Crimpagem Cat 5e')">&#x1F5A8;&#xFE0F; Imprimir roteiro</button>
-        </div>
-    </div>
-
-    <!-- MÚLTIPLA ESCOLHA -->
-    <div class="content-card exercise-card">
-        <h2>&#x2753; Verifique seu Conhecimento</h2>
-
-        <div class="mc-question" data-correct="c">
-            <p class="mc-q-text">Qual categoria de cabo UTP suporta 10 Gbps em at&eacute; 100 metros e &eacute; considerada o padr&atilde;o atual para instala&ccedil;&otilde;es corporativas de alta performance?</p>
-            <div class="mc-options">
-                <div class="mc-option" data-option="a"><span class="mc-letter">A</span><span>Cat 5e</span></div>
-                <div class="mc-option" data-option="b"><span class="mc-letter">B</span><span>Cat 6</span></div>
-                <div class="mc-option" data-option="c"><span class="mc-letter">C</span><span>Cat 6A</span></div>
-                <div class="mc-option" data-option="d"><span class="mc-letter">D</span><span>Cat 8</span></div>
-            </div>
-            <div class="mc-explanation">&#x2713; O Cat 6A (Augmented) suporta 10 Gbps at&eacute; 100 m com frequ&ecirc;ncia de 500 MHz. O Cat 5e suporta apenas 1 Gbps; o Cat 6 suporta 10 Gbps somente at&eacute; 55 m; o Cat 8 suporta 25&ndash;40 Gbps mas apenas at&eacute; 30 m (uso restrito a data centers).</div>
-        </div>
-        <hr class="mc-sep">
-        <div class="mc-question" data-correct="a">
-            <p class="mc-q-text">Qual &eacute; a principal vantagem da fibra &oacute;ptica monomodo (SMF) em rela&ccedil;&atilde;o &agrave; multimodo (MMF)?</p>
-            <div class="mc-options">
-                <div class="mc-option" data-option="a"><span class="mc-letter">A</span><span>Alcance muito maior, chegando a dezenas de quil&ocirc;metros sem repetidor</span></div>
-                <div class="mc-option" data-option="b"><span class="mc-letter">B</span><span>Custo de instala&ccedil;&atilde;o significativamente menor</span></div>
-                <div class="mc-option" data-option="c"><span class="mc-letter">C</span><span>N&uacute;cleo maior que facilita o alinhamento dos conectores</span></div>
-                <div class="mc-option" data-option="d"><span class="mc-letter">D</span><span>Compatibilidade com fontes de luz LED comuns</span></div>
-            </div>
-            <div class="mc-explanation">&#x2713; A fibra monomodo (n&uacute;cleo de 8&ndash;10 &micro;m, cor amarela) transmite apenas um modo de luz e pode alcan&ccedil;ar at&eacute; 100 km sem repetidor. A multimodo (n&uacute;cleo de 50&ndash;62,5 &micro;m) &eacute; limitada a ~550 m mas &eacute; mais barata para curtas dist&acirc;ncias. A SMF usa laser, n&atilde;o LED.</div>
-        </div>
-        <hr class="mc-sep">
-        <div class="mc-question" data-correct="d">
-            <p class="mc-q-text">No cabeamento estruturado, qual &eacute; o comprimento m&aacute;ximo permitido para o cabo horizontal fixo (dentro da parede/forro), excluindo os patch cords?</p>
-            <div class="mc-options">
-                <div class="mc-option" data-option="a"><span class="mc-letter">A</span><span>50 metros</span></div>
-                <div class="mc-option" data-option="b"><span class="mc-letter">B</span><span>100 metros</span></div>
-                <div class="mc-option" data-option="c"><span class="mc-letter">C</span><span>120 metros</span></div>
-                <div class="mc-option" data-option="d"><span class="mc-letter">D</span><span>90 metros</span></div>
-            </div>
-            <div class="mc-explanation">&#x2713; A norma TIA/EIA-568 define 90 m para o cabo horizontal fixo + at&eacute; 10 m de patch cords (5 m no armário + 5 m na &aacute;rea de trabalho), totalizando 100 m. Ultrapassar 90 m no trecho fixo viola a norma e pode causar quedas de desempenho.</div>
-        </div>
-        <hr class="mc-sep">
-        <div class="mc-question" data-correct="b">
-            <p class="mc-q-text">Um t&eacute;cnico precisa conectar dois computadores diretamente (sem switch) numa bancada de testes usando cabo UTP. Qual tipo de cabo deve usar, considerando que os switches modernos n&atilde;o est&atilde;o envolvidos?</p>
-            <div class="mc-options">
-                <div class="mc-option" data-option="a"><span class="mc-letter">A</span><span>Cabo direto (straight-through) com padr&atilde;o T568B nas duas pontas</span></div>
-                <div class="mc-option" data-option="b"><span class="mc-letter">B</span><span>Cabo crossover com T568A em uma ponta e T568B na outra</span></div>
-                <div class="mc-option" data-option="c"><span class="mc-letter">C</span><span>Cabo rollover (console), usado para acesso serial</span></div>
-                <div class="mc-option" data-option="d"><span class="mc-letter">D</span><span>Qualquer cabo serve, pois as placas de rede detectam automaticamente</span></div>
-            </div>
-            <div class="mc-explanation">&#x2713; Para conectar dois dispositivos do mesmo tipo sem switch, usa-se o <strong>cabo crossover</strong> (T568A + T568B), que cruza os pares de transmiss&atilde;o e recep&ccedil;&atilde;o. Placas modernas com Auto-MDI-X fazem isso automaticamente, mas em bancadas de testes com hardware legado ou para fins did&aacute;ticos o crossover ainda &eacute; necess&aacute;rio.</div>
         </div>
     </div>
 
