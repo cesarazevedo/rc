@@ -109,6 +109,29 @@
             .ipv6-groups { gap:3px; }
             .ipv6-group { min-width:50px; padding:8px 6px; }
         }
+
+        /* ── Viz Wrappers ── */
+        .viz-wrap{background:#0f172a;border-radius:10px;padding:1.25rem;margin:1rem 0;overflow:hidden}
+        .viz-title{color:#64748b;font-size:.71rem;text-transform:uppercase;letter-spacing:.09em;margin-bottom:.75rem;font-family:'Courier New',monospace}
+        @keyframes draw-path{from{stroke-dashoffset:900}to{stroke-dashoffset:0}}
+        .tw-wire{stroke-dasharray:900;stroke-dashoffset:900;animation:draw-path 2s ease forwards}
+        @keyframes dash-flow{from{stroke-dashoffset:18}to{stroke-dashoffset:0}}
+        .flow-line{stroke-dasharray:9 5;animation:dash-flow .7s linear infinite}
+        @keyframes hex-pulse{0%,100%{fill:rgba(139,92,246,.2)}50%{fill:rgba(139,92,246,.7)}}
+        .hex-block{animation:hex-pulse 2s ease-in-out infinite}
+        .hex-block:nth-child(odd){animation-delay:.4s}
+        @keyframes addr-compress{from{letter-spacing:.15em;opacity:.5}to{letter-spacing:0;opacity:1}}
+        .ipv6-addr{animation:addr-compress 1.5s ease forwards}
+        @keyframes expand-space{0%{fill:rgba(34,197,94,.1)}50%{fill:rgba(34,197,94,.5)}100%{fill:rgba(34,197,94,.1)}}
+        .addr-space{animation:expand-space 3s ease-in-out infinite}
+        @keyframes ndp-probe{0%{r:4;opacity:1}100%{r:50;opacity:0}}
+        .ndp-wave{animation:ndp-probe 2.2s ease-out infinite}
+        .ndp-wave-b{animation-delay:.7s}
+        /* ── Comparison Bars ── */
+        .bar-section{margin:1.5rem 0}
+        .bar-label{display:flex;justify-content:space-between;font-size:.82rem;color:#475569;margin-bottom:4px}
+        .bar-track{background:#e2e8f0;border-radius:4px;height:18px;overflow:hidden}
+        .bar-fill{height:100%;border-radius:4px;width:0;transition:width 1.4s cubic-bezier(.4,0,.2,1)}
     </style>
 </head>
 <body>
@@ -174,6 +197,27 @@
         <div class="highlight-box">
             <p>&#x1F4CA; <strong>Ado&ccedil;&atilde;o atual:</strong> em 2024, o IPv6 representa mais de 45% do tr&aacute;fego global medido pelo Google. Brasil e &Iacute;ndia lideram o crescimento. Operadoras m&oacute;veis foram as primeiras a migrar em massa, pois gerenciar NAT para milh&otilde;es de smartphones se tornava insustent&aacute;vel.</p>
         </div>
+
+        <!-- Comparison bars: IPv4 vs IPv6 -->
+        <div class="viz-wrap" style="margin-top:1.5rem;">
+            <div class="viz-title">Comparativo IPv4 vs IPv6 — espa&ccedil;o de endere&ccedil;amento e cabe&ccedil;alho</div>
+            <div class="bar-section">
+                <div class="bar-label"><span>IPv4 — espa&ccedil;o de endere&ccedil;os (32 bits, ~4,3 bilh&otilde;es)</span><span style="color:#60a5fa;font-weight:700;">100%</span></div>
+                <div class="bar-track"><div class="bar-fill" data-w="100%" style="background:linear-gradient(90deg,#1d4ed8,#3b82f6);"></div></div>
+            </div>
+            <div class="bar-section">
+                <div class="bar-label"><span>IPv6 — espa&ccedil;o de endere&ccedil;os (128 bits, 3,4&times;10&sup3;&sup8;)</span><span style="color:#a78bfa;font-weight:700;">&#x221E; (incalculavelmente maior)</span></div>
+                <div class="bar-track" style="background:#1e293b;"><div class="bar-fill" data-w="100%" style="background:linear-gradient(90deg,#6d28d9,#a78bfa);"></div></div>
+            </div>
+            <div class="bar-section" style="margin-top:1.2rem;">
+                <div class="bar-label"><span>IPv4 — campos no cabe&ccedil;alho (14 campos, 20–60 bytes)</span><span style="color:#f59e0b;font-weight:700;">14 campos</span></div>
+                <div class="bar-track"><div class="bar-fill" data-w="100%" style="background:linear-gradient(90deg,#b45309,#f59e0b);"></div></div>
+            </div>
+            <div class="bar-section">
+                <div class="bar-label"><span>IPv6 — campos no cabe&ccedil;alho (8 campos, 40 bytes fixos)</span><span style="color:#34d399;font-weight:700;">8 campos (~57%)</span></div>
+                <div class="bar-track"><div class="bar-fill" data-w="57%" style="background:linear-gradient(90deg,#065f46,#34d399);"></div></div>
+            </div>
+        </div>
     </div>
 
     <!-- CARD 2 — Estrutura do Endereço -->
@@ -181,14 +225,59 @@
         <h2>&#x1F9EE; Estrutura do Endere&ccedil;o IPv6</h2>
         <p>Um endere&ccedil;o IPv6 tem <strong>128 bits</strong> representados em <strong>8 grupos</strong> de 4 d&iacute;gitos hexadecimais separados por dois-pontos. Cada grupo representa 16 bits.</p>
 
-        <div class="terminal-block">
-            <div class="terminal-header">Anatomia de um endereço IPv6 completo</div>
-<pre>
-  2001:0db8:85a3:0000:0000:8a2e:0370:7334
-  ├──┤ ├──┤ ├──┤ ├──┤ ├──┤ ├──┤ ├──┤ ├──┤
-   G1   G2   G3   G4   G5   G6   G7   G8
-  ←──── 64 bits (prefixo de rede) ────→←── 64 bits (ID de interface) ──→
-</pre>
+        <div class="viz-wrap">
+            <div class="viz-title">Anatomia de um endereço IPv6 completo — 128 bits em 8 grupos de 16 bits</div>
+            <svg viewBox="0 0 700 160" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:700px;display:block;margin:0 auto;">
+                <!-- Background row for groups -->
+                <rect x="10" y="28" width="680" height="44" rx="8" fill="#1e293b"/>
+                <!-- Group boxes -->
+                <rect class="hex-block" x="14"  y="32" width="76" height="36" rx="6" fill="rgba(139,92,246,.2)"/>
+                <rect class="hex-block" x="98"  y="32" width="76" height="36" rx="6" fill="rgba(139,92,246,.2)"/>
+                <rect class="hex-block" x="182" y="32" width="76" height="36" rx="6" fill="rgba(139,92,246,.2)"/>
+                <rect class="hex-block" x="266" y="32" width="76" height="36" rx="6" fill="rgba(139,92,246,.2)"/>
+                <rect class="hex-block" x="350" y="32" width="76" height="36" rx="6" fill="rgba(52,211,153,.15)"/>
+                <rect class="hex-block" x="434" y="32" width="76" height="36" rx="6" fill="rgba(52,211,153,.15)"/>
+                <rect class="hex-block" x="518" y="32" width="76" height="36" rx="6" fill="rgba(52,211,153,.15)"/>
+                <rect class="hex-block" x="602" y="32" width="76" height="36" rx="6" fill="rgba(52,211,153,.15)"/>
+                <!-- Colon separators -->
+                <text x="92"  y="54" font-family="monospace" font-size="16" fill="#475569" text-anchor="middle">:</text>
+                <text x="176" y="54" font-family="monospace" font-size="16" fill="#475569" text-anchor="middle">:</text>
+                <text x="260" y="54" font-family="monospace" font-size="16" fill="#475569" text-anchor="middle">:</text>
+                <text x="344" y="54" font-family="monospace" font-size="16" fill="#475569" text-anchor="middle">:</text>
+                <text x="428" y="54" font-family="monospace" font-size="16" fill="#475569" text-anchor="middle">:</text>
+                <text x="512" y="54" font-family="monospace" font-size="16" fill="#475569" text-anchor="middle">:</text>
+                <text x="596" y="54" font-family="monospace" font-size="16" fill="#475569" text-anchor="middle">:</text>
+                <!-- Hex values -->
+                <text class="ipv6-addr" x="52"  y="55" font-family="monospace" font-size="13" fill="#a78bfa" text-anchor="middle" font-weight="bold">2001</text>
+                <text class="ipv6-addr" x="136" y="55" font-family="monospace" font-size="13" fill="#a78bfa" text-anchor="middle" font-weight="bold">0db8</text>
+                <text class="ipv6-addr" x="220" y="55" font-family="monospace" font-size="13" fill="#a78bfa" text-anchor="middle" font-weight="bold">85a3</text>
+                <text class="ipv6-addr" x="304" y="55" font-family="monospace" font-size="13" fill="#a78bfa" text-anchor="middle" font-weight="bold">0000</text>
+                <text class="ipv6-addr" x="388" y="55" font-family="monospace" font-size="13" fill="#34d399" text-anchor="middle" font-weight="bold">0000</text>
+                <text class="ipv6-addr" x="472" y="55" font-family="monospace" font-size="13" fill="#34d399" text-anchor="middle" font-weight="bold">8a2e</text>
+                <text class="ipv6-addr" x="556" y="55" font-family="monospace" font-size="13" fill="#34d399" text-anchor="middle" font-weight="bold">0370</text>
+                <text class="ipv6-addr" x="640" y="55" font-family="monospace" font-size="13" fill="#34d399" text-anchor="middle" font-weight="bold">7334</text>
+                <!-- Group labels -->
+                <text x="52"  y="80" font-family="monospace" font-size="9" fill="#64748b" text-anchor="middle">G1</text>
+                <text x="136" y="80" font-family="monospace" font-size="9" fill="#64748b" text-anchor="middle">G2</text>
+                <text x="220" y="80" font-family="monospace" font-size="9" fill="#64748b" text-anchor="middle">G3</text>
+                <text x="304" y="80" font-family="monospace" font-size="9" fill="#64748b" text-anchor="middle">G4</text>
+                <text x="388" y="80" font-family="monospace" font-size="9" fill="#64748b" text-anchor="middle">G5</text>
+                <text x="472" y="80" font-family="monospace" font-size="9" fill="#64748b" text-anchor="middle">G6</text>
+                <text x="556" y="80" font-family="monospace" font-size="9" fill="#64748b" text-anchor="middle">G7</text>
+                <text x="640" y="80" font-family="monospace" font-size="9" fill="#64748b" text-anchor="middle">G8</text>
+                <!-- Bracket: 64-bit prefix -->
+                <line class="tw-wire" x1="14" y1="100" x2="14" y2="110" stroke="#a78bfa" stroke-width="1.5"/>
+                <line class="tw-wire" x1="14" y1="110" x2="338" y2="110" stroke="#a78bfa" stroke-width="1.5"/>
+                <line class="tw-wire" x1="338" y1="100" x2="338" y2="110" stroke="#a78bfa" stroke-width="1.5"/>
+                <text x="176" y="128" font-family="sans-serif" font-size="11" fill="#a78bfa" text-anchor="middle">← 64 bits: prefixo de rede →</text>
+                <!-- Bracket: 64-bit interface ID -->
+                <line class="tw-wire" x1="350" y1="100" x2="350" y2="110" stroke="#34d399" stroke-width="1.5"/>
+                <line class="tw-wire" x1="350" y1="110" x2="686" y2="110" stroke="#34d399" stroke-width="1.5"/>
+                <line class="tw-wire" x1="686" y1="100" x2="686" y2="110" stroke="#34d399" stroke-width="1.5"/>
+                <text x="518" y="128" font-family="sans-serif" font-size="11" fill="#34d399" text-anchor="middle">← 64 bits: ID de interface →</text>
+                <!-- Total bits label -->
+                <text x="350" y="152" font-family="sans-serif" font-size="11" fill="#64748b" text-anchor="middle">Total: 128 bits = 8 grupos × 16 bits cada</text>
+            </svg>
         </div>
 
         <h3>Regras de simplifica&ccedil;&atilde;o</h3>
@@ -544,46 +633,6 @@
         </div>
     </div>
 
-    <!-- ATIVIDADE PRÁTICA -->
-    <div class="content-card practical-activity">
-        <h2>&#x1F6E0;&#xFE0F; Atividade Pr&aacute;tica</h2>
-        <p>Pratique compress&atilde;o e expans&atilde;o de endere&ccedil;os IPv6, identifica&ccedil;&atilde;o de tipos e racioc&iacute;nio sobre migra&ccedil;&atilde;o.</p>
-
-        <div class="prat-steps">
-            <div class="prat-step">
-                <span class="prat-num">1</span>
-                <div>
-                    <strong>Comprima os endere&ccedil;os IPv6 abaixo</strong> aplicando as duas regras de simplifica&ccedil;&atilde;o:
-                    <ul style="margin-top:8px;">
-                        <li><code>2001:0DB8:0000:0000:0000:0000:0000:0001</code></li>
-                        <li><code>FE80:0000:0000:0000:020C:29FF:FE4A:1B2C</code></li>
-                        <li><code>0000:0000:0000:0000:0000:0000:0000:0001</code></li>
-                        <li><code>2001:0DB8:ABCD:0012:0000:0000:0000:0000</code></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="prat-step">
-                <span class="prat-num">2</span>
-                <div>
-                    <strong>Identifique o tipo</strong> de cada endere&ccedil;o IPv6:
-                    <ul style="margin-top:8px;">
-                        <li><code>::1</code></li>
-                        <li><code>FE80::1</code></li>
-                        <li><code>FF02::1</code></li>
-                        <li><code>2001:db8:cafe::10</code></li>
-                        <li><code>FD00::1</code></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="prat-step">
-                <span class="prat-num">3</span>
-                <div>
-                    <strong>Cen&aacute;rio de migra&ccedil;&atilde;o:</strong> uma empresa tem servidores internos com IPv4 (<code>10.0.0.0/8</code>) e quer dar acesso IPv6 a clientes m&oacute;veis que possuem <em>apenas</em> IPv6. Qual mecanismo de migra&ccedil;&atilde;o &eacute; mais adequado? Justifique e descreva o fluxo de um pacote do cliente at&eacute; o servidor.
-                </div>
-            </div>
-        </div>
-    </div>
-
     <!-- QUESTÕES DE MÚLTIPLA ESCOLHA -->
     <div class="content-card">
         <h2>&#x2753; Quest&otilde;es de M&uacute;ltipla Escolha</h2>
@@ -651,6 +700,46 @@
             <button class="btn-verificar">Verificar</button>
             <div class="mc-feedback"></div>
             <div class="mc-explicacao"><strong>NAT64 + DNS64</strong> é o mecanismo ideal: o dispositivo tem somente IPv6, o DNS64 sintetiza registros AAAA a partir de A (para sites sem IPv6), e o NAT64 traduz pacotes IPv6↔IPv4 na fronteira da rede. Dual Stack exigiria IPv4 no cliente — mas o cliente só tem IPv6. A Apple exige suporte a NAT64 em todos os apps iOS desde 2016.</div>
+        </div>
+    </div>
+
+    <!-- ATIVIDADE PRÁTICA -->
+    <div class="content-card practical-activity">
+        <h2>&#x1F6E0;&#xFE0F; Atividade Pr&aacute;tica</h2>
+        <p>Pratique compress&atilde;o e expans&atilde;o de endere&ccedil;os IPv6, identifica&ccedil;&atilde;o de tipos e racioc&iacute;nio sobre migra&ccedil;&atilde;o.</p>
+
+        <div class="prat-steps">
+            <div class="prat-step">
+                <span class="prat-num">1</span>
+                <div>
+                    <strong>Comprima os endere&ccedil;os IPv6 abaixo</strong> aplicando as duas regras de simplifica&ccedil;&atilde;o:
+                    <ul style="margin-top:8px;">
+                        <li><code>2001:0DB8:0000:0000:0000:0000:0000:0001</code></li>
+                        <li><code>FE80:0000:0000:0000:020C:29FF:FE4A:1B2C</code></li>
+                        <li><code>0000:0000:0000:0000:0000:0000:0000:0001</code></li>
+                        <li><code>2001:0DB8:ABCD:0012:0000:0000:0000:0000</code></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="prat-step">
+                <span class="prat-num">2</span>
+                <div>
+                    <strong>Identifique o tipo</strong> de cada endere&ccedil;o IPv6:
+                    <ul style="margin-top:8px;">
+                        <li><code>::1</code></li>
+                        <li><code>FE80::1</code></li>
+                        <li><code>FF02::1</code></li>
+                        <li><code>2001:db8:cafe::10</code></li>
+                        <li><code>FD00::1</code></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="prat-step">
+                <span class="prat-num">3</span>
+                <div>
+                    <strong>Cen&aacute;rio de migra&ccedil;&atilde;o:</strong> uma empresa tem servidores internos com IPv4 (<code>10.0.0.0/8</code>) e quer dar acesso IPv6 a clientes m&oacute;veis que possuem <em>apenas</em> IPv6. Qual mecanismo de migra&ccedil;&atilde;o &eacute; mais adequado? Justifique e descreva o fluxo de um pacote do cliente at&eacute; o servidor.
+                </div>
+            </div>
         </div>
     </div>
 
@@ -799,6 +888,21 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.key === 'Enter') analyzeIPv6();
     });
 });
+</script>
+<script>
+(function(){
+  var bars = document.querySelectorAll('.bar-fill');
+  if(!bars.length) return;
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){
+        e.target.style.width = e.target.dataset.w;
+        io.unobserve(e.target);
+      }
+    });
+  },{threshold:.3});
+  bars.forEach(function(b){ io.observe(b); });
+})();
 </script>
 </body>
 </html>
