@@ -14,6 +14,33 @@
             --bg-light:  #f4f7fe;
             --text-dark: #2d3748;
         }
+
+        /* ── Viz Wrappers ── */
+        .viz-wrap{background:#0f172a;border-radius:10px;padding:1.25rem;margin:1rem 0;overflow:hidden}
+        .viz-title{color:#64748b;font-size:.71rem;text-transform:uppercase;letter-spacing:.09em;margin-bottom:.75rem;font-family:'Courier New',monospace}
+        @keyframes draw-path{from{stroke-dashoffset:900}to{stroke-dashoffset:0}}
+        .tw-wire{stroke-dasharray:900;stroke-dashoffset:900;animation:draw-path 2s ease forwards}
+        @keyframes dash-flow{from{stroke-dashoffset:18}to{stroke-dashoffset:0}}
+        .flow-line{stroke-dasharray:9 5;animation:dash-flow .7s linear infinite}
+        @keyframes node-ping{0%,100%{r:6;opacity:.8}50%{r:12;opacity:.3}}
+        .net-node{animation:node-ping 2s ease-in-out infinite}
+        .net-node:nth-child(2n){animation-delay:.5s}
+        .net-node:nth-child(3n){animation-delay:1s}
+        @keyframes data-travel{0%{stroke-dashoffset:200;opacity:0}20%{opacity:1}80%{opacity:1}100%{stroke-dashoffset:0;opacity:0}}
+        .data-link{stroke-dasharray:200;animation:data-travel 2.5s linear infinite}
+        @keyframes globe-spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+        .globe-ring{animation:globe-spin 8s linear infinite;transform-origin:center;transform-box:fill-box}
+        .globe-ring-2{animation:globe-spin 12s linear infinite reverse;transform-origin:center;transform-box:fill-box}
+        @keyframes type-in{from{width:0}to{width:100%}}
+        .type-text{overflow:hidden;white-space:nowrap;animation:type-in 2s steps(20) forwards}
+        /* ── Comparison Bars ── */
+        .bar-section{margin:1.5rem 0}
+        .bar-section h4{font-size:.78rem;color:#64748b;text-transform:uppercase;letter-spacing:.07em;margin:1rem 0 .45rem;font-weight:600}
+        .bar-row{display:flex;align-items:center;gap:.6rem;margin:.35rem 0}
+        .bar-lbl{font-size:11px;font-family:monospace;color:var(--text-dark);min-width:150px}
+        .bar-track{flex:1;background:#e2e8f0;border-radius:4px;height:11px;overflow:hidden}
+        .bar-fill{height:100%;border-radius:4px;width:0;transition:width 1.4s cubic-bezier(.4,0,.2,1)}
+        .bar-val{font-size:10px;font-family:monospace;color:#64748b;min-width:80px;text-align:right}
     </style>
 </head>
 <body>
@@ -38,6 +65,45 @@
 
         <div class="highlight-box">
             <p>&#x1F4A1; <strong>Analogia:</strong> Uma rede de computadores funciona como o sistema rodovi&aacute;rio de uma cidade. As estradas s&atilde;o os cabos (ou o ar, no caso do Wi-Fi), os carros s&atilde;o os pacotes de dados, os sem&aacute;foros e placas s&atilde;o os protocolos que organizam o tr&aacute;fego, e os destinos s&atilde;o os dispositivos.</p>
+        </div>
+
+        <div class="viz-wrap">
+            <div class="viz-title">Rede de computadores — nós conectados trocando dados (animado)</div>
+            <svg viewBox="0 0 560 180" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block">
+                <!-- Links -->
+                <line x1="100" y1="90" x2="220" y2="50"  stroke="#334155" stroke-width="2"/>
+                <line x1="100" y1="90" x2="220" y2="130" stroke="#334155" stroke-width="2"/>
+                <line x1="220" y1="50"  x2="340" y2="90" stroke="#334155" stroke-width="2"/>
+                <line x1="220" y1="130" x2="340" y2="90" stroke="#334155" stroke-width="2"/>
+                <line x1="340" y1="90"  x2="460" y2="50" stroke="#334155" stroke-width="2"/>
+                <line x1="340" y1="90"  x2="460" y2="130"stroke="#334155" stroke-width="2"/>
+                <!-- Animated data packets -->
+                <line x1="100" y1="90" x2="220" y2="50"  stroke="#3b82f6" stroke-width="3" class="data-link" style="animation-delay:0s"/>
+                <line x1="220" y1="50"  x2="340" y2="90" stroke="#22c55e" stroke-width="3" class="data-link" style="animation-delay:.8s"/>
+                <line x1="340" y1="90"  x2="460" y2="50" stroke="#f97316" stroke-width="3" class="data-link" style="animation-delay:1.6s"/>
+                <line x1="220" y1="130" x2="340" y2="90" stroke="#a855f7" stroke-width="3" class="data-link" style="animation-delay:.4s"/>
+                <line x1="340" y1="90"  x2="460" y2="130"stroke="#fbbf24" stroke-width="3" class="data-link" style="animation-delay:1.2s"/>
+                <!-- Nodes -->
+                <circle cx="100" cy="90"  r="22" fill="#1e3a5f" stroke="#3b82f6" stroke-width="2"/>
+                <text x="100" y="93"  text-anchor="middle" fill="#93c5fd" font-size="9" font-family="monospace">PC</text>
+                <circle cx="220" cy="50"  r="22" fill="#1e3a5f" stroke="#22c55e" stroke-width="2"/>
+                <text x="220" y="53"  text-anchor="middle" fill="#86efac" font-size="8" font-family="monospace">Switch</text>
+                <circle cx="220" cy="130" r="22" fill="#1e3a5f" stroke="#a855f7" stroke-width="2"/>
+                <text x="220" y="133" text-anchor="middle" fill="#d8b4fe" font-size="9" font-family="monospace">PC</text>
+                <circle cx="340" cy="90"  r="22" fill="#1e293b" stroke="#f97316" stroke-width="2.5"/>
+                <text x="340" y="93"  text-anchor="middle" fill="#fdba74" font-size="7" font-family="monospace">Router</text>
+                <circle cx="460" cy="50"  r="22" fill="#1e3a5f" stroke="#fbbf24" stroke-width="2"/>
+                <text x="460" y="53"  text-anchor="middle" fill="#fde68a" font-size="9" font-family="monospace">PC</text>
+                <circle cx="460" cy="130" r="22" fill="#1e3a5f" stroke="#3b82f6" stroke-width="2"/>
+                <text x="460" y="133" text-anchor="middle" fill="#93c5fd" font-size="8" font-family="monospace">Printer</text>
+                <!-- Ping circles -->
+                <circle cx="100" cy="90"  r="6" fill="#3b82f6" class="net-node"/>
+                <circle cx="220" cy="50"  r="6" fill="#22c55e" class="net-node" style="animation-delay:.5s"/>
+                <circle cx="220" cy="130" r="6" fill="#a855f7" class="net-node" style="animation-delay:1s"/>
+                <circle cx="340" cy="90"  r="6" fill="#f97316" class="net-node" style="animation-delay:.25s"/>
+                <circle cx="460" cy="50"  r="6" fill="#fbbf24" class="net-node" style="animation-delay:.75s"/>
+                <circle cx="460" cy="130" r="6" fill="#3b82f6" class="net-node" style="animation-delay:1.5s"/>
+            </svg>
         </div>
 
         <p>Por que conectar computadores? Os principais objetivos s&atilde;o:</p>
@@ -140,6 +206,79 @@
             </div>
         </div>
 
+        <div class="viz-wrap">
+            <div class="viz-title">Alcance comparativo: PAN → LAN → MAN → WAN (escala logarítmica ilustrativa)</div>
+            <svg viewBox="0 0 560 160" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block">
+                <!-- Background rings representing increasing coverage -->
+                <circle cx="280" cy="80" r="20"  fill="none" stroke="#6366f1" stroke-width="2.5" opacity=".9"/>
+                <circle cx="280" cy="80" r="45"  fill="none" stroke="#3b82f6" stroke-width="2"   opacity=".75"/>
+                <circle cx="280" cy="80" r="80"  fill="none" stroke="#22c55e" stroke-width="2"   opacity=".6"/>
+                <circle cx="280" cy="80" r="120" fill="none" stroke="#f97316" stroke-width="1.5" opacity=".5" stroke-dasharray="6 4"/>
+                <!-- Animated data links within each ring -->
+                <circle cx="280" cy="80" r="20"  fill="none" stroke="#818cf8" stroke-width="1" class="globe-ring" stroke-dasharray="15 10" opacity=".5"/>
+                <circle cx="280" cy="80" r="45"  fill="none" stroke="#60a5fa" stroke-width="1" class="globe-ring-2" stroke-dasharray="20 15" opacity=".4"/>
+                <circle cx="280" cy="80" r="80"  fill="none" stroke="#4ade80" stroke-width="1" class="globe-ring" stroke-dasharray="30 20" opacity=".35"/>
+                <!-- Center node (user/device) -->
+                <circle cx="280" cy="80" r="10" fill="#6366f1" opacity=".9"/>
+                <text x="280" y="84" text-anchor="middle" fill="#e0e7ff" font-size="7" font-family="monospace">me</text>
+                <!-- Labels -->
+                <text x="280" y="58"  text-anchor="middle" fill="#818cf8" font-size="9" font-family="monospace">PAN ~10m</text>
+                <text x="280" y="27"  text-anchor="middle" fill="#60a5fa" font-size="9" font-family="monospace">LAN ~1km</text>
+                <text x="390" y="80"  text-anchor="middle" fill="#4ade80" font-size="9" font-family="monospace">MAN ~50km</text>
+                <text x="530" y="25"  text-anchor="middle" fill="#fb923c" font-size="9" font-family="monospace">WAN global</text>
+                <!-- Nodes at each ring -->
+                <circle cx="280" cy="60"  r="4" fill="#818cf8" class="net-node" style="animation-delay:0s"/>
+                <circle cx="280" cy="35"  r="5" fill="#60a5fa" class="net-node" style="animation-delay:.4s"/>
+                <circle cx="360" cy="80"  r="5" fill="#4ade80" class="net-node" style="animation-delay:.8s"/>
+                <circle cx="400" cy="80"  r="5" fill="#fb923c" class="net-node" style="animation-delay:1.2s"/>
+            </svg>
+        </div>
+
+        <div class="bar-section">
+            <h4>Alcance por tipo de rede</h4>
+            <div class="bar-row">
+                <span class="bar-lbl">PAN (Bluetooth)</span>
+                <div class="bar-track"><div class="bar-fill" style="background:#6366f1" data-w="1%"></div></div>
+                <span class="bar-val">até 10 m</span>
+            </div>
+            <div class="bar-row">
+                <span class="bar-lbl">LAN (Ethernet/Wi-Fi)</span>
+                <div class="bar-track"><div class="bar-fill" style="background:#3b82f6" data-w="2%"></div></div>
+                <span class="bar-val">até 1 km</span>
+            </div>
+            <div class="bar-row">
+                <span class="bar-lbl">MAN (Fibra/WiMAX)</span>
+                <div class="bar-track"><div class="bar-fill" style="background:#22c55e" data-w="10%"></div></div>
+                <span class="bar-val">até 50 km</span>
+            </div>
+            <div class="bar-row">
+                <span class="bar-lbl">WAN (Internet)</span>
+                <div class="bar-track"><div class="bar-fill" style="background:#f97316" data-w="100%"></div></div>
+                <span class="bar-val">global</span>
+            </div>
+            <h4>Velocidade típica</h4>
+            <div class="bar-row">
+                <span class="bar-lbl">PAN (Bluetooth 5)</span>
+                <div class="bar-track"><div class="bar-fill" style="background:#6366f1" data-w="0.5%"></div></div>
+                <span class="bar-val">50 Mbps</span>
+            </div>
+            <div class="bar-row">
+                <span class="bar-lbl">LAN (Gigabit)</span>
+                <div class="bar-track"><div class="bar-fill" style="background:#3b82f6" data-w="10%"></div></div>
+                <span class="bar-val">1 Gbps</span>
+            </div>
+            <div class="bar-row">
+                <span class="bar-lbl">MAN (Fibra)</span>
+                <div class="bar-track"><div class="bar-fill" style="background:#22c55e" data-w="10%"></div></div>
+                <span class="bar-val">1 Gbps</span>
+            </div>
+            <div class="bar-row">
+                <span class="bar-lbl">LAN (10G Ethernet)</span>
+                <div class="bar-track"><div class="bar-fill" style="background:#f97316" data-w="100%"></div></div>
+                <span class="bar-val">10 Gbps</span>
+            </div>
+        </div>
+
         <table class="info-table" style="margin-top:1.5rem;">
             <thead>
                 <tr>
@@ -222,6 +361,80 @@
             </div>
         </div>
 
+        <div class="viz-wrap">
+            <div class="viz-title">Topologias de rede — estrela, barramento, anel, malha (animado)</div>
+            <svg viewBox="0 0 560 200" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block">
+                <!-- ESTRELA (x offset 0) -->
+                <text x="70" y="18" text-anchor="middle" fill="#60a5fa" font-size="9" font-family="monospace" font-weight="bold">ESTRELA</text>
+                <line x1="70" y1="80" x2="40"  y2="50" stroke="#334155" stroke-width="1.5"/>
+                <line x1="70" y1="80" x2="100" y2="50" stroke="#334155" stroke-width="1.5"/>
+                <line x1="70" y1="80" x2="40"  y2="110" stroke="#334155" stroke-width="1.5"/>
+                <line x1="70" y1="80" x2="100" y2="110" stroke="#334155" stroke-width="1.5"/>
+                <line x1="70" y1="80" x2="70"  y2="120" stroke="#334155" stroke-width="1.5"/>
+                <!-- animated data -->
+                <line x1="70" y1="80" x2="40"  y2="50"  stroke="#3b82f6" stroke-width="2" class="data-link" style="animation-delay:0s"/>
+                <line x1="70" y1="80" x2="100" y2="50"  stroke="#3b82f6" stroke-width="2" class="data-link" style="animation-delay:.6s"/>
+                <line x1="70" y1="80" x2="40"  y2="110" stroke="#3b82f6" stroke-width="2" class="data-link" style="animation-delay:1.2s"/>
+                <!-- Switch center -->
+                <rect x="56" y="66" width="28" height="28" rx="5" fill="#1e3a5f" stroke="#3b82f6" stroke-width="2"/>
+                <text x="70" y="83" text-anchor="middle" fill="#93c5fd" font-size="7" font-family="monospace">SW</text>
+                <!-- Endpoint nodes -->
+                <circle cx="40"  cy="50"  r="7" fill="#1e293b" stroke="#60a5fa" stroke-width="1.5"/>
+                <circle cx="100" cy="50"  r="7" fill="#1e293b" stroke="#60a5fa" stroke-width="1.5"/>
+                <circle cx="40"  cy="110" r="7" fill="#1e293b" stroke="#60a5fa" stroke-width="1.5"/>
+                <circle cx="100" cy="110" r="7" fill="#1e293b" stroke="#60a5fa" stroke-width="1.5"/>
+                <circle cx="70"  cy="120" r="7" fill="#1e293b" stroke="#60a5fa" stroke-width="1.5"/>
+
+                <!-- BARRAMENTO (x offset 150) -->
+                <text x="210" y="18" text-anchor="middle" fill="#4ade80" font-size="9" font-family="monospace" font-weight="bold">BARRAMENTO</text>
+                <rect x="155" y="77" width="120" height="6" rx="3" fill="#334155"/>
+                <line x1="215" y1="77" x2="215" y2="60" stroke="#4ade80" stroke-width="1.5" class="flow-line"/>
+                <line x1="170" y1="77" x2="170" y2="50" stroke="#334155" stroke-width="1.5"/>
+                <line x1="200" y1="77" x2="200" y2="50" stroke="#334155" stroke-width="1.5"/>
+                <line x1="230" y1="77" x2="230" y2="50" stroke="#334155" stroke-width="1.5"/>
+                <line x1="260" y1="77" x2="260" y2="50" stroke="#334155" stroke-width="1.5"/>
+                <circle cx="170" cy="45" r="7" fill="#1e293b" stroke="#4ade80" stroke-width="1.5"/>
+                <circle cx="200" cy="45" r="7" fill="#1e293b" stroke="#4ade80" stroke-width="1.5"/>
+                <circle cx="230" cy="45" r="7" fill="#1e293b" stroke="#4ade80" stroke-width="1.5"/>
+                <circle cx="260" cy="45" r="7" fill="#1e293b" stroke="#4ade80" stroke-width="1.5"/>
+                <!-- bus terminators -->
+                <rect x="150" y="74" width="6" height="12" rx="2" fill="#f97316"/>
+                <rect x="269" y="74" width="6" height="12" rx="2" fill="#f97316"/>
+
+                <!-- ANEL (x offset 310) -->
+                <text x="375" y="18" text-anchor="middle" fill="#fbbf24" font-size="9" font-family="monospace" font-weight="bold">ANEL</text>
+                <circle cx="375" cy="75" r="38" fill="none" stroke="#334155" stroke-width="2"/>
+                <circle cx="375" cy="75" r="38" fill="none" stroke="#fbbf24" stroke-width="1.5" class="globe-ring" stroke-dasharray="12 8" opacity=".7"/>
+                <circle cx="375" cy="37" r="7" fill="#1e293b" stroke="#fbbf24" stroke-width="1.5"/>
+                <circle cx="413" cy="75" r="7" fill="#1e293b" stroke="#fbbf24" stroke-width="1.5"/>
+                <circle cx="375" cy="113" r="7" fill="#1e293b" stroke="#fbbf24" stroke-width="1.5"/>
+                <circle cx="337" cy="75"  r="7" fill="#1e293b" stroke="#fbbf24" stroke-width="1.5"/>
+
+                <!-- MALHA (x offset 450) -->
+                <text x="505" y="18" text-anchor="middle" fill="#f472b6" font-size="9" font-family="monospace" font-weight="bold">MALHA</text>
+                <line x1="480" y1="45" x2="530" y2="45" stroke="#334155" stroke-width="1.2"/>
+                <line x1="480" y1="45" x2="480" y2="110" stroke="#334155" stroke-width="1.2"/>
+                <line x1="480" y1="45" x2="530" y2="110" stroke="#334155" stroke-width="1.2"/>
+                <line x1="530" y1="45" x2="480" y2="110" stroke="#334155" stroke-width="1.2"/>
+                <line x1="530" y1="45" x2="530" y2="110" stroke="#334155" stroke-width="1.2"/>
+                <line x1="480" y1="110" x2="530" y2="110" stroke="#334155" stroke-width="1.2"/>
+                <!-- animated -->
+                <line x1="480" y1="45" x2="530" y2="45"  stroke="#f472b6" stroke-width="1.5" class="data-link" style="animation-delay:0s"/>
+                <line x1="530" y1="45" x2="530" y2="110" stroke="#f472b6" stroke-width="1.5" class="data-link" style="animation-delay:.5s"/>
+                <line x1="480" y1="45" x2="530" y2="110" stroke="#f472b6" stroke-width="1.5" class="data-link" style="animation-delay:1s"/>
+                <circle cx="480" cy="45"  r="7" fill="#1e293b" stroke="#f472b6" stroke-width="1.5"/>
+                <circle cx="530" cy="45"  r="7" fill="#1e293b" stroke="#f472b6" stroke-width="1.5"/>
+                <circle cx="480" cy="110" r="7" fill="#1e293b" stroke="#f472b6" stroke-width="1.5"/>
+                <circle cx="530" cy="110" r="7" fill="#1e293b" stroke="#f472b6" stroke-width="1.5"/>
+
+                <!-- Labels below -->
+                <text x="70"  y="145" text-anchor="middle" fill="#64748b" font-size="8" font-family="monospace">central = switch</text>
+                <text x="210" y="100" text-anchor="middle" fill="#64748b" font-size="8" font-family="monospace">cabo único</text>
+                <text x="375" y="138" text-anchor="middle" fill="#64748b" font-size="8" font-family="monospace">token circulante</text>
+                <text x="505" y="135" text-anchor="middle" fill="#64748b" font-size="8" font-family="monospace">multi-caminhos</text>
+            </svg>
+        </div>
+
         <div class="alert-box">
             <p>&#x26A0;&#xFE0F; <strong>Aten&ccedil;&atilde;o:</strong> A maioria das redes modernas usa uma topologia <strong>estrela estendida</strong>: switches conectados a outros switches, formando uma hierarquia. &Eacute; o padr&atilde;o em escolas, empresas e pr&eacute;dios comerciais.</p>
         </div>
@@ -296,51 +509,6 @@
         </ul>
     </div>
 
-    <!-- ATIVIDADE PRÁTICA -->
-    <div class="content-card exercise-card" id="prat-rc01">
-        <h2>&#x1F4DD; Atividade Pr&aacute;tica</h2>
-        <p class="prat-intro">Identifique redes do cotidiano e pesquise o pre&ccedil;o dos equipamentos vistos em aula.</p>
-
-        <div class="prat-steps">
-            <div class="prat-step">
-                <div class="step-num">1</div>
-                <div class="step-body">
-                    <div class="step-label">Identificar redes ao seu redor</div>
-                    <div class="step-desc">Liste pelo menos 5 redes de computadores que voc&ecirc; usa ou que existem no seu cotidiano (escola, casa, celular etc.). Para cada uma, indique o tipo (PAN, LAN, MAN ou WAN) e o meio de transmiss&atilde;o (cabeado ou sem fio).</div>
-                </div>
-            </div>
-            <div class="prat-step">
-                <div class="step-num">2</div>
-                <div class="step-body">
-                    <div class="step-label">&#x1F4B0; Pesquisa de pre&ccedil;os de equipamentos</div>
-                    <div class="step-desc">Pesquise em sites de e-commerce (Mercado Livre, Amazon, Kabum ou similares) o pre&ccedil;o atual dos equipamentos vistos em aula. Para cada item da tabela abaixo, registre o nome do produto encontrado, o pre&ccedil;o e o site consultado:
-                        <table class="info-table" style="margin-top:0.8rem">
-                            <thead>
-                                <tr><th>Equipamento</th><th>Produto encontrado</th><th>Pre&ccedil;o (R$)</th><th>Site</th></tr>
-                            </thead>
-                            <tbody>
-                                <tr><td>Switch 8 portas</td><td></td><td></td><td></td></tr>
-                                <tr><td>Roteador Wi-Fi</td><td></td><td></td><td></td></tr>
-                                <tr><td>Cabo UTP Cat 6 (metro)</td><td></td><td></td><td></td></tr>
-                                <tr><td>Access Point</td><td></td><td></td><td></td></tr>
-                                <tr><td>Placa de rede (NIC)</td><td></td><td></td><td></td></tr>
-                            </tbody>
-                        </table>
-                        <em style="display:block;margin-top:0.6rem">Ap&oacute;s preencher, responda: qual equipamento teve maior varia&ccedil;&atilde;o de pre&ccedil;o entre os colegas? O que pode explicar essa diferen&ccedil;a?</em>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="prat-observe">
-            <strong>&#x1F4CC; Para refletir:</strong> toda vez que voc&ecirc; acessa um site, assiste a um v&iacute;deo ou envia uma mensagem, pacotes de dados percorrem v&aacute;rios tipos de rede &mdash; da sua LAN dom&eacute;stica at&eacute; a WAN global. Nas pr&oacute;ximas aulas vamos entender exatamente como isso acontece.
-        </div>
-
-        <div class="ex-actions">
-            <button class="btn-print" onclick="printPractical('prat-rc01', 'Aula 1 \u2014 Introdu\u00e7\u00e3o \u00e0s Redes de Computadores')">&#x1F5A8;&#xFE0F; Imprimir roteiro</button>
-        </div>
-    </div>
-
     <!-- MÚLTIPLA ESCOLHA -->
     <div class="content-card exercise-card">
         <h2>&#x2753; Verifique seu Conhecimento</h2>
@@ -390,6 +558,51 @@
         </div>
     </div>
 
+    <!-- ATIVIDADE PRÁTICA -->
+    <div class="content-card exercise-card" id="prat-rc01">
+        <h2>&#x1F4DD; Atividade Pr&aacute;tica</h2>
+        <p class="prat-intro">Identifique redes do cotidiano e pesquise o pre&ccedil;o dos equipamentos vistos em aula.</p>
+
+        <div class="prat-steps">
+            <div class="prat-step">
+                <div class="step-num">1</div>
+                <div class="step-body">
+                    <div class="step-label">Identificar redes ao seu redor</div>
+                    <div class="step-desc">Liste pelo menos 5 redes de computadores que voc&ecirc; usa ou que existem no seu cotidiano (escola, casa, celular etc.). Para cada uma, indique o tipo (PAN, LAN, MAN ou WAN) e o meio de transmiss&atilde;o (cabeado ou sem fio).</div>
+                </div>
+            </div>
+            <div class="prat-step">
+                <div class="step-num">2</div>
+                <div class="step-body">
+                    <div class="step-label">&#x1F4B0; Pesquisa de pre&ccedil;os de equipamentos</div>
+                    <div class="step-desc">Pesquise em sites de e-commerce (Mercado Livre, Amazon, Kabum ou similares) o pre&ccedil;o atual dos equipamentos vistos em aula. Para cada item da tabela abaixo, registre o nome do produto encontrado, o pre&ccedil;o e o site consultado:
+                        <table class="info-table" style="margin-top:0.8rem">
+                            <thead>
+                                <tr><th>Equipamento</th><th>Produto encontrado</th><th>Pre&ccedil;o (R$)</th><th>Site</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>Switch 8 portas</td><td></td><td></td><td></td></tr>
+                                <tr><td>Roteador Wi-Fi</td><td></td><td></td><td></td></tr>
+                                <tr><td>Cabo UTP Cat 6 (metro)</td><td></td><td></td><td></td></tr>
+                                <tr><td>Access Point</td><td></td><td></td><td></td></tr>
+                                <tr><td>Placa de rede (NIC)</td><td></td><td></td><td></td></tr>
+                            </tbody>
+                        </table>
+                        <em style="display:block;margin-top:0.6rem">Ap&oacute;s preencher, responda: qual equipamento teve maior varia&ccedil;&atilde;o de pre&ccedil;o entre os colegas? O que pode explicar essa diferen&ccedil;a?</em>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="prat-observe">
+            <strong>&#x1F4CC; Para refletir:</strong> toda vez que voc&ecirc; acessa um site, assiste a um v&iacute;deo ou envia uma mensagem, pacotes de dados percorrem v&aacute;rios tipos de rede &mdash; da sua LAN dom&eacute;stica at&eacute; a WAN global. Nas pr&oacute;ximas aulas vamos entender exatamente como isso acontece.
+        </div>
+
+        <div class="ex-actions">
+            <button class="btn-print" onclick="printPractical('prat-rc01', 'Aula 1 \u2014 Introdu\u00e7\u00e3o \u00e0s Redes de Computadores')">&#x1F5A8;&#xFE0F; Imprimir roteiro</button>
+        </div>
+    </div>
+
     <div class="nav-footer">
         <a href="index.html" class="nav-link">&#x2B05; Voltar ao Dashboard</a>
         <a href="rc02-topologias.html" class="nav-link">Pr&oacute;xima: Topologias e Componentes &#x27A1;</a>
@@ -401,5 +614,20 @@
 <script src="exercise-drag.js"></script>
 <script src="exercise-print.js"></script>
 <script src="exercise-mc.js"></script>
+<script>
+(function(){
+  var bars = document.querySelectorAll('.bar-fill');
+  if(!bars.length) return;
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){
+        e.target.style.width = e.target.dataset.w;
+        io.unobserve(e.target);
+      }
+    });
+  },{threshold:.3});
+  bars.forEach(function(b){ io.observe(b); });
+})();
+</script>
 </body>
 </html>
