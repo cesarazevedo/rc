@@ -134,60 +134,287 @@
         </div>
     </div>
 
+    
     <!-- CARD 2 — CSMA/CD -->
     <div class="content-card">
         <h2>&#x1F6A6; CSMA/CD &mdash; Acesso ao Meio Compartilhado</h2>
         <p>Nas primeiras redes Ethernet, todos os dispositivos compartilhavam o mesmo cabo (barramento). Era preciso um m&eacute;todo para evitar que dois dispositivos transmitissem ao mesmo tempo e corrompessem os dados. A solu&ccedil;&atilde;o foi o <strong>CSMA/CD &mdash; Carrier Sense Multiple Access with Collision Detection</strong>.</p>
 
-        <div class="viz-wrap">
-            <div class="viz-title">CSMA/CD — passo a passo: carrier sense → colisão → backoff (animado)</div>
-            <svg viewBox="0 0 580 280" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block">
-                <!-- Shared bus cable -->
-                <rect x="20" y="135" width="540" height="10" rx="4" fill="#334155"/>
-                <text x="290" y="160" text-anchor="middle" fill="#475569" font-size="9" font-family="monospace">cabo compartilhado (barramento)</text>
+        <div style="background: #0f172a; padding: 30px; border-radius: 12px; margin: 20px auto; max-width: 900px;">
+            <div style="text-align: center; color: #888; font-size: 0.9em; margin-bottom: 20px; font-family: 'Courier New', monospace;">
+                CSMA/CD — PASSO A PASSO: CARRIER SENSE → COLISÃO → BACKOFF (ANIMADO)
+            </div>
 
-                <!-- Node A -->
-                <rect x="30" y="80" width="90" height="46" rx="6" fill="#1e3a5f" stroke="#3b82f6" stroke-width="1.5"/>
-                <text x="75" y="99" text-anchor="middle" fill="#93c5fd" font-size="11" font-weight="bold" font-family="monospace">Nó A</text>
-                <text x="75" y="114" text-anchor="middle" fill="#64748b" font-size="9" font-family="monospace">TX: dados</text>
-                <line x1="75" y1="126" x2="75" y2="135" stroke="#3b82f6" stroke-width="2"/>
-
-                <!-- Node B -->
-                <rect x="460" y="80" width="90" height="46" rx="6" fill="#1e3a5f" stroke="#3b82f6" stroke-width="1.5"/>
-                <text x="505" y="99" text-anchor="middle" fill="#93c5fd" font-size="11" font-weight="bold" font-family="monospace">Nó B</text>
-                <text x="505" y="114" text-anchor="middle" fill="#64748b" font-size="9" font-family="monospace">TX: dados</text>
-                <line x1="505" y1="126" x2="505" y2="135" stroke="#3b82f6" stroke-width="2"/>
-
-                <!-- Signal from A -->
-                <line x1="75" y1="140" x2="290" y2="140" stroke="#60a5fa" stroke-width="3" stroke-linecap="round" opacity="0.8">
-                    <animate attributeName="x2" values="75;505;505" keyTimes="0;0.5;1" dur="3s" repeatCount="indefinite"/>
-                    <animate attributeName="opacity" values="0.8;0.8;0" keyTimes="0;0.45;0.55" dur="3s" repeatCount="indefinite"/>
-                </line>
-                <!-- Signal from B -->
-                <line x1="505" y1="140" x2="290" y2="140" stroke="#f97316" stroke-width="3" stroke-linecap="round" opacity="0.8">
-                    <animate attributeName="x2" values="505;75;75" keyTimes="0;0.5;1" dur="3s" repeatCount="indefinite"/>
-                    <animate attributeName="opacity" values="0.8;0.8;0" keyTimes="0;0.45;0.55" dur="3s" repeatCount="indefinite"/>
-                </line>
-                <!-- Collision flash -->
-                <circle cx="290" cy="140" r="18" fill="#ef4444" opacity="0">
-                    <animate attributeName="opacity" values="0;0;1;0.7;0" keyTimes="0;0.44;0.5;0.56;0.62" dur="3s" repeatCount="indefinite"/>
-                    <animate attributeName="r" values="5;5;22;28;35" keyTimes="0;0.44;0.5;0.56;0.62" dur="3s" repeatCount="indefinite"/>
-                </circle>
-                <text x="290" y="137" text-anchor="middle" fill="#fca5a5" font-size="10" font-weight="bold" font-family="monospace" opacity="0">
-                    COLISÃO
-                    <animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;0.46;0.5;0.58;0.64" dur="3s" repeatCount="indefinite"/>
+            <svg id="csmaAnimation" viewBox="0 0 900 400" style="width: 100%; max-width: 900px; margin: 0 auto; display: block;">
+                <line x1="100" y1="200" x2="800" y2="200" stroke="#444" stroke-width="12" stroke-linecap="round"/>
+                <text x="450" y="240" fill="#666" font-size="13" text-anchor="middle" font-family="Arial">
+                    cabo compartilhado (barramento)
                 </text>
 
-                <!-- Step labels -->
-                <rect x="20" y="175" width="540" height="98" rx="6" fill="#1e293b"/>
-                <text x="30" y="194" fill="#fbbf24" font-size="10" font-weight="bold" font-family="monospace">1. CARRIER SENSE</text>
-                <text x="30" y="208" fill="#94a3b8" font-size="9" font-family="monospace">Verifica se o meio está livre antes de transmitir</text>
-                <text x="30" y="224" fill="#fbbf24" font-size="10" font-weight="bold" font-family="monospace">2. COLISÃO DETECTADA</text>
-                <text x="30" y="238" fill="#94a3b8" font-size="9" font-family="monospace">Dois nós transmitem ao mesmo tempo → sinais corrompidos → JAM signal (32 bits)</text>
-                <text x="30" y="254" fill="#fbbf24" font-size="10" font-weight="bold" font-family="monospace">3. BACKOFF EXPONENCIAL</text>
-                <text x="30" y="268" fill="#94a3b8" font-size="9" font-family="monospace">Cada nó aguarda tempo aleatório (dobra a cada colisão, até 16 tentativas) e retransmite</text>
+                <rect id="nodeA" x="150" y="120" width="100" height="60" rx="8" fill="#2563eb" stroke="#3b82f6" stroke-width="2"/>
+                <text x="200" y="145" fill="white" font-size="16" font-weight="bold" text-anchor="middle">NÓ A</text>
+                <text id="nodeAStatus" x="200" y="165" fill="#93c5fd" font-size="12" text-anchor="middle">TX: dados</text>
+                <line x1="200" y1="180" x2="200" y2="200" stroke="#3b82f6" stroke-width="3"/>
+
+                <rect id="nodeB" x="650" y="120" width="100" height="60" rx="8" fill="#2563eb" stroke="#3b82f6" stroke-width="2"/>
+                <text x="700" y="145" fill="white" font-size="16" font-weight="bold" text-anchor="middle">NÓ B</text>
+                <text id="nodeBStatus" x="700" y="165" fill="#93c5fd" font-size="12" text-anchor="middle">TX: dados</text>
+                <line x1="700" y1="180" x2="700" y2="200" stroke="#3b82f6" stroke-width="3"/>
+
+                <path id="signalA" d="" fill="none" stroke="#fbbf24" stroke-width="5" opacity="0"/>
+                <path id="signalB" d="" fill="none" stroke="#f97316" stroke-width="5" opacity="0"/>
+
+                <g id="collisionEffect" opacity="0">
+                    <circle cx="450" cy="200" r="40" fill="#ef4444" opacity="0.3"/>
+                    <circle cx="450" cy="200" r="30" fill="#dc2626" opacity="0.5"/>
+                    <circle cx="450" cy="200" r="20" fill="#b91c1c" opacity="0.7"/>
+                    <text x="450" y="280" fill="#ef4444" font-size="18" font-weight="bold" text-anchor="middle">
+                        💥 COLISÃO!
+                    </text>
+                </g>
+
+                <text id="jamSignal" x="450" y="190" fill="#ef4444" font-size="14" font-weight="bold" 
+                      text-anchor="middle" opacity="0" font-family="monospace">
+                    JAM (32 bits)
+                </text>
+
+                <g id="statusMessages">
+                    <rect x="100" y="300" width="700" height="80" rx="6" fill="#0f172a" stroke="#334155" stroke-width="1"/>
+                    
+                    <text id="step1" x="120" y="325" fill="#fbbf24" font-size="14" font-family="monospace" opacity="0">
+                        <tspan font-weight="bold">1. CARRIER SENSE</tspan>
+                    </text>
+                    <text id="step1desc" x="120" y="345" fill="#94a3b8" font-size="12" font-family="monospace" opacity="0">
+                        Verifica se o meio está livre antes de transmitir
+                    </text>
+
+                    <text id="step2" x="120" y="325" fill="#f97316" font-size="14" font-family="monospace" opacity="0">
+                        <tspan font-weight="bold">2. COLISÃO DETECTADA</tspan>
+                    </text>
+                    <text id="step2desc" x="120" y="345" fill="#94a3b8" font-size="12" font-family="monospace" opacity="0">
+                        Dois nós transmitem ao mesmo tempo → sinais corrompidos → JAM signal (32 bits)
+                    </text>
+
+                    <text id="step3" x="120" y="325" fill="#10b981" font-size="14" font-family="monospace" opacity="0">
+                        <tspan font-weight="bold">3. BACKOFF EXPONENCIAL</tspan>
+                    </text>
+                    <text id="step3desc" x="120" y="345" fill="#94a3b8" font-size="12" font-family="monospace" opacity="0">
+                        Cada nó aguarda tempo aleatório (dobra a cada colisão, até 16 tentativas) e retransmite
+                    </text>
+                </g>
             </svg>
         </div>
+
+        <style>
+            @keyframes shake {
+                0%, 100% { transform: translateX(0); }
+                25% { transform: translateX(-3px); }
+                75% { transform: translateX(3px); }
+            }
+            .colliding {
+                animation: shake 0.1s infinite;
+            }
+        </style>
+
+        <script>
+            (function() {
+                const signalA = document.getElementById('signalA');
+                const signalB = document.getElementById('signalB');
+                const collisionEffect = document.getElementById('collisionEffect');
+                const jamSignal = document.getElementById('jamSignal');
+                const nodeA = document.getElementById('nodeA');
+                const nodeB = document.getElementById('nodeB');
+                const nodeAStatus = document.getElementById('nodeAStatus');
+                const nodeBStatus = document.getElementById('nodeBStatus');
+                
+                const step1 = document.getElementById('step1');
+                const step1desc = document.getElementById('step1desc');
+                const step2 = document.getElementById('step2');
+                const step2desc = document.getElementById('step2desc');
+                const step3 = document.getElementById('step3');
+                const step3desc = document.getElementById('step3desc');
+
+                let animationRunning = false;
+
+                function resetAnimation() {
+                    signalA.setAttribute('opacity', '0');
+                    signalA.setAttribute('d', '');
+                    signalB.setAttribute('opacity', '0');
+                    signalB.setAttribute('d', '');
+                    collisionEffect.setAttribute('opacity', '0');
+                    jamSignal.setAttribute('opacity', '0');
+                    
+                    nodeA.setAttribute('fill', '#2563eb');
+                    nodeB.setAttribute('fill', '#2563eb');
+                    nodeA.classList.remove('colliding');
+                    nodeB.classList.remove('colliding');
+                    
+                    nodeAStatus.textContent = 'TX: dados';
+                    nodeBStatus.textContent = 'TX: dados';
+                    
+                    step1.setAttribute('opacity', '0');
+                    step1desc.setAttribute('opacity', '0');
+                    step2.setAttribute('opacity', '0');
+                    step2desc.setAttribute('opacity', '0');
+                    step3.setAttribute('opacity', '0');
+                    step3desc.setAttribute('opacity', '0');
+                }
+
+                function animateCollision(duration) {
+                    const startTime = Date.now();
+                    
+                    function update() {
+                        const elapsed = Date.now() - startTime;
+                        const progress = Math.min(elapsed / duration, 1);
+                        
+                        const currentXa = 200 + (450 - 200) * progress;
+                        let pathA = `M 200 200`;
+                        for (let x = 200; x <= currentXa; x += 5) {
+                            const y = 200 + Math.sin((x - 200) * 0.15) * 10;
+                            pathA += ` L ${x} ${y}`;
+                        }
+                        signalA.setAttribute('d', pathA);
+                        signalA.setAttribute('opacity', '1');
+                        
+                        const currentXb = 700 - (700 - 450) * progress;
+                        let pathB = `M 700 200`;
+                        for (let x = 700; x >= currentXb; x -= 5) {
+                            const y = 200 + Math.sin((700 - x) * 0.15) * 10;
+                            pathB += ` L ${x} ${y}`;
+                        }
+                        signalB.setAttribute('d', pathB);
+                        signalB.setAttribute('opacity', '1');
+                        
+                        if (progress < 1) {
+                            requestAnimationFrame(update);
+                        }
+                    }
+                    
+                    update();
+                }
+
+                function animateSingleSignal(element, startX, endX, duration) {
+                    const startTime = Date.now();
+                    
+                    function update() {
+                        const elapsed = Date.now() - startTime;
+                        const progress = Math.min(elapsed / duration, 1);
+                        const currentX = startX + (endX - startX) * progress;
+                        
+                        let path = `M ${startX} 200`;
+                        for (let x = startX; x <= currentX; x += 5) {
+                            const y = 200 + Math.sin((x - startX) * 0.1) * 8;
+                            path += ` L ${x} ${y}`;
+                        }
+                        
+                        element.setAttribute('d', path);
+                        element.setAttribute('opacity', '1');
+                        
+                        if (progress < 1) {
+                            requestAnimationFrame(update);
+                        }
+                    }
+                    
+                    update();
+                }
+
+                function runAnimation() {
+                    if (animationRunning) return;
+                    animationRunning = true;
+                    
+                    resetAnimation();
+                    
+                    setTimeout(() => {
+                        step1.setAttribute('opacity', '1');
+                        step1desc.setAttribute('opacity', '1');
+                        nodeAStatus.textContent = 'Escutando...';
+                        nodeBStatus.textContent = 'Escutando...';
+                        nodeA.setAttribute('fill', '#059669');
+                        nodeB.setAttribute('fill', '#059669');
+                    }, 500);
+
+                    setTimeout(() => {
+                        step1.setAttribute('opacity', '0');
+                        step1desc.setAttribute('opacity', '0');
+                        
+                        nodeAStatus.textContent = 'Transmitindo...';
+                        nodeBStatus.textContent = 'Transmitindo...';
+                        nodeA.setAttribute('fill', '#2563eb');
+                        nodeB.setAttribute('fill', '#2563eb');
+                        
+                        animateCollision(1200);
+                    }, 2500);
+
+                    setTimeout(() => {
+                        step2.setAttribute('opacity', '1');
+                        step2desc.setAttribute('opacity', '1');
+                        
+                        collisionEffect.setAttribute('opacity', '1');
+                        jamSignal.setAttribute('opacity', '1');
+                        
+                        nodeA.setAttribute('fill', '#dc2626');
+                        nodeB.setAttribute('fill', '#dc2626');
+                        nodeA.classList.add('colliding');
+                        nodeB.classList.add('colliding');
+                        
+                        nodeAStatus.textContent = 'COLISÃO!';
+                        nodeBStatus.textContent = 'COLISÃO!';
+                    }, 3700);
+
+                    setTimeout(() => {
+                        nodeAStatus.textContent = 'Enviando JAM';
+                        nodeBStatus.textContent = 'Enviando JAM';
+                    }, 4200);
+
+                    setTimeout(() => {
+                        step2.setAttribute('opacity', '0');
+                        step2desc.setAttribute('opacity', '0');
+                        collisionEffect.setAttribute('opacity', '0');
+                        jamSignal.setAttribute('opacity', '0');
+                        signalA.setAttribute('opacity', '0');
+                        signalB.setAttribute('opacity', '0');
+                        
+                        step3.setAttribute('opacity', '1');
+                        step3desc.setAttribute('opacity', '1');
+                        
+                        nodeA.setAttribute('fill', '#f59e0b');
+                        nodeB.setAttribute('fill', '#f59e0b');
+                        nodeA.classList.remove('colliding');
+                        nodeB.classList.remove('colliding');
+                        
+                        nodeAStatus.textContent = 'Aguardando...';
+                        nodeBStatus.textContent = 'Aguardando...';
+                    }, 5700);
+
+                    setTimeout(() => {
+                        nodeAStatus.textContent = 'Retransmitindo';
+                        nodeA.setAttribute('fill', '#059669');
+                        animateSingleSignal(signalA, 200, 800, 1500);
+                    }, 7200);
+
+                    setTimeout(() => {
+                        nodeAStatus.textContent = '✓ Sucesso!';
+                        step3.setAttribute('opacity', '0');
+                        step3desc.setAttribute('opacity', '0');
+                    }, 8700);
+
+                    setTimeout(() => {
+                        animationRunning = false;
+                        runAnimation();
+                    }, 11200);
+                }
+
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting && !animationRunning) {
+                            runAnimation();
+                        }
+                    });
+                }, { threshold: 0.5 });
+
+                observer.observe(document.getElementById('csmaAnimation'));
+            })();
+        </script>
 
         <div class="alert-box">
             <p>&#x26A0;&#xFE0F; <strong>CSMA/CD &eacute; praticamente obsoleto hoje.</strong> Switches modernos operam em <strong>full-duplex</strong>: cada dispositivo tem seu pr&oacute;prio par de fios exclusivo para transmiss&atilde;o e recep&ccedil;&atilde;o simult&acirc;neas, eliminando coliss&otilde;es completamente. O CSMA/CD s&oacute; existia em redes half-duplex com hubs e barramentos compartilhados.</p>
@@ -206,6 +433,7 @@
             </div>
         </div>
     </div>
+
 
     <!-- CARD 3 — Quadro Ethernet -->
     <div class="content-card">
