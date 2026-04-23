@@ -915,49 +915,128 @@
     <!-- ATIVIDADE PRÁTICA -->
     <div class="content-card exercise-card" id="prat-rc06">
         <h2>&#x1F4DD; Atividade Pr&aacute;tica</h2>
-        <p class="prat-intro">Analisar quadros, endere&ccedil;os MAC e comportamento do switch Ethernet.</p>
+        <p class="prat-intro">Explorar o protocolo ARP no Cisco Packet Tracer: tabela ARP, broadcast e resolução de endereços MAC.</p>
 
         <div class="prat-steps">
             <div class="prat-step">
                 <div class="step-num">1</div>
                 <div class="step-body">
-                    <div class="step-label">Interpretar endere&ccedil;os MAC</div>
-                    <div class="step-desc">Para cada endere&ccedil;o MAC abaixo, identifique: (a) se &eacute; unicast, multicast ou broadcast; (b) qual o OUI (3 primeiros bytes); (c) a representa&ccedil;&atilde;o equivalente no padr&atilde;o Cisco. Endere&ccedil;os: (1) FF:FF:FF:FF:FF:FF; (2) 01:00:5E:00:00:01; (3) 3C:22:FB:A4:12:09; (4) 00:50:56:C0:00:08. <em>Dica: use o comando <code>arp -a</code> no seu computador para ver MACs da sua rede local.</em></div>
+                    <div class="step-label">Descobrindo a Tabela ARP Vazia</div>
+                    <div class="step-desc">
+                        <strong>Objetivo:</strong> Entender que a tabela ARP começa vazia.<br><br>
+                        <strong>Passos:</strong>
+                        <ol>
+                            <li>Monte uma topologia simples: 2 PCs conectados a 1 Switch.</li>
+                            <li>Configure IPs na mesma rede (ex: PC1 = 192.168.1.10, PC2 = 192.168.1.20).</li>
+                            <li>No PC1, abra o <em>Command Prompt</em> e digite: <code>arp -a</code></li>
+                            <li>Observe que a tabela está vazia (ou quase).</li>
+                        </ol>
+                        <strong>Pergunta:</strong> Por que a tabela ARP está vazia se o PC1 já tem IP configurado?
+                    </div>
                 </div>
             </div>
             <div class="prat-step">
                 <div class="step-num">2</div>
                 <div class="step-body">
-                    <div class="step-label">Dissecar um quadro Ethernet</div>
-                    <div class="step-desc">Dado o seguinte quadro Ethernet em hexadecimal (simplificado), identifique cada campo: <code>FF FF FF FF FF FF | A8 5E 45 F3 2B 7C | 08 06 | [dados ARP...] | A1 B2 C3 D4</code>. (a) Qual o MAC de destino? &Eacute; unicast, multicast ou broadcast? (b) Qual o MAC de origem? (c) O que indica o EtherType 0x0806? (d) Qual campo &eacute; o FCS? (e) Por que &eacute; um pacote ARP e n&atilde;o IP?</div>
+                    <div class="step-label">Populando a Tabela ARP com Ping</div>
+                    <div class="step-desc">
+                        <strong>Objetivo:</strong> Ver a tabela ARP sendo preenchida automaticamente.<br><br>
+                        <strong>Passos:</strong>
+                        <ol>
+                            <li>Use a mesma topologia da Atividade 1.</li>
+                            <li>No PC1, digite: <code>ping 192.168.1.20</code></li>
+                            <li>Agora digite novamente: <code>arp -a</code></li>
+                            <li>Compare com o resultado anterior.</li>
+                        </ol>
+                        <strong>Perguntas:</strong>
+                        <ul>
+                            <li>O que apareceu na tabela ARP?</li>
+                            <li>Qual é o endereço MAC que apareceu?</li>
+                            <li>Confira se é o MAC do PC2 (clique no PC2 → Config → FastEthernet0).</li>
+                        </ul>
+                    </div>
                 </div>
             </div>
             <div class="prat-step">
                 <div class="step-num">3</div>
                 <div class="step-body">
-                    <div class="step-label">Simular a tabela MAC de um switch</div>
-                    <div class="step-desc">Um switch de 4 portas inicia com a tabela MAC vazia. Trace o que acontece em cada etapa: (a) PC-A (Fa0/1, MAC AA) envia um quadro para PC-B (MAC BB), mas BB ainda n&atilde;o est&aacute; na tabela. Quais portas recebem o quadro? (b) PC-B responde. O que muda na tabela? (c) PC-A envia novamente para PC-B. Agora quais portas recebem? (d) Por que o switch &eacute; mais eficiente que o hub?</div>
+                    <div class="step-label">ARP e o Broadcast</div>
+                    <div class="step-desc">
+                        <strong>Objetivo:</strong> Visualizar a requisição ARP sendo transmitida.<br><br>
+                        <strong>Passos:</strong>
+                        <ol>
+                            <li>Monte: 3 PCs + 1 Switch.</li>
+                            <li>Configure IPs: PC1 = 192.168.1.10, PC2 = 192.168.1.20, PC3 = 192.168.1.30.</li>
+                            <li>Ative o <strong>modo Simulation</strong> (canto inferior direito).</li>
+                            <li>Para visualizar apenas os pacotes ARP, clique em <strong>Edit Filters</strong> no painel de simulação, desmarque todos os protocolos e marque apenas <strong>ARP</strong>.</li>
+                            <li>No PC1, digite: <code>ping 192.168.1.20</code></li>
+                            <li>Observe o primeiro pacote ARP (em amarelo/laranja).</li>
+                            <li>Clique nele e veja que vai para <strong>todos</strong> os PCs (broadcast).</li>
+                        </ol>
+                        <strong>Perguntas:</strong>
+                        <ul>
+                            <li>Para quantos dispositivos o ARP Request foi enviado?</li>
+                            <li>Quem respondeu? (só o PC2 ou todos?)</li>
+                            <li>O PC3 recebeu o ARP Request?</li>
+                        </ul>
+                    </div>
                 </div>
             </div>
             <div class="prat-step">
                 <div class="step-num">4</div>
                 <div class="step-body">
-                    <div class="step-label">Pesquisar e aplicar PoE</div>
-                    <div class="step-desc">Uma escola quer instalar 8 c&acirc;meras IP (consumo de 12 W cada) e 4 access points Wi-Fi 6 (consumo de 25 W cada). (a) Qual padr&atilde;o PoE atende cada dispositivo? (b) Qual a pot&ecirc;ncia total necess&aacute;ria do switch PoE? (c) Pesquise um switch gerenci&aacute;vel de 24 portas com PoE+ compat&iacute;vel com esse cen&aacute;rio e registre o modelo e pre&ccedil;o aproximado.</div>
+                    <div class="step-label">Limpando a Tabela ARP</div>
+                    <div class="step-desc">
+                        <strong>Objetivo:</strong> Aprender a limpar entradas ARP.<br><br>
+                        <strong>Passos:</strong>
+                        <ol>
+                            <li>Use a topologia com 2 PCs.</li>
+                            <li>Faça ping do PC1 para PC2 (popula a tabela).</li>
+                            <li>Digite: <code>arp -a</code> (veja a entrada).</li>
+                            <li>Digite: <code>arp -d</code> (limpa a tabela).</li>
+                            <li>Digite: <code>arp -a</code> novamente (confirma que limpou).</li>
+                        </ol>
+                        <strong>Teste:</strong> Faça ping novamente. A tabela será recriada?
+                    </div>
                 </div>
             </div>
             <div class="prat-step">
                 <div class="step-num">5</div>
                 <div class="step-body">
-                    <div class="step-label">&#x1F465; Trabalho em grupo &mdash; Debate hub vs. switch vs. roteador</div>
-                    <div class="step-desc"><strong>(Aprendizagem Baseada em Equipes &mdash; grupos de 3&ndash;4 alunos)</strong> Cada grupo recebe um dispositivo para &ldquo;defender&rdquo;: hub, switch L2, switch L3 e roteador. O grupo deve explicar: (a) em qual camada OSI opera; (b) como encaminha dados (broadcast, MAC, IP); (c) quando ainda faz sentido usar; (d) qual a limita&ccedil;&atilde;o principal. Ap&oacute;s as apresenta&ccedil;&otilde;es, a turma monta na lousa uma hierarquia de rede completa posicionando cada dispositivo. <em>Debatam: por que ainda se vende hub hoje? Existe justificativa t&eacute;cnica?</em></div>
+                    <div class="step-label">Comparando MACs — ARP vs Config</div>
+                    <div class="step-desc">
+                        <strong>Objetivo:</strong> Confirmar que ARP mostra o MAC real do dispositivo.<br><br>
+                        <strong>Passos:</strong>
+                        <ol>
+                            <li>Topologia: PC1 + Switch + PC2.</li>
+                            <li>Anote manualmente o MAC do PC2: clique em PC2 → Config → FastEthernet0 → copie o <em>MAC Address</em>.</li>
+                            <li>No PC1, faça ping para PC2.</li>
+                            <li>No PC1, digite: <code>arp -a</code></li>
+                            <li>Compare o MAC que apareceu com o que você anotou.</li>
+                        </ol>
+                        São iguais? Por quê?
+                    </div>
                 </div>
             </div>
             <div class="prat-step">
                 <div class="step-num">6</div>
                 <div class="step-body">
-                    <div class="step-label">&#x1F9E9; Computa&ccedil;&atilde;o desplugada &mdash; CSMA/CD humano</div>
-                    <div class="step-desc"><strong>(Metodologia ativa &mdash; sem computador)</strong> Simule o CSMA/CD com a turma: cada aluno &eacute; um dispositivo de rede. Usem um &ldquo;cabo&rdquo; imagin&aacute;rio representado por uma fita no ch&atilde;o &mdash; s&oacute; pode falar quem estiver com o microfone (um objeto qualquer). Regras: (a) antes de falar, espere sil&ecirc;ncio (&ldquo;carrier sense&rdquo;); (b) se dois falarem juntos, ambos param (&ldquo;colis&atilde;o&rdquo;), contam at&eacute; um n&uacute;mero aleat&oacute;rio (backoff) e tentam de novo. Depois, refazer a simula&ccedil;&atilde;o sem o CSMA/CD &mdash; caos! <em>Reflit am: o que muda quando um switch isola as convers as? Por que eliminar colis&otilde;es aumenta a vaz&atilde;o? A atividade &eacute; adapt&aacute;vel: alunos podem usar escrita em quadro branco ou comunica&ccedil;&atilde;o por sinais.</em></div>
+                    <div class="step-label">Múltiplos Hosts</div>
+                    <div class="step-desc">
+                        <strong>Objetivo:</strong> Ver a tabela ARP com várias entradas.<br><br>
+                        <strong>Passos:</strong>
+                        <ol>
+                            <li>Monte: 5 PCs conectados a 1 Switch.</li>
+                            <li>Configure todos na rede 192.168.1.0/24 (IPs de .10 a .50).</li>
+                            <li>Do PC1, faça ping para <strong>todos</strong> os outros PCs.</li>
+                            <li>Digite: <code>arp -a</code></li>
+                        </ol>
+                        <strong>Perguntas:</strong>
+                        <ul>
+                            <li>Quantas entradas apareceram?</li>
+                            <li>Crie uma tabela com: <strong>IP | MAC | Tipo</strong></li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
