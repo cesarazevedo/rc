@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
@@ -658,59 +658,170 @@
     <!-- ATIVIDADE PRÁTICA -->
     <div class="content-card exercise-card" id="prat-rc07">
         <h2>&#x1F4DD; Atividade Pr&aacute;tica</h2>
-        <p class="prat-intro">Analisar redes Wi-Fi, avaliar seguran&ccedil;a e planejar cobertura para ambientes reais.</p>
+        <p class="prat-intro">Configurar uma rede sem fio com dois Access Points e m&uacute;ltiplos clientes no Cisco Packet Tracer, incluindo uma ponte sem fio entre os APs.</p>
+
+        <!-- Diagrama da topologia -->
+        <div class="viz-wrap" style="margin-bottom:1.5rem">
+            <div class="viz-title">Topologia — Access Point 4 (central) · Access Point 5 (remoto via ponte) · Laptop1 · Laptop0 · Smartphone0 · PC3</div>
+            <svg viewBox="0 0 700 280" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block">
+                <rect x="270" y="80" width="90" height="44" rx="6" fill="#1e3a5f" stroke="#3b82f6" stroke-width="2"/>
+                <text x="315" y="99" text-anchor="middle" fill="#93c5fd" font-size="10" font-weight="bold" font-family="monospace">Access</text>
+                <text x="315" y="112" text-anchor="middle" fill="#93c5fd" font-size="10" font-weight="bold" font-family="monospace">Point 4</text>
+                <rect x="530" y="80" width="90" height="44" rx="6" fill="#1a3a2a" stroke="#22c55e" stroke-width="2"/>
+                <text x="575" y="99" text-anchor="middle" fill="#86efac" font-size="10" font-weight="bold" font-family="monospace">Access</text>
+                <text x="575" y="112" text-anchor="middle" fill="#86efac" font-size="10" font-weight="bold" font-family="monospace">Point 5</text>
+                <line x1="360" y1="102" x2="530" y2="102" stroke="#fbbf24" stroke-width="2.5" stroke-dasharray="8 4">
+                    <animate attributeName="stroke-dashoffset" values="24;0" dur="1s" repeatCount="indefinite"/>
+                </line>
+                <text x="445" y="94" text-anchor="middle" fill="#fde68a" font-size="8" font-family="monospace">ponte sem fio</text>
+                <rect x="50" y="160" width="90" height="36" rx="5" fill="#2d1a4a" stroke="#a855f7" stroke-width="1.5"/>
+                <text x="95" y="181" text-anchor="middle" fill="#d8b4fe" font-size="9" font-family="monospace" font-weight="bold">Laptop1</text>
+                <text x="95" y="192" text-anchor="middle" fill="#64748b" font-size="7" font-family="monospace">192.168.1.11</text>
+                <line x1="140" y1="175" x2="270" y2="110" stroke="#a855f7" stroke-width="1.5" stroke-dasharray="5 3"/>
+                <rect x="270" y="200" width="90" height="36" rx="5" fill="#2d1a4a" stroke="#a855f7" stroke-width="1.5"/>
+                <text x="315" y="221" text-anchor="middle" fill="#d8b4fe" font-size="9" font-family="monospace" font-weight="bold">Laptop0</text>
+                <text x="315" y="232" text-anchor="middle" fill="#64748b" font-size="7" font-family="monospace">192.168.1.10</text>
+                <line x1="315" y1="200" x2="315" y2="124" stroke="#a855f7" stroke-width="1.5" stroke-dasharray="5 3"/>
+                <rect x="155" y="200" width="90" height="36" rx="5" fill="#2d1a4a" stroke="#a855f7" stroke-width="1.5"/>
+                <text x="200" y="218" text-anchor="middle" fill="#d8b4fe" font-size="9" font-family="monospace" font-weight="bold">Smartphone0</text>
+                <text x="200" y="230" text-anchor="middle" fill="#64748b" font-size="7" font-family="monospace">192.168.1.30</text>
+                <line x1="200" y1="200" x2="295" y2="124" stroke="#a855f7" stroke-width="1.5" stroke-dasharray="5 3"/>
+                <rect x="530" y="180" width="90" height="36" rx="5" fill="#1e293b" stroke="#94a3b8" stroke-width="1.5"/>
+                <text x="575" y="201" text-anchor="middle" fill="#e2e8f0" font-size="9" font-family="monospace" font-weight="bold">PC3</text>
+                <text x="575" y="212" text-anchor="middle" fill="#64748b" font-size="7" font-family="monospace">192.168.1.20</text>
+                <line x1="575" y1="180" x2="575" y2="124" stroke="#94a3b8" stroke-width="2"/>
+                <line x1="30" y1="264" x2="60" y2="264" stroke="#a855f7" stroke-width="2" stroke-dasharray="5 3"/>
+                <text x="66" y="268" fill="#94a3b8" font-size="8" font-family="monospace">conex&atilde;o sem fio</text>
+                <line x1="200" y1="264" x2="230" y2="264" stroke="#fbbf24" stroke-width="2" stroke-dasharray="8 4"/>
+                <text x="236" y="268" fill="#94a3b8" font-size="8" font-family="monospace">ponte sem fio (bridge)</text>
+                <line x1="390" y1="264" x2="420" y2="264" stroke="#94a3b8" stroke-width="2"/>
+                <text x="426" y="268" fill="#94a3b8" font-size="8" font-family="monospace">cabo Ethernet</text>
+            </svg>
+        </div>
+
+        <!-- Tabela de endereçamento -->
+        <table style="margin-bottom:1.25rem">
+            <thead>
+                <tr><th>Dispositivo</th><th>Tipo de conex&atilde;o</th><th>Endere&ccedil;o IP</th><th>M&aacute;scara</th><th>SSID / Interface</th></tr>
+            </thead>
+            <tbody>
+                <tr><td><strong>Access Point 4</strong></td><td>AP central</td><td>192.168.1.1</td><td>255.255.255.0</td><td>RedeWiFi</td></tr>
+                <tr><td><strong>Access Point 5</strong></td><td>AP remoto (bridge)</td><td>192.168.1.2</td><td>255.255.255.0</td><td>RedeWiFi</td></tr>
+                <tr><td><strong>Laptop0</strong></td><td>Sem fio &rarr; AP4</td><td>192.168.1.10</td><td>255.255.255.0</td><td>RedeWiFi</td></tr>
+                <tr><td><strong>Laptop1</strong></td><td>Sem fio &rarr; AP4</td><td>192.168.1.11</td><td>255.255.255.0</td><td>RedeWiFi</td></tr>
+                <tr><td><strong>Smartphone0</strong></td><td>Sem fio &rarr; AP4</td><td>192.168.1.30</td><td>255.255.255.0</td><td>RedeWiFi</td></tr>
+                <tr><td><strong>PC3</strong></td><td>Cabo &rarr; AP5</td><td>192.168.1.20</td><td>255.255.255.0</td><td>FastEthernet</td></tr>
+            </tbody>
+        </table>
 
         <div class="prat-steps">
             <div class="prat-step">
                 <div class="step-num">1</div>
                 <div class="step-body">
-                    <div class="step-label">Auditar redes Wi-Fi do entorno</div>
-                    <div class="step-desc">Usando o celular ou notebook, liste todas as redes Wi-Fi vis&iacute;veis na sala de aula. Para cada uma registre: SSID, intensidade do sinal (dBm se poss&iacute;vel), frequ&ecirc;ncia (2,4 ou 5 GHz), canal e protocolo de seguran&ccedil;a. (a) Quantas redes usam WPA2 vs. WPA3 vs. sem senha? (b) Quais canais est&atilde;o mais congestionados? (c) H&aacute; redes com SSID padr&atilde;o de f&aacute;brica (ex: TP-Link, DIRECT-)? O que isso indica?</div>
+                    <div class="step-label">Montar a topologia no Packet Tracer</div>
+                    <div class="step-desc">
+                        <strong>Objetivo:</strong> Adicionar todos os dispositivos ao espa&ccedil;o de trabalho.<br><br>
+                        <ol>
+                            <li>Abra o Cisco Packet Tracer e crie um novo projeto.</li>
+                            <li>Em <strong>Wireless Devices</strong>, adicione dois <em>AccessPoint-PT</em>: nomeie o primeiro <strong>Access Point 4</strong> (centro) e o segundo <strong>Access Point 5</strong> (&agrave; direita).</li>
+                            <li>Em <strong>End Devices</strong>, adicione: <em>Laptop-PT</em> &times; 2 (Laptop0 e Laptop1), <em>Smartphone-PT</em> &times; 1 (Smartphone0) e <em>PC-PT</em> &times; 1 (PC3).</li>
+                            <li>Conecte o <strong>PC3 ao AP5</strong> com cabo <em>Copper Straight-Through</em>.</li>
+                        </ol>
+                        <strong>Verifique:</strong> AP4 no centro, AP5 &agrave; direita, clientes distribu&iacute;dos ao redor do AP4.
+                    </div>
                 </div>
             </div>
             <div class="prat-step">
                 <div class="step-num">2</div>
                 <div class="step-body">
-                    <div class="step-label">Avaliar a seguran&ccedil;a de uma configura&ccedil;&atilde;o Wi-Fi</div>
-                    <div class="step-desc">Um pequeno com&eacute;rcio usa a seguinte configura&ccedil;&atilde;o: roteador dom&eacute;stico, SSID &ldquo;TP-Link_A4B2&rdquo;, senha &ldquo;12345678&rdquo;, WPA2-Personal, WPS ativado, mesma rede para clientes e computadores do caixa. (a) Liste ao menos 5 problemas de seguran&ccedil;a nessa configura&ccedil;&atilde;o; (b) proponha uma configura&ccedil;&atilde;o melhorada para o mesmo or&ccedil;amento; (c) justifique cada mudan&ccedil;a proposta.</div>
+                    <div class="step-label">Configurar o Access Point 4 (AP central)</div>
+                    <div class="step-desc">
+                        <strong>Objetivo:</strong> Definir SSID e endere&ccedil;o IP do AP4.<br><br>
+                        <ol>
+                            <li>Clique no <strong>Access Point 4</strong> &rarr; aba <strong>Config</strong>.</li>
+                            <li>Em <strong>Port 1 (Wireless)</strong>: SSID = <code>RedeWiFi</code> &middot; Channel = <code>6</code> &middot; Authentication = <em>Disabled</em>.</li>
+                            <li>Em <strong>Global Settings</strong>: IP = <code>192.168.1.1</code> &middot; Mask = <code>255.255.255.0</code>.</li>
+                        </ol>
+                        <strong>Resultado:</strong> AP4 pronto para receber clientes sem fio com SSID <em>RedeWiFi</em>.
+                    </div>
                 </div>
             </div>
             <div class="prat-step">
                 <div class="step-num">3</div>
                 <div class="step-body">
-                    <div class="step-label">Escolher padr&atilde;o Wi-Fi para cada cen&aacute;rio</div>
-                    <div class="step-desc">Para cada situa&ccedil;&atilde;o, indique o padr&atilde;o 802.11 mais adequado e justifique: (a) atualizar roteador dom&eacute;stico antigo com or&ccedil;amento limitado; (b) instalar Wi-Fi num audit&oacute;rio com 300 pessoas simult&acirc;neas; (c) interligar dois pr&eacute;dios a 50 metros sem cabo; (d) rede de monitoramento IoT industrial com sensores de baixo consumo; (e) home office com v&iacute;deoconfer&ecirc;ncia 4K e gaming online.</div>
+                    <div class="step-label">Configurar o Access Point 5 e criar a ponte sem fio</div>
+                    <div class="step-desc">
+                        <strong>Objetivo:</strong> Ligar AP5 ao AP4 via ponte sem fio (<em>wireless bridge</em>).<br><br>
+                        <ol>
+                            <li>Clique no <strong>Access Point 5</strong> &rarr; aba <strong>Config</strong>.</li>
+                            <li>Em <strong>Port 1 (Wireless)</strong>: SSID = <code>RedeWiFi</code> &middot; Channel = <code>6</code> &middot; Authentication = <em>Disabled</em>.</li>
+                            <li>Em <strong>Global Settings</strong>: IP = <code>192.168.1.2</code> &middot; Mask = <code>255.255.255.0</code>.</li>
+                            <li>Use <em>Connections &rarr; Automatically Choose Connection Type</em>, clique em <strong>AP4</strong> e depois em <strong>AP5</strong> para criar o enlace sem fio (linha pontilhada entre eles).</li>
+                        </ol>
+                        <strong>Resultado:</strong> linha pontilhada aparece entre AP4 e AP5.
+                    </div>
                 </div>
             </div>
             <div class="prat-step">
                 <div class="step-num">4</div>
                 <div class="step-body">
-                    <div class="step-label">Calcular cobertura e posicionamento de APs</div>
-                    <div class="step-desc">Uma escola tem um corredor de 80 m de comprimento com salas dos dois lados e paredes de tijolo. (a) Quantos APs ser&atilde;o necess&aacute;rios para cobrir o corredor em 2,4 GHz? E em 5 GHz? (b) Quais canais atribuir a cada AP para evitar interfer&ecirc;ncia? (c) Onde posicionar f&iacute;sicamente os APs (teto, parede, altura)? Esboce um diagrama simplificado.</div>
+                    <div class="step-label">Conectar Laptop0, Laptop1 e Smartphone0 ao AP4</div>
+                    <div class="step-desc">
+                        <strong>Objetivo:</strong> Associar os clientes m&oacute;veis ao AP4 (repita para cada dispositivo).<br><br>
+                        <ol>
+                            <li>Clique no dispositivo &rarr; <strong>Config</strong> &rarr; <strong>Wireless0</strong>: SSID = <code>RedeWiFi</code> &middot; Authentication = <em>Disabled</em>.</li>
+                            <li>Em <strong>IP Configuration</strong>: Laptop0 = <code>192.168.1.10</code> &middot; Laptop1 = <code>192.168.1.11</code> &middot; Smartphone0 = <code>192.168.1.30</code> &middot; Mask = <code>255.255.255.0</code>.</li>
+                        </ol>
+                        <strong>Verifique:</strong> linhas pontilhadas aparecem ligando cada dispositivo ao AP4.
+                    </div>
                 </div>
             </div>
             <div class="prat-step">
                 <div class="step-num">5</div>
                 <div class="step-body">
-                    <div class="step-label">&#x1F465; Trabalho em grupo &mdash; Projeto de rede Wi-Fi para a escola</div>
-                    <div class="step-desc"><strong>(Aprendizagem Baseada em Projetos &mdash; grupos de 3&ndash;4 alunos)</strong> Cada grupo projeta a rede Wi-Fi para um setor da pr&oacute;pria escola (laborat&oacute;rio de inform&aacute;tica, biblioteca, quadra coberta, secretaria). O grupo deve: (a) realizar um &ldquo;site survey&rdquo; informal medindo sinal em v&aacute;rios pontos do setor com o celular; (b) definir n&uacute;mero e posicionamento de APs; (c) escolher padr&atilde;o, frequ&ecirc;ncia e canais; (d) definir configura&ccedil;&atilde;o de seguran&ccedil;a. Apresenta&ccedil;&atilde;o com diagrama desenhado &agrave; m&atilde;o ou digital. <em>Debatam: qual setor tem pior cobertura atualmente? O que causa isso?</em></div>
+                    <div class="step-label">Configurar o PC3 (cabo &rarr; AP5)</div>
+                    <div class="step-desc">
+                        <strong>Objetivo:</strong> Colocar o PC3 na mesma rede pelo AP5.<br><br>
+                        <ol>
+                            <li>Clique no <strong>PC3</strong> &rarr; <strong>Config</strong> &rarr; <strong>FastEthernet0</strong>.</li>
+                            <li>IP = <code>192.168.1.20</code> &middot; Mask = <code>255.255.255.0</code>.</li>
+                        </ol>
+                        <strong>Resultado:</strong> PC3 na rede 192.168.1.0/24, acess&iacute;vel atrav&eacute;s da ponte AP4&ndash;AP5.
+                    </div>
                 </div>
             </div>
             <div class="prat-step">
                 <div class="step-num">6</div>
                 <div class="step-body">
-                    <div class="step-label">&#x1F9E9; Computa&ccedil;&atilde;o desplugada &mdash; Simula&ccedil;&atilde;o de canal Wi-Fi e interfer&ecirc;ncia</div>
-                    <div class="step-desc"><strong>(Metodologia ativa &mdash; sem computador)</strong> Divida a turma em grupos representando APs. Cada grupo recebe um cart&atilde;o com um canal (1, 6 ou 11 em 2,4 GHz). Quando dois grupos &ldquo;pr&oacute;ximos&rdquo; (sentados lado a lado) tentam transmitir ao mesmo tempo no mesmo canal, ambos devem parar e aguardar (simula&ccedil;&atilde;o de interfer&ecirc;ncia). Refazer o exerc&iacute;cio atribuindo canais corretamente. Em seguida, trocar para 5 GHz: agora cada grupo tem um canal diferente e pode transmitir sem conflito. <em>Reflit am: por que ambientes com muitos vizinhos Wi-Fi s&atilde;o mais lentos? O que a banda de 6 GHz resolve? Alunos com defici&ecirc;ncia auditiva podem usar cart&otilde;es coloridos no lugar de sons.</em></div>
+                    <div class="step-label">Testar conectividade de ponta a ponta</div>
+                    <div class="step-desc">
+                        <strong>Objetivo:</strong> Confirmar que toda a rede se comunica.<br><br>
+                        <ol>
+                            <li>No <strong>Laptop0</strong> (<em>Command Prompt</em>):<br>
+                                <code>ping 192.168.1.11</code> &rarr; Laptop1 &nbsp;|&nbsp;
+                                <code>ping 192.168.1.30</code> &rarr; Smartphone0 &nbsp;|&nbsp;
+                                <code>ping 192.168.1.20</code> &rarr; PC3 (via ponte)
+                            </li>
+                            <li>No <strong>PC3</strong>: <code>ping 192.168.1.10</code> &rarr; deve responder (Laptop0).</li>
+                            <li>Ative o <strong>modo Simulation</strong>, filtre por <strong>ICMP</strong> e observe o caminho: Laptop0 &rarr; AP4 &rarr; AP5 &rarr; PC3.</li>
+                        </ol>
+                        <strong>Perguntas:</strong>
+                        <ul>
+                            <li>O ping do Laptop0 para o PC3 teve sucesso? Quantos saltos aparecem na simula&ccedil;&atilde;o?</li>
+                            <li>O que acontece se voc&ecirc; desconectar o cabo entre PC3 e AP5?</li>
+                            <li>Por que o AP5 n&atilde;o aparece como um salto separado no ping?</li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
 
         <div class="prat-observe">
-            <strong>&#x1F4CC; Para refletir:</strong> Wi-Fi parece &ldquo;m&aacute;gica&rdquo; para o usu&aacute;rio final, mas &eacute; uma das tecnologias mais complexas de projetar corretamente. Um AP mal posicionado, no canal errado ou com seguran&ccedil;a fraca pode comprometer centenas de dispositivos. Profissionais de redes sem fio s&atilde;o altamente valorizados justamente porque essa &ldquo;invisibilidade&rdquo; do sinal exige conhecimento aprofundado para ser gerenciada.
+            <strong>&#x1F4CC; Para refletir:</strong> nessa topologia, o AP5 age como uma <em>ponte sem fio</em> &mdash; estende o alcance da rede sem criar uma nova sub-rede. O PC3, mesmo conectado por cabo ao AP5, enxerga todos os dispositivos sem fio do AP4 como se estivessem na mesma LAN. Essa &eacute; a base de redes Wi-Fi em ambientes que precisam cobrir dist&acirc;ncias maiores sem cabeamento entre os pontos.
         </div>
 
         <div class="ex-actions">
-            <button class="btn-print" onclick="printPractical('prat-rc07', 'Aula 7 \u2014 Redes sem Fio (IEEE 802.11)')">&#x1F5A8;&#xFE0F; Imprimir roteiro</button>
+            <button class="btn-print" onclick="printPractical('prat-rc07', 'Aula 7 — Redes sem Fio (IEEE 802.11)')">&#x1F5A8;&#xFE0F; Imprimir roteiro</button>
         </div>
     </div>
 
