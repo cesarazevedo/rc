@@ -906,126 +906,255 @@
     <!-- ATIVIDADE PRÁTICA -->
     <div class="content-card exercise-card" id="prat-rc06">
         <h2>&#x1F4DD; Atividade Pr&aacute;tica</h2>
-        <p class="prat-intro">Explorar o protocolo ARP no Cisco Packet Tracer: tabela ARP, broadcast e resolução de endereços MAC.</p>
+        <p class="prat-intro">Configurar uma rede sem fio com dois Access Points e m&uacute;ltiplos clientes no Cisco Packet Tracer, incluindo uma ponte sem fio entre os APs.</p>
+
+        <!-- Diagrama da topologia -->
+        <div class="viz-wrap" style="margin-bottom:1.5rem">
+            <div class="viz-title">Topologia da rede — Access Point 4 (central) · Access Point 5 (remoto) · 3 clientes + 1 PC</div>
+            <svg viewBox="0 0 700 280" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block">
+                <!-- AP4 (centro) -->
+                <rect x="270" y="80" width="90" height="44" rx="6" fill="#1e3a5f" stroke="#3b82f6" stroke-width="2"/>
+                <text x="315" y="99" text-anchor="middle" fill="#93c5fd" font-size="10" font-weight="bold" font-family="monospace">Access</text>
+                <text x="315" y="112" text-anchor="middle" fill="#93c5fd" font-size="10" font-weight="bold" font-family="monospace">Point 4</text>
+                <!-- AP5 (direita) -->
+                <rect x="530" y="80" width="90" height="44" rx="6" fill="#1a3a2a" stroke="#22c55e" stroke-width="2"/>
+                <text x="575" y="99" text-anchor="middle" fill="#86efac" font-size="10" font-weight="bold" font-family="monospace">Access</text>
+                <text x="575" y="112" text-anchor="middle" fill="#86efac" font-size="10" font-weight="bold" font-family="monospace">Point 5</text>
+                <!-- Ponte sem fio AP4 ↔ AP5 -->
+                <line x1="360" y1="102" x2="530" y2="102" stroke="#fbbf24" stroke-width="2.5" stroke-dasharray="8 4">
+                    <animate attributeName="stroke-dashoffset" values="24;0" dur="1s" repeatCount="indefinite"/>
+                </line>
+                <text x="445" y="94" text-anchor="middle" fill="#fde68a" font-size="8" font-family="monospace">ponte sem fio</text>
+                <!-- Laptop1 (esq) -->
+                <rect x="50" y="160" width="90" height="36" rx="5" fill="#2d1a4a" stroke="#a855f7" stroke-width="1.5"/>
+                <text x="95" y="181" text-anchor="middle" fill="#d8b4fe" font-size="9" font-family="monospace" font-weight="bold">Laptop1</text>
+                <text x="95" y="192" text-anchor="middle" fill="#64748b" font-size="7" font-family="monospace">192.168.1.11</text>
+                <line x1="140" y1="175" x2="270" y2="110" stroke="#a855f7" stroke-width="1.5" stroke-dasharray="5 3"/>
+                <!-- Laptop0 (centro-baixo) -->
+                <rect x="270" y="200" width="90" height="36" rx="5" fill="#2d1a4a" stroke="#a855f7" stroke-width="1.5"/>
+                <text x="315" y="221" text-anchor="middle" fill="#d8b4fe" font-size="9" font-family="monospace" font-weight="bold">Laptop0</text>
+                <text x="315" y="232" text-anchor="middle" fill="#64748b" font-size="7" font-family="monospace">192.168.1.10</text>
+                <line x1="315" y1="200" x2="315" y2="124" stroke="#a855f7" stroke-width="1.5" stroke-dasharray="5 3"/>
+                <!-- Smartphone0 -->
+                <rect x="155" y="200" width="90" height="36" rx="5" fill="#2d1a4a" stroke="#a855f7" stroke-width="1.5"/>
+                <text x="200" y="218" text-anchor="middle" fill="#d8b4fe" font-size="9" font-family="monospace" font-weight="bold">Smartphone0</text>
+                <text x="200" y="230" text-anchor="middle" fill="#64748b" font-size="7" font-family="monospace">192.168.1.30</text>
+                <line x1="200" y1="200" x2="295" y2="124" stroke="#a855f7" stroke-width="1.5" stroke-dasharray="5 3"/>
+                <!-- PC3 -->
+                <rect x="530" y="180" width="90" height="36" rx="5" fill="#1e293b" stroke="#94a3b8" stroke-width="1.5"/>
+                <text x="575" y="201" text-anchor="middle" fill="#e2e8f0" font-size="9" font-family="monospace" font-weight="bold">PC3</text>
+                <text x="575" y="212" text-anchor="middle" fill="#64748b" font-size="7" font-family="monospace">192.168.1.20</text>
+                <line x1="575" y1="180" x2="575" y2="124" stroke="#94a3b8" stroke-width="2"/>
+                <!-- Legenda -->
+                <line x1="30" y1="264" x2="60" y2="264" stroke="#a855f7" stroke-width="2" stroke-dasharray="5 3"/>
+                <text x="66" y="268" fill="#94a3b8" font-size="8" font-family="monospace">conex&atilde;o sem fio</text>
+                <line x1="200" y1="264" x2="230" y2="264" stroke="#fbbf24" stroke-width="2" stroke-dasharray="8 4"/>
+                <text x="236" y="268" fill="#94a3b8" font-size="8" font-family="monospace">ponte sem fio (bridge)</text>
+                <line x1="390" y1="264" x2="420" y2="264" stroke="#94a3b8" stroke-width="2"/>
+                <text x="426" y="268" fill="#94a3b8" font-size="8" font-family="monospace">cabo Ethernet</text>
+            </svg>
+        </div>
+
+        <!-- Tabela de endereçamento -->
+        <table style="margin-bottom:1.25rem">
+            <thead>
+                <tr>
+                    <th>Dispositivo</th>
+                    <th>Tipo de conex&atilde;o</th>
+                    <th>Endere&ccedil;o IP</th>
+                    <th>M&aacute;scara</th>
+                    <th>SSID / Interface</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Access Point 4</strong></td>
+                    <td>AP central</td>
+                    <td>192.168.1.1</td>
+                    <td>255.255.255.0</td>
+                    <td>RedeWiFi</td>
+                </tr>
+                <tr>
+                    <td><strong>Access Point 5</strong></td>
+                    <td>AP remoto (bridge)</td>
+                    <td>192.168.1.2</td>
+                    <td>255.255.255.0</td>
+                    <td>RedeWiFi</td>
+                </tr>
+                <tr>
+                    <td><strong>Laptop0</strong></td>
+                    <td>Sem fio &rarr; AP4</td>
+                    <td>192.168.1.10</td>
+                    <td>255.255.255.0</td>
+                    <td>RedeWiFi</td>
+                </tr>
+                <tr>
+                    <td><strong>Laptop1</strong></td>
+                    <td>Sem fio &rarr; AP4</td>
+                    <td>192.168.1.11</td>
+                    <td>255.255.255.0</td>
+                    <td>RedeWiFi</td>
+                </tr>
+                <tr>
+                    <td><strong>Smartphone0</strong></td>
+                    <td>Sem fio &rarr; AP4</td>
+                    <td>192.168.1.30</td>
+                    <td>255.255.255.0</td>
+                    <td>RedeWiFi</td>
+                </tr>
+                <tr>
+                    <td><strong>PC3</strong></td>
+                    <td>Cabo &rarr; AP5</td>
+                    <td>192.168.1.20</td>
+                    <td>255.255.255.0</td>
+                    <td>FastEthernet</td>
+                </tr>
+            </tbody>
+        </table>
 
         <div class="prat-steps">
             <div class="prat-step">
                 <div class="step-num">1</div>
                 <div class="step-body">
-                    <div class="step-label">Descobrindo a Tabela ARP Vazia</div>
+                    <div class="step-label">Montar a topologia no Packet Tracer</div>
                     <div class="step-desc">
-                        <strong>Objetivo:</strong> Entender que a tabela ARP começa vazia.<br><br>
+                        <strong>Objetivo:</strong> Adicionar todos os dispositivos ao espa&ccedil;o de trabalho.<br><br>
                         <strong>Passos:</strong>
                         <ol>
-                            <li>Monte uma topologia simples: 2 PCs conectados a 1 Switch.</li>
-                            <li>Configure IPs na mesma rede (ex: PC1 = 192.168.1.10, PC2 = 192.168.1.20).</li>
-                            <li>No PC1, abra o <em>Command Prompt</em> e digite: <code>arp -a</code></li>
-                            <li>Observe que a tabela está vazia (ou quase).</li>
+                            <li>Abra o Cisco Packet Tracer e crie um novo projeto.</li>
+                            <li>Na categoria <strong>Wireless Devices</strong>, adicione dois <em>AccessPoint-PT</em>: nomeie o primeiro <strong>Access Point 4</strong> e o segundo <strong>Access Point 5</strong>. Posicione o AP4 no centro e o AP5 &agrave; direita.</li>
+                            <li>Na categoria <strong>End Devices</strong>, adicione:
+                                <ul>
+                                    <li>Dois <em>Laptop-PT</em> (Laptop0 e Laptop1)</li>
+                                    <li>Um <em>Smartphone-PT</em> (Smartphone0)</li>
+                                    <li>Um <em>PC-PT</em> (PC3)</li>
+                                </ul>
+                            </li>
+                            <li>Conecte o <strong>PC3 ao AP5</strong> usando um cabo <em>Copper Straight-Through</em> (FastEthernet).</li>
+                            <li>N&atilde;o conecte ainda os laptops e o smartphone &mdash; isso ser&aacute; feito pela configura&ccedil;&atilde;o sem fio.</li>
                         </ol>
-                        <strong>Pergunta:</strong> Por que a tabela ARP está vazia se o PC1 já tem IP configurado?
+                        <strong>Verifique:</strong> A topologia deve ter AP4 no centro, AP5 &agrave; direita e os dispositivos m&oacute;veis espalhados ao redor do AP4.
                     </div>
                 </div>
             </div>
             <div class="prat-step">
                 <div class="step-num">2</div>
                 <div class="step-body">
-                    <div class="step-label">Populando a Tabela ARP com Ping</div>
+                    <div class="step-label">Configurar o Access Point 4 (AP central)</div>
                     <div class="step-desc">
-                        <strong>Objetivo:</strong> Ver a tabela ARP sendo preenchida automaticamente.<br><br>
+                        <strong>Objetivo:</strong> Definir o SSID e o endere&ccedil;o IP do AP4.<br><br>
                         <strong>Passos:</strong>
                         <ol>
-                            <li>Use a mesma topologia da Atividade 1.</li>
-                            <li>No PC1, digite: <code>ping 192.168.1.20</code></li>
-                            <li>Agora digite novamente: <code>arp -a</code></li>
-                            <li>Compare com o resultado anterior.</li>
+                            <li>Clique no <strong>Access Point 4</strong> &rarr; aba <strong>Config</strong>.</li>
+                            <li>Em <strong>Port 1 (Wireless)</strong>:
+                                <ul>
+                                    <li>SSID: <code>RedeWiFi</code></li>
+                                    <li>Channel: <code>6</code></li>
+                                    <li>Authentication: <em>Disabled</em> (sem senha por ora)</li>
+                                </ul>
+                            </li>
+                            <li>Em <strong>Global Settings</strong>, defina:
+                                <ul>
+                                    <li>IP Address: <code>192.168.1.1</code></li>
+                                    <li>Subnet Mask: <code>255.255.255.0</code></li>
+                                </ul>
+                            </li>
                         </ol>
-                        <strong>Perguntas:</strong>
-                        <ul>
-                            <li>O que apareceu na tabela ARP?</li>
-                            <li>Qual é o endereço MAC que apareceu?</li>
-                            <li>Confira se é o MAC do PC2 (clique no PC2 → Config → FastEthernet0).</li>
-                        </ul>
+                        <strong>Resultado esperado:</strong> o AP4 est&aacute; pronto para receber conex&otilde;es sem fio com o SSID <em>RedeWiFi</em>.
                     </div>
                 </div>
             </div>
             <div class="prat-step">
                 <div class="step-num">3</div>
                 <div class="step-body">
-                    <div class="step-label">ARP e o Broadcast</div>
+                    <div class="step-label">Configurar o Access Point 5 e criar a ponte sem fio</div>
                     <div class="step-desc">
-                        <strong>Objetivo:</strong> Visualizar a requisição ARP sendo transmitida.<br><br>
+                        <strong>Objetivo:</strong> Conectar AP5 ao AP4 via ponte sem fio (<em>wireless bridge</em>).<br><br>
                         <strong>Passos:</strong>
                         <ol>
-                            <li>Monte: 3 PCs + 1 Switch.</li>
-                            <li>Configure IPs: PC1 = 192.168.1.10, PC2 = 192.168.1.20, PC3 = 192.168.1.30.</li>
-                            <li>Ative o <strong>modo Simulation</strong> (canto inferior direito).</li>
-                            <li>Para visualizar apenas os pacotes ARP, clique em <strong>Edit Filters</strong> no painel de simulação, desmarque todos os protocolos e marque apenas <strong>ARP</strong>.</li>
-                            <li>No PC1, digite: <code>ping 192.168.1.20</code></li>
-                            <li>Observe o primeiro pacote ARP (em amarelo/laranja).</li>
-                            <li>Clique nele e veja que vai para <strong>todos</strong> os PCs (broadcast).</li>
+                            <li>Clique no <strong>Access Point 5</strong> &rarr; aba <strong>Config</strong>.</li>
+                            <li>Em <strong>Port 1 (Wireless)</strong>:
+                                <ul>
+                                    <li>SSID: <code>RedeWiFi</code> (mesmo do AP4)</li>
+                                    <li>Channel: <code>6</code> (mesmo do AP4)</li>
+                                    <li>Authentication: <em>Disabled</em></li>
+                                </ul>
+                            </li>
+                            <li>Em <strong>Global Settings</strong>, defina:
+                                <ul>
+                                    <li>IP Address: <code>192.168.1.2</code></li>
+                                    <li>Subnet Mask: <code>255.255.255.0</code></li>
+                                </ul>
+                            </li>
+                            <li>Para criar a ponte, use a ferramenta de conex&otilde;es: selecione <em>Connections &rarr; Automatically Choose Connection Type</em> e clique em <strong>AP4</strong> e depois em <strong>AP5</strong>. O Packet Tracer criar&aacute; automaticamente o enlace sem fio entre eles (linha pontilhada).</li>
                         </ol>
-                        <strong>Perguntas:</strong>
-                        <ul>
-                            <li>Para quantos dispositivos o ARP Request foi enviado?</li>
-                            <li>Quem respondeu? (só o PC2 ou todos?)</li>
-                            <li>O PC3 recebeu o ARP Request?</li>
-                        </ul>
+                        <strong>Resultado esperado:</strong> aparece uma linha pontilhada entre AP4 e AP5 indicando a ponte sem fio.
                     </div>
                 </div>
             </div>
             <div class="prat-step">
                 <div class="step-num">4</div>
                 <div class="step-body">
-                    <div class="step-label">Limpando a Tabela ARP</div>
+                    <div class="step-label">Conectar Laptop0, Laptop1 e Smartphone0 ao AP4</div>
                     <div class="step-desc">
-                        <strong>Objetivo:</strong> Aprender a limpar entradas ARP.<br><br>
-                        <strong>Passos:</strong>
+                        <strong>Objetivo:</strong> Configurar os clientes m&oacute;veis para se associarem ao AP4.<br><br>
+                        <strong>Passos (repita para cada dispositivo):</strong>
                         <ol>
-                            <li>Use a topologia com 2 PCs.</li>
-                            <li>Faça ping do PC1 para PC2 (popula a tabela).</li>
-                            <li>Digite: <code>arp -a</code> (veja a entrada).</li>
-                            <li>Digite: <code>arp -d</code> (limpa a tabela).</li>
-                            <li>Digite: <code>arp -a</code> novamente (confirma que limpou).</li>
+                            <li>Clique no <strong>Laptop0</strong> &rarr; aba <strong>Config</strong> &rarr; <strong>Wireless0</strong>.</li>
+                            <li>SSID: <code>RedeWiFi</code></li>
+                            <li>Authentication: <em>Disabled</em></li>
+                            <li>V&aacute; em <strong>IP Configuration</strong> e defina:
+                                <ul>
+                                    <li>IP Address: <code>192.168.1.10</code> (Laptop0)</li>
+                                    <li>Subnet Mask: <code>255.255.255.0</code></li>
+                                </ul>
+                            </li>
+                            <li>Repita para <strong>Laptop1</strong> com IP <code>192.168.1.11</code>.</li>
+                            <li>Repita para <strong>Smartphone0</strong> com IP <code>192.168.1.30</code>.</li>
                         </ol>
-                        <strong>Teste:</strong> Faça ping novamente. A tabela será recriada?
+                        <strong>Verifique:</strong> Ap&oacute;s alguns segundos aparecer&atilde;o linhas pontilhadas ligando cada dispositivo ao AP4.
                     </div>
                 </div>
             </div>
             <div class="prat-step">
                 <div class="step-num">5</div>
                 <div class="step-body">
-                    <div class="step-label">Comparando MACs — ARP vs Config</div>
+                    <div class="step-label">Configurar o PC3 (conectado ao AP5 por cabo)</div>
                     <div class="step-desc">
-                        <strong>Objetivo:</strong> Confirmar que ARP mostra o MAC real do dispositivo.<br><br>
+                        <strong>Objetivo:</strong> Definir o IP do PC3, que acessa a rede pelo AP5.<br><br>
                         <strong>Passos:</strong>
                         <ol>
-                            <li>Topologia: PC1 + Switch + PC2.</li>
-                            <li>Anote manualmente o MAC do PC2: clique em PC2 → Config → FastEthernet0 → copie o <em>MAC Address</em>.</li>
-                            <li>No PC1, faça ping para PC2.</li>
-                            <li>No PC1, digite: <code>arp -a</code></li>
-                            <li>Compare o MAC que apareceu com o que você anotou.</li>
+                            <li>Clique no <strong>PC3</strong> &rarr; aba <strong>Config</strong> &rarr; <strong>FastEthernet0</strong>.</li>
+                            <li>IP Address: <code>192.168.1.20</code></li>
+                            <li>Subnet Mask: <code>255.255.255.0</code></li>
                         </ol>
-                        São iguais? Por quê?
+                        <strong>Resultado esperado:</strong> PC3 est&aacute; na mesma rede (192.168.1.0/24) e alcan&ccedil;a os demais dispositivos atrav&eacute;s da ponte AP4&ndash;AP5.
                     </div>
                 </div>
             </div>
             <div class="prat-step">
                 <div class="step-num">6</div>
                 <div class="step-body">
-                    <div class="step-label">Múltiplos Hosts</div>
+                    <div class="step-label">Testar a conectividade entre todos os dispositivos</div>
                     <div class="step-desc">
-                        <strong>Objetivo:</strong> Ver a tabela ARP com várias entradas.<br><br>
+                        <strong>Objetivo:</strong> Confirmar que a rede est&aacute; funcionando de ponta a ponta.<br><br>
                         <strong>Passos:</strong>
                         <ol>
-                            <li>Monte: 5 PCs conectados a 1 Switch.</li>
-                            <li>Configure todos na rede 192.168.1.0/24 (IPs de .10 a .50).</li>
-                            <li>Do PC1, faça ping para <strong>todos</strong> os outros PCs.</li>
-                            <li>Digite: <code>arp -a</code></li>
+                            <li>No <strong>Laptop0</strong>, abra o <em>Command Prompt</em> e execute:<br>
+                                <code>ping 192.168.1.11</code> &rarr; deve responder (Laptop1)<br>
+                                <code>ping 192.168.1.30</code> &rarr; deve responder (Smartphone0)<br>
+                                <code>ping 192.168.1.20</code> &rarr; deve responder (PC3 via ponte)
+                            </li>
+                            <li>No <strong>PC3</strong>, execute:<br>
+                                <code>ping 192.168.1.10</code> &rarr; deve responder (Laptop0 via ponte)
+                            </li>
+                            <li>Ative o <strong>modo Simulation</strong> e filtre por <strong>ICMP</strong>. Envie um ping do Laptop0 para o PC3 e observe o caminho: Laptop0 &rarr; AP4 &rarr; AP5 (ponte sem fio) &rarr; PC3.</li>
                         </ol>
                         <strong>Perguntas:</strong>
                         <ul>
-                            <li>Quantas entradas apareceram?</li>
-                            <li>Crie uma tabela com: <strong>IP | MAC | Tipo</strong></li>
+                            <li>O ping do Laptop0 para o PC3 teve sucesso? Quantos saltos s&atilde;o vis&iacute;veis na simula&ccedil;&atilde;o?</li>
+                            <li>O que acontece se voc&ecirc; desconectar o cabo entre PC3 e AP5? O PC3 continua acess&iacute;vel?</li>
+                            <li>Por que o AP5 n&atilde;o aparece como um salto separado no ping?</li>
                         </ul>
                     </div>
                 </div>
@@ -1033,7 +1162,7 @@
         </div>
 
         <div class="prat-observe">
-            <strong>&#x1F4CC; Para refletir:</strong> o Ethernet &eacute; uma das tecnologias mais bem-sucedidas da hist&oacute;ria da computa&ccedil;&atilde;o. Em 50 anos, sua velocidade cresceu mais de 40 milh&otilde;es de vezes &mdash; de 2,94 Mbps para 400 Gbps &mdash; mantendo a mesma estrutura fundamental de quadro. Entender o Ethernet &eacute; entender a base sobre a qual toda rede local moderna &eacute; constru&iacute;da.
+            <strong>&#x1F4CC; Para refletir:</strong> nessa topologia, o AP5 age como uma <em>ponte sem fio</em> &mdash; ele estende o alcance da rede sem criar uma nova sub-rede. O PC3, mesmo conectado por cabo ao AP5, enxerga todos os dispositivos sem fio do AP4 como se estivessem na mesma rede local. Essa &eacute; a base de redes Wi-Fi em ambientes que precisam cobrir dist&acirc;ncias maiores sem cabeamento entre pontos.
         </div>
 
         <div class="ex-actions">
