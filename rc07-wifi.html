@@ -1,9 +1,9 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aula 7 &mdash; Redes sem Fio (IEEE 802.11)</title>
+    <title>Aula 7 — Redes sem Fio (IEEE 802.11)</title>
     <link rel="stylesheet" href="slide-mode.css">
     <link rel="stylesheet" href="exercise.css">
     <link rel="stylesheet" href="lesson.css">
@@ -57,6 +57,135 @@
     <div class="lesson-hero">
         <h1>&#x1F4F6; Redes sem Fio &mdash; IEEE 802.11</h1>
         <p class="subtitle">Aula 7 &mdash; Frequ&ecirc;ncias, padr&otilde;es Wi-Fi (a/b/g/n/ac/ax), modos de opera&ccedil;&atilde;o, seguran&ccedil;a wireless e planejamento de cobertura</p>
+    </div>
+
+    <!-- CARD 0 — Definição, Benefícios e Aplicações -->
+    <div class="content-card">
+        <h2>&#x1F4F6; Defini&ccedil;&atilde;o e Benef&iacute;cios das Redes sem Fio</h2>
+        <p>As <strong>redes sem fio</strong> (wireless) s&atilde;o sistemas de comunica&ccedil;&atilde;o de dados extremamente flex&iacute;veis, que podem ser usados como extens&atilde;o &mdash; ou alternativa &mdash; a redes locais cabeadas (LANs). Combinam <strong>conectividade de dados com mobilidade</strong> atrav&eacute;s da tecnologia de radiofrequ&ecirc;ncia (RF).</p>
+
+        <h3>Por que usar redes sem fio?</h3>
+        <div class="cmd-grid">
+            <div class="cmd-card">
+                <span class="cmd">Mobilidade</span>
+                <strong>Usu&aacute;rios em movimento</strong>
+                <span>Quando existe a necessidade de mobilidade &mdash; usu&aacute;rios que trabalham longe do escrit&oacute;rio ou se deslocam pelo ambiente</span>
+            </div>
+            <div class="cmd-card">
+                <span class="cmd">Sem cabeamento</span>
+                <strong>Instala&ccedil;&atilde;o imposs&iacute;vel</strong>
+                <span>Quando n&atilde;o &eacute; poss&iacute;vel ou vi&aacute;vel instalar cabos tradicionais &mdash; hist&oacute;ricos, obras, ambientes tempor&aacute;rios</span>
+            </div>
+            <div class="cmd-card">
+                <span class="cmd">Flexibilidade</span>
+                <strong>R&aacute;pida implanta&ccedil;&atilde;o</strong>
+                <span>Redes tempor&aacute;rias, eventos, emerg&ecirc;ncias e situa&ccedil;&otilde;es onde o tempo de instala&ccedil;&atilde;o &eacute; cr&iacute;tico</span>
+            </div>
+        </div>
+
+        <h3>Benef&iacute;cios e Aplica&ccedil;&otilde;es</h3>
+        <p>Comparadas &agrave;s redes cabeadas, as redes wireless oferecem: <strong>mobilidade, r&aacute;pida e simples instala&ccedil;&atilde;o, redu&ccedil;&atilde;o de custo</strong> e escala para grandes, m&eacute;dias e pequenas empresas. Fatores cr&iacute;ticos na escolha incluem: imunidade a interfer&ecirc;ncias, seguran&ccedil;a dos dados, conectividade com a rede local existente, mobilidade/compatibilidade, performance, gerenciamento e facilidade de instala&ccedil;&atilde;o.</p>
+
+        <div class="cmd-grid">
+            <div class="cmd-card">
+                <span class="cmd">Sa&uacute;de</span>
+                <strong>Hospitais e cl&iacute;nicas</strong>
+                <span>Profissionais de sa&uacute;de acessam prontu&aacute;rios e equipamentos em movimento pelo hospital</span>
+            </div>
+            <div class="cmd-card">
+                <span class="cmd">Educa&ccedil;&atilde;o</span>
+                <strong>Universidades e escolas</strong>
+                <span>Conectividade em campus, laborat&oacute;rios, salas de aula e &aacute;reas externas</span>
+            </div>
+            <div class="cmd-card">
+                <span class="cmd">Log&iacute;stica</span>
+                <strong>F&aacute;bricas e armaz&eacute;ns</strong>
+                <span>Controle de estoque, c&oacute;digos de barras e automatiza&ccedil;&atilde;o industrial sem fios</span>
+            </div>
+            <div class="cmd-card">
+                <span class="cmd">Com&eacute;rcio</span>
+                <strong>Lojas, bancos, seguradoras</strong>
+                <span>PDVs m&oacute;veis, atendimento personalizado e integra&ccedil;&atilde;o de sistemas em tempo real</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- CARD 0b — Tipos de Redes sem Fio -->
+    <div class="content-card">
+        <h2>&#x1F4E1; Tipos de Redes sem Fio</h2>
+        <p>Existem basicamente tr&ecirc;s tecnologias para redes sem fio, cada uma com caracter&iacute;sticas distintas de alcance, velocidade e aplica&ccedil;&atilde;o.</p>
+
+        <h3>Infravermelho (IR)</h3>
+        <p>As redes wireless em infravermelho n&atilde;o exigem licen&ccedil;a para opera&ccedil;&atilde;o e possuem cobertura mundial. S&atilde;o equipamentos de baixo custo que utilizam a mesma tecnologia dos controles remotos. O infravermelho pode ser <strong>em visada</strong> (feixe estreito, 5&ndash;30 m, at&eacute; 15 participantes) ou <strong>difuso</strong> (feixe amplo, sem necessidade de visada direta). Opera acima das micro-ondas e abaixo da luz vis&iacute;vel; transmiss&otilde;es padronizadas pela <strong>IrDA</strong>. &Eacute; solu&ccedil;&atilde;o tipicamente indoor &mdash; n&atilde;o atravessa paredes.</p>
+
+        <div class="viz-wrap">
+            <div class="viz-title">Infravermelho: modo visada vs. difuso</div>
+            <svg viewBox="0 0 560 160" width="100%" style="display:block">
+                <!-- Visada -->
+                <text x="130" y="18" fill="#64748b" font-size="10" font-family="monospace" text-anchor="middle">Em Visada (5–30 m)</text>
+                <rect x="30" y="60" width="60" height="36" rx="5" fill="#1e3a5f" stroke="#3b82f6" stroke-width="1.5"/>
+                <text x="60" y="81" fill="#93c5fd" font-size="9" font-family="monospace" text-anchor="middle">Disp. A</text>
+                <rect x="200" y="60" width="60" height="36" rx="5" fill="#1e3a5f" stroke="#3b82f6" stroke-width="1.5"/>
+                <text x="230" y="81" fill="#93c5fd" font-size="9" font-family="monospace" text-anchor="middle">Disp. B</text>
+                <line x1="90" y1="78" x2="200" y2="78" stroke="#ef4444" stroke-width="2.5" stroke-dasharray="6 3" class="tw-wire"/>
+                <text x="145" y="68" fill="#fca5a5" font-size="8" font-family="monospace" text-anchor="middle">linha de visada</text>
+                <text x="145" y="115" fill="#475569" font-size="9" font-family="monospace" text-anchor="middle">requer visada direta entre os pontos</text>
+                <!-- Divider -->
+                <line x1="290" y1="20" x2="290" y2="145" stroke="#1e293b" stroke-width="1.5" stroke-dasharray="5 4"/>
+                <!-- Difuso -->
+                <text x="420" y="18" fill="#64748b" font-size="10" font-family="monospace" text-anchor="middle">Difuso (sem visada)</text>
+                <rect x="320" y="30" width="50" height="30" rx="5" fill="#1a3a2a" stroke="#22c55e" stroke-width="1.5"/>
+                <text x="345" y="49" fill="#86efac" font-size="9" font-family="monospace" text-anchor="middle">Fonte</text>
+                <!-- Reflection lines -->
+                <line x1="370" y1="45" x2="450" y2="20" stroke="#fbbf24" stroke-width="1.5" stroke-dasharray="4 3" opacity=".8"/>
+                <line x1="450" y1="20" x2="510" y2="70" stroke="#fbbf24" stroke-width="1.5" stroke-dasharray="4 3" opacity=".8"/>
+                <line x1="370" y1="45" x2="400" y2="100" stroke="#fbbf24" stroke-width="1.5" stroke-dasharray="4 3" opacity=".7"/>
+                <rect x="490" y="55" width="50" height="30" rx="5" fill="#1a3a2a" stroke="#22c55e" stroke-width="1.5"/>
+                <text x="515" y="74" fill="#86efac" font-size="9" font-family="monospace" text-anchor="middle">Recep.</text>
+                <rect x="385" y="100" width="50" height="30" rx="5" fill="#1a3a2a" stroke="#22c55e" stroke-width="1.5"/>
+                <text x="410" y="119" fill="#86efac" font-size="9" font-family="monospace" text-anchor="middle">Recep.</text>
+                <text x="420" y="148" fill="#475569" font-size="9" font-family="monospace" text-anchor="middle">sinal refletido no teto/paredes</text>
+            </svg>
+        </div>
+
+        <h3>Radiofrequ&ecirc;ncia (Micro-Ondas)</h3>
+        <p>Os sistemas baseados em RF utilizam micro-ondas transmitidas pelo ar nas faixas <strong>ISM (Industrial, Scientific and Medical)</strong>: 900 MHz, 2,4 GHz e 5 GHz &mdash; abertas e sem exig&ecirc;ncia de licen&ccedil;a. &Eacute; a tecnologia base do <strong>Wi-Fi (IEEE 802.11)</strong>. A vantagem do RF &eacute; que penetra paredes e obst&aacute;culos. O alcance indoor varia de 35 a 100 metros.</p>
+
+        <p><strong>Fatores que afetam a propaga&ccedil;&atilde;o do sinal RF:</strong></p>
+        <div class="cmd-grid">
+            <div class="cmd-card">
+                <span class="cmd">Frequ&ecirc;ncia</span>
+                <strong>Caracter&iacute;sticas de propaga&ccedil;&atilde;o</strong>
+                <span>Quanto maior a frequ&ecirc;ncia, maior o consumo de energia e menor o alcance. 2,4 GHz oferece boa propaga&ccedil;&atilde;o geral</span>
+            </div>
+            <div class="cmd-card">
+                <span class="cmd">Pot&ecirc;ncia</span>
+                <strong>Limitada por regulamenta&ccedil;&atilde;o</strong>
+                <span>Maior pot&ecirc;ncia aumenta o alcance, mas &eacute; limitada pela ANATEL. Maior pot&ecirc;ncia tamb&eacute;m consome mais bateria</span>
+            </div>
+            <div class="cmd-card">
+                <span class="cmd">Antenas</span>
+                <strong>Tipo e orienta&ccedil;&atilde;o</strong>
+                <span>Mau posicionamento ou uso de antena errada &eacute; causa comum de problemas de cobertura em redes Wi-Fi</span>
+            </div>
+            <div class="cmd-card">
+                <span class="cmd">Constru&ccedil;&atilde;o</span>
+                <strong>Material da edifica&ccedil;&atilde;o</strong>
+                <span>Excesso de ferro, a&ccedil;o e concreto afeta diretamente a propaga&ccedil;&atilde;o, podendo exigir mais APs</span>
+            </div>
+            <div class="cmd-card">
+                <span class="cmd">Multipath</span>
+                <strong>Sinais refletidos</strong>
+                <span>O sinal pode tomar v&aacute;rios caminhos (reflex&otilde;es em paredes/m&oacute;veis). Sinais refletidos chegam atrasados e causam interfer&ecirc;ncia com o sinal direto</span>
+            </div>
+        </div>
+
+        <h3>Sistemas Baseados em Laser</h3>
+        <p>Utilizam luz para transmiss&atilde;o digital. N&atilde;o exigem outorga ou autoriza&ccedil;&atilde;o. Trabalham com alta largura de banda &mdash; at&eacute; <strong>2,5 Gbps</strong> &mdash; e alcance m&eacute;dio de <strong>10 km</strong>. Sempre ponto a ponto. Exige visada direta entre os dois pontos. &Eacute; afetado por condi&ccedil;&otilde;es atmosf&eacute;ricas (neblina, chuva, neve). Uma das maiores vantagens &eacute; a <strong>seguran&ccedil;a</strong>: o sinal de laser &eacute; praticamente imposs&iacute;vel de interceptar. Ainda de custo elevado e pouco adotado no Brasil.</p>
+
+        <div class="alert-box">
+            <p>&#x26A0;&#xFE0F; <strong>Resumo:</strong> Infravermelho &mdash; indoor, curto alcance, sem interfer&ecirc;ncia de RF. Radiofrequ&ecirc;ncia &mdash; penetra paredes, flex&iacute;vel, &eacute; o padr&atilde;o dominante (Wi-Fi). Laser &mdash; longo alcance ponto a ponto, alta seguran&ccedil;a, alto custo.</p>
+        </div>
     </div>
 
     <!-- CARD 1 — O que é Wi-Fi e CSMA/CA -->
@@ -311,6 +440,77 @@
         </div>
     </div>
 
+    <!-- CARD 3b — Métodos de Acesso: Spread Spectrum -->
+    <div class="content-card">
+        <h2>&#x1F4E1; M&eacute;todos de Acesso: Spread Spectrum</h2>
+        <p>As redes wireless LAN utilizam o <strong>Spread Spectrum (SS)</strong> como tecnologia de acesso ao meio. A t&eacute;cnica de espalhamento espectral garante seguran&ccedil;a na comunica&ccedil;&atilde;o, trabalhando com baixa rela&ccedil;&atilde;o sinal/ru&iacute;do e com uma banda maior que a necess&aacute;ria para o sinal original. O Spread Spectrum possui dois modos de opera&ccedil;&atilde;o:</p>
+
+        <div class="cmd-grid">
+            <div class="cmd-card">
+                <span class="cmd">FHSS</span>
+                <strong>Frequency Hopping Spread Spectrum</strong>
+                <span>Usa m&uacute;ltiplas frequ&ecirc;ncias de forma pseudoaleat&oacute;ria, dificultando a sintoniza&ccedil;&atilde;o do sinal. Transmissor e receptor seguem a mesma sequ&ecirc;ncia de saltos. Para um receptor n&atilde;o intencional, aparece como ru&iacute;do de pulso. IEEE 802.11 FHSS: 2 Mbps</span>
+            </div>
+            <div class="cmd-card">
+                <span class="cmd">DSSS</span>
+                <strong>Direct Sequence Spread Spectrum</strong>
+                <span>Gera 1 bit redundante (<em>chip</em>) para cada bit transmitido. T&eacute;cnicas estat&iacute;sticas recuperam dados corrompidos sem retransmiss&atilde;o. Para receptores n&atilde;o intencionais: aparece como ru&iacute;do de baixa pot&ecirc;ncia. Mais eficiente que FHSS. 802.11 DSSS: 2 Mbps | 802.11b: 11 Mbps</span>
+            </div>
+        </div>
+
+        <div class="viz-wrap">
+            <div class="viz-title">FHSS — saltos de frequência pseudoaleatórios no tempo</div>
+            <svg viewBox="0 0 560 160" width="100%" style="display:block">
+                <!-- Axes -->
+                <line x1="50" y1="130" x2="530" y2="130" stroke="#334155" stroke-width="1.5"/>
+                <line x1="50" y1="20"  x2="50"  y2="130" stroke="#334155" stroke-width="1.5"/>
+                <text x="290" y="150" fill="#64748b" font-size="9" font-family="monospace" text-anchor="middle">Tempo →</text>
+                <text x="20" y="75" fill="#64748b" font-size="9" font-family="monospace" text-anchor="middle" transform="rotate(-90,20,75)">Freq →</text>
+                <!-- Frequency slots -->
+                <text x="45" y="118" fill="#475569" font-size="8" font-family="monospace" text-anchor="end">f1</text>
+                <text x="45" y="98" fill="#475569" font-size="8" font-family="monospace" text-anchor="end">f2</text>
+                <text x="45" y="78" fill="#475569" font-size="8" font-family="monospace" text-anchor="end">f3</text>
+                <text x="45" y="58" fill="#475569" font-size="8" font-family="monospace" text-anchor="end">f4</text>
+                <text x="45" y="38" fill="#475569" font-size="8" font-family="monospace" text-anchor="end">f5</text>
+                <!-- Hop blocks -->
+                <rect x="60"  y="105" width="60" height="18" rx="3" fill="#6366f1" opacity=".85"/>
+                <rect x="135" y="85"  width="60" height="18" rx="3" fill="#6366f1" opacity=".85"/>
+                <rect x="210" y="45"  width="60" height="18" rx="3" fill="#6366f1" opacity=".85"/>
+                <rect x="285" y="65"  width="60" height="18" rx="3" fill="#6366f1" opacity=".85"/>
+                <rect x="360" y="25"  width="60" height="18" rx="3" fill="#6366f1" opacity=".85"/>
+                <rect x="435" y="85"  width="60" height="18" rx="3" fill="#6366f1" opacity=".85"/>
+                <!-- Labels inside blocks -->
+                <text x="90"  y="118" fill="#c7d2fe" font-size="8" font-family="monospace" text-anchor="middle">t1</text>
+                <text x="165" y="98"  fill="#c7d2fe" font-size="8" font-family="monospace" text-anchor="middle">t2</text>
+                <text x="240" y="58"  fill="#c7d2fe" font-size="8" font-family="monospace" text-anchor="middle">t3</text>
+                <text x="315" y="78"  fill="#c7d2fe" font-size="8" font-family="monospace" text-anchor="middle">t4</text>
+                <text x="390" y="38"  fill="#c7d2fe" font-size="8" font-family="monospace" text-anchor="middle">t5</text>
+                <text x="465" y="98"  fill="#c7d2fe" font-size="8" font-family="monospace" text-anchor="middle">t6</text>
+            </svg>
+        </div>
+
+        <h3>Alcance e Performance</h3>
+        <p>A dist&acirc;ncia com que as ondas RF se comunicam est&aacute; relacionada &agrave; pot&ecirc;ncia, sensibilidade do receptor e o caminho por onde a onda se propaga (indoor: 35&ndash;100 m, ampli&aacute;vel via roaming). Os sistemas wireless LAN trabalham com o conceito de <strong>fall back</strong>: quando o sinal fica fraco, a placa reduz automaticamente a velocidade para manter a conex&atilde;o.</p>
+
+        <div class="cmd-grid">
+            <div class="cmd-card">
+                <span class="cmd">Fall Back</span>
+                <strong>Adapta&ccedil;&atilde;o de velocidade</strong>
+                <span>Sinal fraco → a placa reduz para a pr&oacute;xima taxa (ex: 11 → 5,5 → 2 → 1 Mbps). Quando o sinal melhora, a velocidade &eacute; restaurada automaticamente</span>
+            </div>
+            <div class="cmd-card">
+                <span class="cmd">Performance real</span>
+                <strong>Banda compartilhada</strong>
+                <span>O ar age como um hub: a banda &eacute; dividida entre todos os usu&aacute;rios da c&eacute;lula. Ex: rede 802.11b (11 Mbps) com 14 esta&ccedil;&otilde;es → apenas 4&ndash;6 Mbps efetivos devido aos overheads e colis&otilde;es</span>
+            </div>
+            <div class="cmd-card">
+                <span class="cmd">Reaproveitamento</span>
+                <strong>Canais em redes com v&aacute;rios APs</strong>
+                <span>APs vizinhos devem trabalhar em canais distintos (1, 6 e 11) para evitar sobrecarga. Esses canais n&atilde;o se sobrepõem (sem overlay), permitindo reutilizar o espectro com m&uacute;ltiplos APs no mesmo ambiente</span>
+            </div>
+        </div>
+    </div>
+
     <!-- CARD 4 — Modos de operação -->
     <div class="content-card">
         <h2>&#x1F5FA;&#xFE0F; Modos de Opera&ccedil;&atilde;o</h2>
@@ -403,6 +603,44 @@
 
         <h3>Monitor e Mesh</h3>
         <p>O <strong>modo monitor</strong> captura todos os quadros 802.11 do ar, sem associar-se a nenhuma rede &mdash; usado por ferramentas de an&aacute;lise (Wireshark, Aircrack-ng). O <strong>modo mesh</strong> (802.11s) conecta APs entre si pelo r&aacute;dio, criando redes de malha sem cabos de backbone.</p>
+    </div>
+
+    <!-- CARD 4b — Elementos da Solução Wireless LAN -->
+    <div class="content-card">
+        <h2>&#x1F6E0;&#xFE0F; Elementos da Solu&ccedil;&atilde;o Wireless LAN</h2>
+        <p>Os elementos da solu&ccedil;&atilde;o de uma rede wireless LAN incluem os adaptadores dos dispositivos, os pontos de acesso e as antenas que irradiam o sinal.</p>
+
+        <div class="cmd-grid">
+            <div class="cmd-card">
+                <span class="cmd">Placas Wireless</span>
+                <strong>Adaptadores das esta&ccedil;&otilde;es</strong>
+                <span>Dispon&iacute;veis em barramentos <strong>PCI</strong> (desktops), <strong>PCMCIA</strong> (notebooks antigos) e <strong>USB</strong> (universal). Modernamente integradas na placa-m&atilde;e ou via chipset</span>
+            </div>
+            <div class="cmd-card">
+                <span class="cmd">Access Point (AP)</span>
+                <strong>Ponto de acesso central</strong>
+                <span>Esta&ccedil;&atilde;o que gerencia conex&otilde;es entre usu&aacute;rios e a rede. Funciona como ponte entre a rede sem fio e a cabeada. Cada AP atende v&aacute;rios usu&aacute;rios simultaneamente; cobertura: ~100 m de raio</span>
+            </div>
+            <div class="cmd-card">
+                <span class="cmd">Antenas Direcionais</span>
+                <strong>Yagi, Grade, Semiparab&oacute;lica</strong>
+                <span>Concentram e irradiam o sinal em uma &uacute;nica posi&ccedil;&atilde;o. Ideais para enlaces ponto a ponto de longa dist&acirc;ncia. Maior ganho, menor &acirc;ngulo de abertura</span>
+            </div>
+            <div class="cmd-card">
+                <span class="cmd">Antenas Omnidirecionais</span>
+                <strong>Cobertura 360&deg;</strong>
+                <span>Propagam o sinal ao longo do eixo em todas as dire&ccedil;&otilde;es horizontais. Usadas em APs para cobertura ampla. Exemplos: antenas dipolares e patch omnidirecional</span>
+            </div>
+            <div class="cmd-card">
+                <span class="cmd">Controladora Wi-Fi</span>
+                <strong>Ger&ecirc;ncia centralizada</strong>
+                <span>Em redes com muitos APs, a controladora (f&iacute;sica ou em nuvem) gerencia automaticamente canais, pot&ecirc;ncia de transmiss&atilde;o, roaming e pol&iacute;ticas de acesso</span>
+            </div>
+        </div>
+
+        <div class="tip-box">
+            <p>&#x2705; <strong>Topologias:</strong> A <strong>topologia estruturada (BSS)</strong> organiza esta&ccedil;&otilde;es em c&eacute;lulas controladas por um AP &mdash; limites definidos pelo alcance do AP; o AP aloca recursos e gerencia energia. V&aacute;rios APs com o mesmo SSID formam um <strong>ESS</strong>, habilitando roaming. Na <strong>topologia Ad-hoc (IBSS)</strong>, dispositivos se comunicam diretamente sem AP, sem topologia predefinida e sem ponto central de controle &mdash; raro em redes modernas, substitu&iacute;do por Wi-Fi Direct e Bluetooth.</p>
+        </div>
     </div>
 
     <!-- CARD 5 — Segurança Wi-Fi -->
@@ -506,6 +744,35 @@
                 <rect x="295" y="178" width="10" height="10" rx="2" fill="#ef4444" opacity=".8"/>
                 <text x="315" y="189" fill="#fca5a5" font-size="10" font-family="monospace">Ignorar dispositivos novos</text>
             </svg>
+        </div>
+    </div>
+
+        <h3>Principais Ataques a Redes sem Fio</h3>
+        <p>Uma rede wireless aberta &eacute; vulner&aacute;vel a uma s&eacute;rie de ataques. Entre os principais:</p>
+        <div class="cmd-grid">
+            <div class="cmd-card">
+                <span class="cmd">Sniffing</span>
+                <strong>Escuta passiva</strong>
+                <span>Um usu&aacute;rio captura o tr&aacute;fego que passa pela rede wireless. Poss&iacute;vel porque o sinal de r&aacute;dio &eacute; broadcast &mdash; qualquer dispositivo pr&oacute;ximo pode receber os quadros</span>
+            </div>
+            <div class="cmd-card">
+                <span class="cmd">DoS</span>
+                <strong>Nega&ccedil;&atilde;o de servi&ccedil;o</strong>
+                <span>O atacante gera interfer&ecirc;ncias nas frequ&ecirc;ncias da rede para derrubar o servi&ccedil;o. N&atilde;o exige associa&ccedil;&atilde;o &agrave; rede &mdash; basta transmitir ru&iacute;do na mesma faixa</span>
+            </div>
+            <div class="cmd-card">
+                <span class="cmd">Rogue AP</span>
+                <strong>Ponto de acesso falso</strong>
+                <span>O hacker instala um AP falso com o mesmo SSID da rede leg&iacute;tima. O usu&aacute;rio conecta-se ao AP falso sem saber, expondo suas credenciais e dados (ataque <em>evil twin</em>)</span>
+            </div>
+            <div class="cmd-card">
+                <span class="cmd">Wardriving</span>
+                <strong>Varredura de redes abertas</strong>
+                <span>T&eacute;cnica de dirigir ou andar pela cidade identificando redes sem fio vulner&aacute;veis. A instala&ccedil;&atilde;o padr&atilde;o j&aacute; permite acesso; redes abertas ficam expostas. Ataques relatados a at&eacute; 8 km de dist&acirc;ncia com antenas direcionais</span>
+            </div>
+        </div>
+        <div class="alert-box">
+            <p>&#x26A0;&#xFE0F; <strong>Mitiga&ccedil;&atilde;o:</strong> IEEE 802.11i (WPA2/WPA3) + VPN (IPSec quando poss&iacute;vel) + AP conectado ao firewall para monitorar tr&aacute;fego suspeito + WPS desativado + firmware atualizado.</p>
         </div>
     </div>
 
