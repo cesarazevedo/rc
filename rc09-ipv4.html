@@ -669,18 +669,6 @@
         </div>
         <hr class="mc-sep">
 
-        <div class="mc-question" data-correct="c">
-            <p class="mc-q-text">Um pacote IPv4 possui os seguintes campos: Identifica&ccedil;&atilde;o=9999, Flags: DF=0, MF=1, Offset=185. O que isso indica?</p>
-            <div class="mc-options">
-                <div class="mc-option" data-option="a"><span class="mc-letter">A</span><span>É o primeiro e &uacute;nico fragmento do pacote original</span></div>
-                <div class="mc-option" data-option="b"><span class="mc-letter">B</span><span>É o &uacute;ltimo fragmento; n&atilde;o h&aacute; mais fragmentos ap&oacute;s ele</span></div>
-                <div class="mc-option" data-option="c"><span class="mc-letter">C</span><span>É um fragmento intermedi&aacute;rio (n&atilde;o &eacute; o primeiro nem o &uacute;ltimo), e seus dados come&ccedil;am no byte 1480 do pacote original</span></div>
-                <div class="mc-option" data-option="d"><span class="mc-letter">D</span><span>O pacote n&atilde;o pode ser fragmentado pois DF=0</span></div>
-            </div>
-            <div class="mc-explanation">&#x2713; MF=1 significa que ainda h&aacute; mais fragmentos ap&oacute;s este (n&atilde;o &eacute; o &uacute;ltimo). Offset=185 significa que os dados deste fragmento come&ccedil;am na posi&ccedil;&atilde;o 185 × 8 = 1480 bytes do payload original. DF=0 apenas diz que fragmenta&ccedil;&atilde;o &eacute; permitida (mas n&atilde;o significa que &eacute; o primeiro). O primeiro fragmento teria Offset=0.</div>
-        </div>
-        <hr class="mc-sep">
-
         <div class="mc-question" data-correct="d">
             <p class="mc-q-text">Por que o roteador IPv4 precisa recalcular o checksum do cabe&ccedil;alho a cada salto?</p>
             <div class="mc-options">
