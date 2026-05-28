@@ -718,64 +718,148 @@
     </div>
 
     <!-- ATIVIDADE PRÁTICA -->
-    <div class="content-card exercise-card" id="prat-rc09">
-        <h2>&#x1F4DD; Atividade Pr&aacute;tica</h2>
-        <p class="prat-intro">Analisar, interpretar e calcular campos do cabe&ccedil;alho IPv4 para consolidar o entendimento do protocolo.</p>
+    <div class="content-card exercise-card" id="prat-rc09" style="font-family:inherit;">
+        <style>
+            /* ── Practical lab styles ── */
+            .pt-section-title { font-size:1em; font-weight:800; color:var(--primary); margin:1.4rem 0 .6rem; border-bottom:2px solid var(--primary); padding-bottom:.3rem; }
+            .pt-topology-box { border:1.5px solid #90b8f8; border-radius:8px; padding:14px 20px; margin:.8rem 0; background:#fff; }
+            .pt-topo-diagram { display:flex; align-items:center; justify-content:center; font-family:monospace; font-size:.95em; font-weight:700; color:#1e293b; margin-bottom:10px; flex-wrap:wrap; }
+            .pt-topo-node { display:flex; flex-direction:column; align-items:center; gap:2px; }
+            .pt-topo-label { font-weight:800; font-size:1em; }
+            .pt-topo-ip { font-weight:400; font-size:.82em; color:#475569; }
+            .pt-topo-wire { width:80px; height:2px; background:#1e293b; position:relative; top:-14px; flex-shrink:0; }
+            .pt-config-box { background:#fffde7; border:1.5px solid #f9c846; border-radius:6px; padding:10px 14px; font-size:.88em; margin:.8rem 0; }
+            .pt-config-box strong { color:#7c5700; }
+            .pt-steps-list { margin:.4rem 0 .4rem 0; padding-left:0; list-style:none; }
+            .pt-steps-list li { display:flex; gap:10px; margin-bottom:.5rem; font-size:.9em; line-height:1.6; }
+            .pt-steps-list li .pt-num { min-width:22px; height:22px; background:var(--primary); color:#fff; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-size:.75em; font-weight:800; flex-shrink:0; margin-top:2px; }
+            .pt-hdr-table { width:100%; border-collapse:collapse; margin:.8rem 0; font-size:.88em; }
+            .pt-hdr-table th { background:var(--primary); color:#fff; padding:7px 10px; text-align:left; font-weight:700; }
+            .pt-hdr-table td { border:1px solid #c3d4f0; padding:7px 10px; vertical-align:top; }
+            .pt-hdr-table tr:nth-child(even) td { background:#f4f7fe; }
+            .pt-hdr-table .pt-obs { min-width:90px; border-bottom:1.5px solid #555; }
+            .pt-q-box { border:1.5px solid #c3d4f0; border-radius:6px; padding:12px 16px; margin:.8rem 0; font-size:.9em; }
+            .pt-q-box p { margin:0 0 6px; font-weight:700; }
+            .pt-q-options { display:flex; gap:24px; margin-bottom:6px; }
+            .pt-q-explain { border-bottom:1px solid #999; padding-bottom:4px; margin-top:8px; color:#374151; }
+            .pt-q-explain-label { font-size:.82em; color:#6b7280; }
+            .pt-footer-note { text-align:center; color:#94a3b8; font-size:.75em; margin-top:1.4rem; border-top:1px solid #e2e8f0; padding-top:.7rem; }
+            @media print {
+                .pt-topo-wire { background:#000; }
+                .pt-hdr-table th { background:#1a73e8 !important; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+                .pt-hdr-table tr:nth-child(even) td { background:#f4f7fe !important; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+            }
+        </style>
 
-        <div class="prat-steps">
-            <div class="prat-step">
-                <div class="step-num">1</div>
-                <div class="step-body">
-                    <div class="step-label">Interpretar um cabe&ccedil;alho IPv4 real</div>
-                    <div class="step-desc">Considere o seguinte dump hexadecimal de um cabe&ccedil;alho IPv4:<br><br>
-                    <code>45 00 00 3C 1A 2B 40 00 40 06 B2 EC C0 A8 01 0A 4A 7D 6E 22</code><br><br>
-                    Identifique e explique cada campo: (a) qual a vers&atilde;o e o tamanho do cabe&ccedil;alho? (b) qual o comprimento total do pacote? (c) o bit DF est&aacute; ativo? Como voc&ecirc; sabe? (d) qual o TTL e o protocolo encapsulado? (e) quais s&atilde;o os IPs de origem e destino? (f) quantos saltos este pacote provavelmente j&aacute; percorreu desde o remetente?
-                    </div>
+        <h2>&#x1F4DD; Atividade Pr&aacute;tica &mdash; Packet Tracer</h2>
+
+        <!-- Topology -->
+        <div class="pt-section-title">Topologia</div>
+        <div class="pt-topology-box">
+            <div class="pt-topo-diagram">
+                <div class="pt-topo-node">
+                    <span class="pt-topo-label">PC0</span>
+                    <span class="pt-topo-ip">192.168.1.10&nbsp;&nbsp;/24</span>
                 </div>
-            </div>
-            <div class="prat-step">
-                <div class="step-num">2</div>
-                <div class="step-body">
-                    <div class="step-label">Calcular fragmenta&ccedil;&atilde;o manualmente</div>
-                    <div class="step-desc">Um host envia um datagrama IPv4 de <strong>5.020 bytes totais</strong> (incluindo cabe&ccedil;alho de 20 bytes) para um destino que exige passar por um enlace com <strong>MTU = 1.500 bytes</strong>. O roteador deve fragmentar o pacote. Calcule: (a) quantos fragmentos ser&atilde;o gerados? (b) para cada fragmento, determine: tamanho total, tamanho do payload, valor do campo Offset (em unidades de 8 bytes), bit MF; (c) se o terceiro fragmento se perder durante a transmiss&atilde;o, o que acontece com os demais? Por qu&ecirc;?</div>
+                <div class="pt-topo-wire"></div>
+                <div class="pt-topo-node">
+                    <span class="pt-topo-label">Switch</span>
                 </div>
-            </div>
-            <div class="prat-step">
-                <div class="step-num">3</div>
-                <div class="step-body">
-                    <div class="step-label">Mapear o caminho com traceroute / tracert</div>
-                    <div class="step-desc">Execute <code>traceroute 8.8.8.8</code> (Linux/Mac) ou <code>tracert 8.8.8.8</code> (Windows) no laborat&oacute;rio ou em sua m&aacute;quina. (a) Quantos saltos at&eacute; o destino? (b) Identifique os IPs privados (seu gateway e o ISP) e os IPs p&uacute;blicos; (c) Algum roteador n&atilde;o respondeu (<code>* * *</code>)? Em qual posi&ccedil;&atilde;o? O que isso indica? (d) Com base no TTL da resposta do 8.8.8.8 (use <code>ping 8.8.8.8 -v</code>), qual TTL inicial provavelmente usam os servidores do Google?</div>
-                </div>
-            </div>
-            <div class="prat-step">
-                <div class="step-num">4</div>
-                <div class="step-body">
-                    <div class="step-label">Descobrir o MTU do caminho (PMTUD manual)</div>
-                    <div class="step-desc">No Linux, use <code>ping -M do -s &lt;tamanho&gt; &lt;destino&gt;</code> para enviar pacotes com DF=1 e tamanhos variados. No Windows, use <code>ping -f -l &lt;tamanho&gt; &lt;destino&gt;</code>. (a) Comece com 1472 bytes (1472 + 28 bytes de cabe&ccedil;alhos = 1500). Se receber resposta, o MTU do caminho &eacute; &ge; 1500; se receber &ldquo;Frag needed&rdquo;, reduza o tamanho; (b) Fa&ccedil;a busca bin&aacute;ria para descobrir o MTU exato at&eacute; o gateway local e at&eacute; um destino na internet; (c) Se o MTU for diferente de 1500, explique o que pode estar causando isso (PPPoE, VPN, t&uacute;nel).</div>
-                </div>
-            </div>
-            <div class="prat-step">
-                <div class="step-num">5</div>
-                <div class="step-body">
-                    <div class="step-label">&#x1F465; Trabalho em grupo &mdash; Simula&ccedil;&atilde;o do roteamento IPv4</div>
-                    <div class="step-desc"><strong>(Aprendizagem Baseada em Equipes &mdash; grupos de 4&ndash;5 alunos)</strong> Monte uma topologia no papel com 5 roteadores e 3 redes distintas. Cada grupo recebe um &ldquo;pacote&rdquo; (cart&atilde;o com IP de origem, destino, TTL inicial e tamanho). Simulem: (a) o caminho hop-a-hop decrementando o TTL; (b) o comportamento quando o TTL chega a 0 no meio do caminho; (c) a fragmenta&ccedil;&atilde;o quando o pacote passa por um enlace com MTU menor; (d) o que acontece quando o bit DF est&aacute; ativo e a fragmenta&ccedil;&atilde;o seria necess&aacute;ria. <em>Apresentem os resultados ao restante da turma e comparem os caminhos.</em></div>
-                </div>
-            </div>
-            <div class="prat-step">
-                <div class="step-num">6</div>
-                <div class="step-body">
-                    <div class="step-label">&#x1F9E9; Computa&ccedil;&atilde;o desplugada &mdash; Montando o cabe&ccedil;alho IPv4</div>
-                    <div class="step-desc"><strong>(Sem computador &mdash; metodologia ativa)</strong> Cada aluno recebe uma folha impressa com o diagrama do cabe&ccedil;alho IPv4 em branco. O professor dita um cen&aacute;rio: &ldquo;PC-A (10.0.0.5) envia um arquivo de 3000 bytes para servidor (172.16.0.100), TTL=64, protocolo TCP, sem fragmentar.&rdquo; Os alunos preenchem cada campo do cabe&ccedil;alho. Em seguida, compare com o vizinho: as respostas batem? Discutam as diferen&ccedil;as. <em>Varia&ccedil;&atilde;o: o professor anuncia que um enlace tem MTU=1400 &mdash; refazer os c&aacute;lculos de fragmenta&ccedil;&atilde;o.</em></div>
+                <div class="pt-topo-wire"></div>
+                <div class="pt-topo-node">
+                    <span class="pt-topo-label">PC1</span>
+                    <span class="pt-topo-ip">192.168.1.20&nbsp;&nbsp;/24</span>
                 </div>
             </div>
         </div>
 
-        <div class="prat-observe">
-            <strong>&#x1F4CC; Para refletir:</strong> o IPv4 foi projetado em 1981 com endere&ccedil;amento de 32 bits, suficiente para uma rede acad&ecirc;mica de poucos milh&otilde;es de dispositivos. Ningu&eacute;m imaginou que 40 anos depois haveria bilh&otilde;es de smartphones, sensores IoT e servidores. Entender o IPv4 &mdash; suas limita&ccedil;&otilde;es de endere&ccedil;amento, a aus&ecirc;ncia de QoS nativo e a fragmenta&ccedil;&atilde;o ineficiente &mdash; &eacute; fundamental para compreender <em>por que</em> o IPv6 foi projetado da forma que foi.
+        <div class="pt-config-box">
+            &#x1F4A1; <strong>Configura&ccedil;&atilde;o:</strong> Em cada PC &rarr; Desktop &rarr; IP Configuration. Preencha o IP e a m&aacute;scara. N&atilde;o precisa de gateway.
+        </div>
+
+        <!-- Capturing -->
+        <div class="pt-section-title">Capturando o pacote</div>
+        <ol class="pt-steps-list">
+            <li><span class="pt-num">1</span><span>Clique no &iacute;cone de rel&oacute;gio (canto inferior direito) para entrar no modo <strong>Simulation</strong>.</span></li>
+            <li><span class="pt-num">2</span><span>Em <strong>Edit Filters</strong>, deixe marcado apenas <strong>ICMP</strong>.</span></li>
+            <li><span class="pt-num">3</span><span>No PC0 &rarr; Desktop &rarr; Command Prompt: <code>ping 192.168.1.20</code></span></li>
+            <li><span class="pt-num">4</span><span>Clique em <strong>&#x25BA; Capture / Forward (bot&atilde;o do play)</strong> e depois clique no envelope que aparece na topologia.</span></li>
+            <li><span class="pt-num">5</span><span>Na janela que abrir, role at&eacute; a se&ccedil;&atilde;o <strong>IP Header</strong>.</span></li>
+        </ol>
+
+        <!-- Header table -->
+        <div class="pt-section-title">Preencha o cabe&ccedil;alho</div>
+        <table class="pt-hdr-table">
+            <thead>
+                <tr>
+                    <th>Campo</th>
+                    <th>Valor observado</th>
+                    <th>O que significa</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Version</strong></td>
+                    <td class="pt-obs">&nbsp;</td>
+                    <td>1=ICMP, 4 no IPv4 &mdash; vers&atilde;o do protocolo</td>
+                </tr>
+                <tr>
+                    <td><strong>TTL</strong></td>
+                    <td class="pt-obs">&nbsp;</td>
+                    <td>Contador de saltos; cada roteador decrementa 1</td>
+                </tr>
+                <tr>
+                    <td><strong>Protocol</strong></td>
+                    <td class="pt-obs">&nbsp;</td>
+                    <td>1=ICMP &nbsp;|&nbsp; 6=TCP &nbsp;|&nbsp; 17=UDP</td>
+                </tr>
+                <tr>
+                    <td><strong>Source IP</strong></td>
+                    <td class="pt-obs">&nbsp;</td>
+                    <td>IP de quem enviou o pacote</td>
+                </tr>
+                <tr>
+                    <td><strong>Destination IP</strong></td>
+                    <td class="pt-obs">&nbsp;</td>
+                    <td>IP de quem vai receber o pacote</td>
+                </tr>
+                <tr>
+                    <td><strong>Fragment Offset</strong></td>
+                    <td class="pt-obs">&nbsp;</td>
+                    <td>0 = pacote n&atilde;o foi fragmentado</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Questions -->
+        <div class="pt-section-title">Quest&otilde;es</div>
+
+        <div class="pt-q-box">
+            <p>6.&nbsp;&nbsp;O TTL mudou entre o envio (PC0) e o recebimento (PC1)? Por qu&ecirc;?</p>
+            <div class="pt-q-options">
+                <label>( ) Mudou</label>
+                <label>( ) N&atilde;o mudou</label>
+            </div>
+            <div class="pt-q-explain-label">Por qu&ecirc;:</div>
+            <div class="pt-q-explain">&nbsp;</div>
+        </div>
+
+        <div class="pt-q-box">
+            <p>7.&nbsp;&nbsp;No pacote de resposta (PC1 &rarr; PC0), o Source IP e o Destination IP trocaram de lugar? O que isso indica?</p>
+            <div class="pt-q-options">
+                <label>( ) Sim, trocaram</label>
+                <label>( ) N&atilde;o trocaram</label>
+            </div>
+            <div class="pt-q-explain-label">Indica:</div>
+            <div class="pt-q-explain">&nbsp;</div>
+        </div>
+
+        <div class="pt-footer-note">
+            Aula 9 &mdash; Protocolo IPv4 &nbsp;|&nbsp; cesarazevedo.github.io/rc/rc09-ipv4.html
         </div>
 
         <div class="ex-actions">
-            <button class="btn-print" onclick="printPractical('prat-rc09', 'Aula 9 \u2014 Protocolo IPv4')">&#x1F5A8;&#xFE0F; Imprimir roteiro</button>
+            <button class="btn-print" onclick="printPractical('prat-rc09', 'Aula 9 — Protocolo IPv4')">&#x1F5A8;&#xFE0F; Imprimir roteiro</button>
         </div>
     </div>
 
